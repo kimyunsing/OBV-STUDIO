@@ -324,13 +324,16 @@ nav {
 /* ──────────────────────────────────────── */
 .pd-outer { padding-top:var(--nav-h); }
 .pd-img-main {
-  height:58vh;
+  aspect-ratio:16/10;
+  max-height:52vh;
   background:linear-gradient(160deg, var(--bg-s) 0%, var(--bg-ss) 100%);
   position:relative;
   width:100%;
   overflow:hidden;
   flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
 }
+.pd-img-main img { width:100%; height:100%; object-fit:cover; display:block; }
 .pd-img-placeholder {
   font-size:10px; letter-spacing:.16em;
   text-transform:uppercase; color:var(--ink-l);
@@ -343,20 +346,23 @@ nav {
 .pd-thumbs {
   display:grid;
   grid-template-columns:repeat(4, minmax(0,1fr));
-  gap:3px;
-  background:var(--line);
+  gap:6px;
+  background:transparent;
   height:var(--thumbH);
-  flex-shrink:0;
-  overflow:hidden;
+  flex:0 0 var(--thumbH);
+  min-height:0;
 }
 .pd-th {
-  height:var(--thumbH);
+  height:100%;
   cursor:pointer;
   background:linear-gradient(140deg,var(--bg-s),var(--bg-ss));
-  opacity:.5;
+  opacity:.7;
   transition:opacity .2s;
   overflow:hidden;
   min-width:0;
+  border:1px solid var(--line);
+  background-size:cover;
+  background-position:center;
 }
 .pd-th.on,.pd-th:hover { opacity:1; }
 .pd-th:nth-child(2){background:linear-gradient(140deg,#E2E2DF,#D4D4CF);}
@@ -426,6 +432,9 @@ nav {
   transition:all .2s; cursor:pointer;
 }
 .pd-opt:hover,.pd-opt.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+/* Product left column: mobile reset */
+.pd-left { position:relative; top:auto; padding-top:0; }
 
 /* CTAs */
 .pd-ctas { display:flex; flex-direction:column; gap:8px; margin-bottom:32px; }
@@ -575,25 +584,28 @@ footer {
   .obj-card { padding:24px var(--gutter); }
 
   /* Product detail: side-by-side */
-  .pd-outer { display:grid; grid-template-columns:55fr 45fr; padding-top:0; align-items:start; }
+  .pd-outer { display:grid; grid-template-columns:0.95fr 1.05fr; padding-top:0; align-items:start; }
   .pd-left {
     position:sticky;
     top:var(--nav-h);
     height:calc(100svh - var(--nav-h));
     display:flex;
     flex-direction:column;
-    padding-top:var(--nav-h);
+    padding-top:0;
     overflow:hidden;
+    min-height:0;
   }
   .pd-img-main {
-    flex:1;
+    flex:1 1 auto;
     min-height:0;
     height:auto;
+    max-height:none;
+    aspect-ratio:unset;
   }
   .pd-thumbs {
     grid-template-columns:repeat(4, minmax(0,1fr));
     height:var(--thumbH);
-    flex-shrink:0;
+    flex:0 0 var(--thumbH);
   }
   .pd-content { padding:48px 48px 80px; overflow-y:auto; max-width:520px; }
   .pd-opts { grid-template-columns:repeat(4, minmax(0,1fr)); }
@@ -603,6 +615,12 @@ footer {
 
   /* About */
   .about-section { padding:64px var(--gutter); }
+}
+
+/* Small screen: option buttons */
+@media(max-width:520px){
+  .pd-opts { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; }
+  .pd-opt { width:100%; text-align:center; padding:10px; }
 }
 
 /* ── HERO REVEAL ── */
@@ -653,7 +671,7 @@ footer {
   <a href="#" data-page="about">Studio</a>
   <div class="mmenu-foot">
     <a href="#">Instagram</a>
-    <a href="#">hello@obvstudio.kr</a>
+    <a href="#"><span class="__cf_email__" data-cfemail="b1d9d4dddddef1ded3c7c2c5c4d5d8de9fdac3">[email&#160;protected]</span></a>
   </div>
 </div>
 
@@ -700,7 +718,7 @@ footer {
       </div>
       <div class="feat-foot">
         <span class="feat-name">Side Table OBV 01</span>
-        <span class="feat-price">₩ 2,400,000</span>
+        <span class="feat-price">₩ 988,000</span>
       </div>
     </a>
   </section>
@@ -719,7 +737,7 @@ footer {
       </div>
       <div class="ft-links">
         <a href="#">Instagram</a>
-        <a href="#">hello@obvstudio.kr</a>
+        <a href="#"><span class="__cf_email__" data-cfemail="e9818c858586a9868b9f9a9d9c8d8086c7829b">[email&#160;protected]</span></a>
       </div>
     </div>
     <div class="ft-bottom">
@@ -752,7 +770,7 @@ footer {
           <p class="obj-sub">Brushed 316L Stainless Steel</p>
         </div>
         <div class="obj-right">
-          <span class="obj-price">₩ 2,400,000</span>
+          <span class="obj-price">₩ 988,000</span>
           <span class="obj-badge badge-proto">Prototype in production</span>
         </div>
       </div>
@@ -874,7 +892,7 @@ footer {
       <h1 class="pd-h">Side Table<br>OBV 01</h1>
 
       <div class="pd-price-block">
-        <span class="pd-price">₩ 2,400,000</span>
+        <span class="pd-price">₩ 988,000</span>
         <span class="pd-price-note">VAT incl.</span>
       </div>
 
@@ -913,7 +931,7 @@ footer {
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Bespoke</p>
-          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact hello@obvstudio.kr.</p>
+          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="deb6bbb2b2b19eb1bca8adaaabbab7b1f0b5ac">[email&#160;protected]</a>.</p>
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Delivery</p>
@@ -966,7 +984,7 @@ footer {
     <p class="about-section-tag">Contact</p>
     <div class="about-contact-item">
       <p>Seoul, Korea</p>
-      <p><a href="mailto:hello@obvstudio.kr">hello@obvstudio.kr</a></p>
+      <p><a href="/cdn-cgi/l/email-protection#d4bcb1b8b8bb94bbb6a2a7a0a1b0bdbbfabfa6"><span class="__cf_email__" data-cfemail="375f525b5b5877585541444342535e58195c45">[email&#160;protected]</span></a></p>
       <p><a href="#">@obvstudio</a></p>
     </div>
   </div>
@@ -990,7 +1008,7 @@ footer {
 </div><!-- /about -->
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── ROUTER ──
 const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about'};
 function go(k) {
@@ -1012,6 +1030,9 @@ document.getElementById('hbg').addEventListener('click', () => {
   document.getElementById('mmenu').classList.toggle('open');
 });
 
+// ── INIT ──
+go('home');
+
 // ── PRODUCT THUMBS ──
 document.querySelectorAll('.pd-th').forEach(t => {
   t.addEventListener('click', () => {
@@ -1030,17 +1051,16 @@ document.querySelectorAll('.pd-opts').forEach(g => {
   });
 });
 
-// ── SCROLL REVEAL ──
-let obs;
+// ── REVEAL ON SCROLL ──
 function rvCheck() {
-  if (obs) obs.disconnect();
-  obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), {threshold: 0.06});
-  document.querySelectorAll('.page.active .rv:not(.in)').forEach(el => obs.observe(el));
+  document.querySelectorAll('.rv').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 40) el.classList.add('in');
+  });
 }
+window.addEventListener('scroll', rvCheck, { passive: true });
+rvCheck();
 
-// ── INIT ──
-go('home');
-setTimeout(()=>{ const h1=document.querySelector('#page-home .hero-h1'); if(h1){h1.classList.remove('play');void h1.offsetWidth;h1.classList.add('play');} },80);
 </script>
 </body>
 </html>
