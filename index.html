@@ -671,7 +671,7 @@ footer {
   <a href="#" data-page="about">Studio</a>
   <div class="mmenu-foot">
     <a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a>
-    <a href="/cdn-cgi/l/email-protection#c3b1aab5a6b1f0f4f483ada2b5a6b1eda0acae"><span class="__cf_email__" data-cfemail="ed9f849b889fdedadaad838c9b889fc38e8280">[email&#160;protected]</span></a>
+    <a href="mailto:river377@naver.com">river377@naver.com</a>
   </div>
 </div>
 
@@ -737,7 +737,7 @@ footer {
       </div>
       <div class="ft-links">
         <a href="https://instagram.com/obv_studio_" target="_blank">Instagram</a>
-        <a href="/cdn-cgi/l/email-protection#37455e4152450400007759564152451954585a"><span class="__cf_email__" data-cfemail="aad8c3dccfd8999d9deac4cbdccfd884c9c5c7">[email&#160;protected]</span></a>
+        <a href="mailto:river377@naver.com">river377@naver.com</a>
       </div>
     </div>
     <div class="ft-bottom">
@@ -931,7 +931,7 @@ footer {
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Bespoke</p>
-          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="/cdn-cgi/l/email-protection#205249564552131717604e415645520e434f4d"><span class="__cf_email__" data-cfemail="e3918a958691d0d4d4a38d82958691cd808c8e">[email&#160;protected]</span></a>.</p>
+          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="mailto:river377@naver.com">river377@naver.com</a>.</p>
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Delivery</p>
@@ -984,7 +984,7 @@ footer {
     <p class="about-section-tag">Contact</p>
     <div class="about-contact-item">
       <p>서울 송파구 잠실동 올림픽로 10길 50, 2층</p>
-      <p><a href="/cdn-cgi/l/email-protection#25574c534057161212654b445340570b464a48"><span class="__cf_email__" data-cfemail="2b59425d4e59181c1c6b454a5d4e5905484446">[email&#160;protected]</span></a></p>
+      <p><a href="mailto:river377@naver.com">river377@naver.com</a></p>
       <p><a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a></p>
     </div>
   </div>
@@ -1008,33 +1008,69 @@ footer {
 </div><!-- /about -->
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── ROUTER ──
-const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about'};
-function go(k) {
-  Object.values(PM).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('active'); });
-  const t = document.getElementById(PM[k]);
-  if (t) { t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); setTimeout(rvCheck, 80); }
-  document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
-  document.getElementById('mmenu').classList.remove('open');
-  if (k === 'home') {
-    const h1 = document.querySelector('#page-home .hero-h1');
-    if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // ── ROUTER ──
+  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about'};
+
+  function rvCheck() {
+    document.querySelectorAll('.rv').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 10) el.classList.add('in');
+    });
   }
-}
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-page]');
-  if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); }
-});
-document.getElementById('hbg').addEventListener('click', () => {
-  document.getElementById('mmenu').classList.toggle('open');
-});
+  window.addEventListener('scroll', rvCheck, { passive: true });
 
-// ── INIT ──
-go('home');
+  function go(k) {
+    Object.values(PM).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('active'); });
+    const t = document.getElementById(PM[k]);
+    if (t) {
+      t.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // force all .rv elements in the newly active page visible
+      t.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+      setTimeout(rvCheck, 100);
+    }
+    document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
+    document.getElementById('mmenu').classList.remove('open');
+    if (k === 'home') {
+      const h1 = document.querySelector('#page-home .hero-h1');
+      if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+    }
+  }
 
-// ── PRODUCT THUMBS ──
-document.querySelectorAll('.pd-th').forEach(t => {
-  t.addEventListener('click', () => {
-    document.querySelectorAll('.pd-th').forEach(x => x.classList.remove('on'));
-    t.classList.add('o
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-page]');
+    if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); }
+  });
+
+  document.getElementById('hbg').addEventListener('click', () => {
+    document.getElementById('mmenu').classList.toggle('open');
+  });
+
+  // ── PRODUCT THUMBS ──
+  document.querySelectorAll('.pd-th').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.pd-th').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+    });
+  });
+
+  // ── PRODUCT OPTIONS ──
+  document.querySelectorAll('.pd-opts').forEach(g => {
+    g.querySelectorAll('.pd-opt').forEach(b => {
+      b.addEventListener('click', () => {
+        g.querySelectorAll('.pd-opt').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+
+  // ── INIT ──
+  go('home');
+
+});
+</script>
+</body>
+</html>
