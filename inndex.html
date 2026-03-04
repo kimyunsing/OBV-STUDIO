@@ -16,7 +16,7 @@
   --ink-m:  #666660;
   --ink-l:  #AAAAAA;
   --line:   rgba(17,17,17,.08);
-  --nav-h:  52px;
+  --nav-h:  68px;
   --thumbH: 96px;
   --pad:    24px;
   --maxw:   1240px;
@@ -49,22 +49,22 @@ nav {
 }
 .logo-obv {
   font-family:var(--sans);
-  font-size:16px;
+  font-size:20px;
   font-weight:700;
   letter-spacing:.05em;
   text-transform:uppercase;
   color:var(--ink);
 }
 .logo-divider {
-  width:1px; height:12px;
+  width:1px; height:14px;
   background:var(--ink-l);
-  margin:0 8px;
+  margin:0 10px;
   display:inline-block;
   vertical-align:middle;
 }
 .logo-studio {
   font-family:var(--sans);
-  font-size:11px;
+  font-size:13px;
   font-weight:300;
   letter-spacing:.04em;
   color:var(--ink-m);
@@ -140,9 +140,10 @@ nav {
 .hero {
   padding-top:calc(var(--nav-h) + 72px);
   padding-left:var(--gutter); padding-right:var(--gutter);
-  padding-bottom:80px;
-  min-height:94svh;
-  display:flex; flex-direction:column; justify-content:space-between;
+  padding-bottom:36px;
+  min-height:64svh;
+  display:flex; flex-direction:column; justify-content:flex-start;
+  gap:56px;
 }
 .hero-top { }
 .hero-brand {
@@ -162,12 +163,14 @@ nav {
   font-size:14px; font-weight:300;
   color:var(--ink-m); line-height:1.7;
   margin-bottom:40px;
-  max-width:340px;
+  max-width:400px;
 }
 .hero-cta { }
+
 .hero-foot {
   display:flex; align-items:flex-end; justify-content:space-between;
-  padding-top:32px;
+  padding-top:20px;
+  margin-top:24px;
   border-top:1px solid var(--line);
 }
 .hero-status {
@@ -183,7 +186,7 @@ nav {
 
 /* HOME: INTRO STRIP */
 .home-intro {
-  padding:64px var(--gutter);
+  padding:48px var(--gutter);
   border-top:1px solid var(--line);
 }
 .home-intro-h {
@@ -324,13 +327,16 @@ nav {
 /* ──────────────────────────────────────── */
 .pd-outer { padding-top:var(--nav-h); }
 .pd-img-main {
-  height:58vh;
+  aspect-ratio:16/10;
+  max-height:52vh;
   background:linear-gradient(160deg, var(--bg-s) 0%, var(--bg-ss) 100%);
   position:relative;
   width:100%;
   overflow:hidden;
   flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
 }
+.pd-img-main img { width:100%; height:100%; object-fit:cover; display:block; }
 .pd-img-placeholder {
   font-size:10px; letter-spacing:.16em;
   text-transform:uppercase; color:var(--ink-l);
@@ -343,20 +349,23 @@ nav {
 .pd-thumbs {
   display:grid;
   grid-template-columns:repeat(4, minmax(0,1fr));
-  gap:3px;
-  background:var(--line);
+  gap:6px;
+  background:transparent;
   height:var(--thumbH);
-  flex-shrink:0;
-  overflow:hidden;
+  flex:0 0 var(--thumbH);
+  min-height:0;
 }
 .pd-th {
-  height:var(--thumbH);
+  height:100%;
   cursor:pointer;
   background:linear-gradient(140deg,var(--bg-s),var(--bg-ss));
-  opacity:.5;
+  opacity:.7;
   transition:opacity .2s;
   overflow:hidden;
   min-width:0;
+  border:1px solid var(--line);
+  background-size:cover;
+  background-position:center;
 }
 .pd-th.on,.pd-th:hover { opacity:1; }
 .pd-th:nth-child(2){background:linear-gradient(140deg,#E2E2DF,#D4D4CF);}
@@ -426,6 +435,9 @@ nav {
   transition:all .2s; cursor:pointer;
 }
 .pd-opt:hover,.pd-opt.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+
+/* Product left column: mobile reset */
+.pd-left { position:relative; top:auto; padding-top:0; }
 
 /* CTAs */
 .pd-ctas { display:flex; flex-direction:column; gap:8px; margin-bottom:32px; }
@@ -563,8 +575,12 @@ footer {
   nav { padding:0 var(--gutter); }
 
   /* Hero */
-  .hero { padding-top:calc(var(--nav-h) + 100px); padding-bottom:100px; }
+  .hero { padding-top:calc(var(--nav-h) + 100px); padding-bottom:48px; min-height:70svh; }
   .hero-h1 { max-width:860px; }
+
+  /* Pull featured section up slightly */
+  .home-intro { margin-top:-8px; }
+  .home-featured { margin-top:-4px; }
 
   /* Home featured */
   .feat-img { aspect-ratio:4/3; }
@@ -575,25 +591,28 @@ footer {
   .obj-card { padding:24px var(--gutter); }
 
   /* Product detail: side-by-side */
-  .pd-outer { display:grid; grid-template-columns:55fr 45fr; padding-top:0; align-items:start; }
+  .pd-outer { display:grid; grid-template-columns:0.95fr 1.05fr; padding-top:0; align-items:start; }
   .pd-left {
     position:sticky;
     top:var(--nav-h);
     height:calc(100svh - var(--nav-h));
     display:flex;
     flex-direction:column;
-    padding-top:var(--nav-h);
+    padding-top:0;
     overflow:hidden;
+    min-height:0;
   }
   .pd-img-main {
-    flex:1;
+    flex:1 1 auto;
     min-height:0;
     height:auto;
+    max-height:none;
+    aspect-ratio:unset;
   }
   .pd-thumbs {
     grid-template-columns:repeat(4, minmax(0,1fr));
     height:var(--thumbH);
-    flex-shrink:0;
+    flex:0 0 var(--thumbH);
   }
   .pd-content { padding:48px 48px 80px; overflow-y:auto; max-width:520px; }
   .pd-opts { grid-template-columns:repeat(4, minmax(0,1fr)); }
@@ -603,6 +622,275 @@ footer {
 
   /* About */
   .about-section { padding:64px var(--gutter); }
+}
+
+/* Small screen: option buttons */
+@media(max-width:520px){
+  .pd-opts { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; }
+  .pd-opt { width:100%; text-align:center; padding:10px; }
+}
+
+/* ── AUTH PAGES (Login / Signup) ── */
+.auth-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding-left:var(--pad); padding-right:var(--pad);
+  padding-bottom:80px;
+}
+.auth-card {
+  width:100%; max-width:420px;
+  padding-top:20px;
+}
+.auth-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.auth-h {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:12px;
+}
+.auth-desc {
+  font-size:13px; color:var(--ink-m);
+  line-height:1.7; margin-bottom:40px;
+}
+.auth-row { margin-bottom:20px; }
+.auth-row-half {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+.auth-label {
+  display:block;
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-m);
+  margin-bottom:8px;
+}
+.auth-input {
+  width:100%;
+  font-family:var(--sans); font-size:14px; font-weight:300;
+  color:var(--ink); background:transparent;
+  border:none; border-bottom:1px solid var(--line);
+  padding:10px 0; outline:none;
+  transition:border-color .25s;
+}
+.auth-input::placeholder { color:var(--ink-l); font-weight:300; }
+.auth-input:focus { border-bottom-color:var(--ink); }
+.auth-input.err { border-bottom-color:#c44; }
+.auth-err-msg {
+  font-size:11px; color:#c44;
+  margin-top:5px; min-height:16px;
+}
+.auth-submit {
+  width:100%; margin-top:28px;
+}
+.auth-divider {
+  border-top:1px solid var(--line);
+  margin:32px 0;
+}
+.auth-switch {
+  font-size:12px; color:var(--ink-m);
+  text-align:center;
+}
+.auth-switch a {
+  color:var(--ink); font-weight:400;
+  transition:opacity .2s; cursor:pointer;
+}
+.auth-switch a:hover { opacity:.6; }
+.auth-success {
+  display:none;
+  text-align:center;
+  padding:60px 0 40px;
+}
+.auth-success.show { display:block; }
+.auth-success-icon {
+  width:48px; height:48px; margin:0 auto 24px;
+  border:1.5px solid var(--ink);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; color:var(--ink);
+}
+.auth-success h2 {
+  font-size:22px; font-weight:300;
+  letter-spacing:-.02em; margin-bottom:10px;
+}
+.auth-success p {
+  font-size:13px; color:var(--ink-m);
+  line-height:1.7; margin-bottom:28px;
+}
+.auth-form.hidden { display:none; }
+.auth-pw-wrap {
+  position:relative;
+}
+.auth-pw-toggle, .adm-pw-toggle-btn {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink-l); cursor:pointer; padding:4px 0;
+  transition:color .2s;
+}
+.auth-pw-toggle:hover, .adm-pw-toggle-btn:hover { color:var(--ink); }
+@media(min-width:768px){
+  .auth-page { padding-top:calc(var(--nav-h) + 100px); }
+}
+
+/* ── MY PAGE ── */
+.my-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  padding-left:var(--gutter); padding-right:var(--gutter);
+  padding-bottom:80px;
+}
+.my-header {
+  padding-bottom:32px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:0;
+}
+.my-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.my-greeting {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:10px;
+}
+.my-email-display {
+  font-size:13px; color:var(--ink-m);
+}
+.my-section {
+  padding:32px 0;
+  border-bottom:1px solid var(--line);
+}
+.my-section-label {
+  font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:20px;
+}
+.my-info-row {
+  display:flex; justify-content:space-between;
+  align-items:baseline; padding:12px 0;
+  border-bottom:1px solid var(--line);
+  gap:16px;
+}
+.my-info-row:last-child { border-bottom:none; }
+.my-info-k {
+  font-size:11px; color:var(--ink-l);
+  flex-shrink:0; min-width:80px;
+}
+.my-info-v {
+  font-size:13px; color:var(--ink);
+  text-align:right; word-break:break-all;
+}
+.my-actions { padding-top:40px; }
+.my-logout {
+  font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-m);
+  cursor:pointer; transition:color .2s;
+  padding:8px 0; background:none; border:none;
+  font-family:var(--sans);
+}
+.my-logout:hover { color:var(--ink); }
+@media(min-width:768px){
+  .my-page { padding-top:calc(var(--nav-h) + 100px); }
+  .my-content { max-width:520px; }
+}
+.nav-auth-hide { display:none !important; }
+
+/* ── ADMIN PAGE ── */
+.adm-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  padding-left:var(--gutter); padding-right:var(--gutter);
+  padding-bottom:80px;
+}
+.adm-header { padding-bottom:32px; border-bottom:1px solid var(--line); margin-bottom:0; }
+.adm-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.adm-h {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:10px;
+}
+.adm-desc { font-size:13px; color:var(--ink-m); }
+.adm-login-wrap { max-width:420px; padding-top:40px; }
+.adm-stat-row {
+  display:flex; gap:32px; padding:28px 0;
+  border-bottom:1px solid var(--line);
+}
+.adm-stat { }
+.adm-stat-n {
+  font-size:clamp(28px,5vw,40px);
+  font-weight:300; letter-spacing:-.02em;
+  color:var(--ink); line-height:1;
+  margin-bottom:6px;
+}
+.adm-stat-label {
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-l);
+}
+.adm-section { padding:32px 0; border-bottom:1px solid var(--line); }
+.adm-section-label {
+  font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:20px;
+}
+.adm-table { width:100%; border-collapse:collapse; }
+.adm-table th {
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-l);
+  font-weight:300; text-align:left;
+  padding:10px 12px 10px 0;
+  border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+.adm-table td {
+  font-size:12px; color:var(--ink);
+  padding:14px 12px 14px 0;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+.adm-table tr:hover td { background:rgba(17,17,17,.02); }
+.adm-table .col-idx { width:40px; color:var(--ink-l); }
+.adm-empty {
+  font-size:13px; color:var(--ink-l);
+  padding:40px 0; text-align:center;
+}
+.adm-table-wrap { overflow-x:auto; margin:0 -4px; padding:0 4px; }
+.adm-actions { padding-top:32px; display:flex; gap:12px; flex-wrap:wrap; }
+.adm-logout-btn {
+  font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-m);
+  cursor:pointer; transition:color .2s;
+  padding:8px 0; background:none; border:none;
+  font-family:var(--sans);
+}
+.adm-logout-btn:hover { color:var(--ink); }
+.adm-hidden { display:none; }
+@media(min-width:768px){
+  .adm-page { padding-top:calc(var(--nav-h) + 100px); }
+}
+
+/* ── HERO GRID (two-column) ── */
+.hero-grid { display:block; }
+.hero-media { margin-top:40px; }
+.hero-media img {
+  width:100%; height:auto; display:block; object-fit:contain;
+}
+@media(min-width:900px){
+  .hero-grid {
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:80px;
+    align-items:center;
+  }
+  .hero-media { margin-top:0; }
 }
 
 /* ── HERO REVEAL ── */
@@ -640,6 +928,8 @@ footer {
   </ul>
   <div class="nav-r">
     <a href="#" class="nav-r-link" data-page="collection">View Objects</a>
+    <a href="#" class="nav-r-link" data-page="login" id="nav-login">Login</a>
+    <a href="#" class="nav-r-link nav-auth-hide" data-page="mypage" id="nav-mypage">My page</a>
     <button class="hbg" id="hbg" aria-label="Menu">
       <span></span><span></span>
     </button>
@@ -651,9 +941,13 @@ footer {
   <a href="#" data-page="home">Home</a>
   <a href="#" data-page="collection">Objects</a>
   <a href="#" data-page="about">Studio</a>
+  <a href="#" data-page="login" id="mmenu-login">Login</a>
+  <a href="#" data-page="signup" id="mmenu-signup">Sign up</a>
+  <a href="#" data-page="mypage" id="mmenu-mypage" class="nav-auth-hide">My page</a>
+  <a href="#" id="mmenu-logout" class="nav-auth-hide">Logout</a>
   <div class="mmenu-foot">
-    <a href="#">Instagram</a>
-    <a href="#">hello@obvstudio.kr</a>
+    <a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a>
+    <a href="/cdn-cgi/l/email-protection#93e1fae5f6e1a0a4a4d3fdf2e5f6e1bdf0fcfe"><span class="__cf_email__" data-cfemail="14667d627166272323547a756271663a777b79">[email&#160;protected]</span></a>
   </div>
 </div>
 
@@ -665,14 +959,23 @@ footer {
 
   <section class="hero">
     <div class="hero-top">
-      <p class="hero-brand">OBV studio</p>
-      <h1 class="hero-h1">
-          <span class="hero-reveal r1">Design made</span><br>
-          <span class="hero-reveal r2">obvious.</span>
-        </h1>
-      <p class="hero-sub">Objects reduced to their essential form.</p>
-      <div class="hero-cta">
-        <a href="#" class="btn btn-dark" data-page="collection">View Objects</a>
+      <div class="hero-grid">
+        <div class="hero-text">
+          <p class="hero-brand">OBV studio</p>
+          <h1 class="hero-h1">
+              <span class="hero-reveal r1">Design made</span><br>
+              <span class="hero-reveal r2">obvious.</span>
+            </h1>
+          <p class="hero-sub">Objects reduced to their essential form.</p>
+          <div class="hero-cta">
+            <a href="#" class="btn btn-dark" data-page="collection">View Objects</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div style="aspect-ratio:4/5;background:linear-gradient(160deg, var(--bg-s) 0%, var(--bg-ss) 100%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-l);">OBV 01</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="hero-foot">
@@ -700,7 +1003,7 @@ footer {
       </div>
       <div class="feat-foot">
         <span class="feat-name">Side Table OBV 01</span>
-        <span class="feat-price">₩ 2,400,000</span>
+        <span class="feat-price">₩ 988,000</span>
       </div>
     </a>
   </section>
@@ -718,12 +1021,12 @@ footer {
         <a href="#" data-page="about">Studio</a>
       </div>
       <div class="ft-links">
-        <a href="#">Instagram</a>
-        <a href="#">hello@obvstudio.kr</a>
+        <a href="https://instagram.com/obv_studio_" target="_blank">Instagram</a>
+        <a href="/cdn-cgi/l/email-protection#ff8d96899a8dccc8c8bf919e899a8dd19c9092"><span class="__cf_email__" data-cfemail="a6d4cfd0c3d4959191e6c8c7d0c3d488c5c9cb">[email&#160;protected]</span></a>
       </div>
     </div>
     <div class="ft-bottom">
-      <p class="ft-copy">© 2025 OBV studio. Seoul, Korea.</p>
+      <p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p>
     </div>
   </footer>
 
@@ -752,7 +1055,7 @@ footer {
           <p class="obj-sub">Brushed 316L Stainless Steel</p>
         </div>
         <div class="obj-right">
-          <span class="obj-price">₩ 2,400,000</span>
+          <span class="obj-price">₩ 988,000</span>
           <span class="obj-badge badge-proto">Prototype in production</span>
         </div>
       </div>
@@ -837,7 +1140,7 @@ footer {
         <a href="#" data-page="about">Studio</a>
       </div>
     </div>
-    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. Seoul, Korea.</p></div>
+    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p></div>
   </footer>
 
 </div><!-- /collection -->
@@ -874,7 +1177,7 @@ footer {
       <h1 class="pd-h">Side Table<br>OBV 01</h1>
 
       <div class="pd-price-block">
-        <span class="pd-price">₩ 2,400,000</span>
+        <span class="pd-price">₩ 988,000</span>
         <span class="pd-price-note">VAT incl.</span>
       </div>
 
@@ -913,7 +1216,7 @@ footer {
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Bespoke</p>
-          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact hello@obvstudio.kr.</p>
+          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="/cdn-cgi/l/email-protection#aad8c3dccfd8999d9deac4cbdccfd884c9c5c7"><span class="__cf_email__" data-cfemail="f5879c839087c6c2c2b59b94839087db969a98">[email&#160;protected]</span></a>.</p>
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Delivery</p>
@@ -965,9 +1268,9 @@ footer {
   <div class="about-section rv d2">
     <p class="about-section-tag">Contact</p>
     <div class="about-contact-item">
-      <p>Seoul, Korea</p>
-      <p><a href="mailto:hello@obvstudio.kr">hello@obvstudio.kr</a></p>
-      <p><a href="#">@obvstudio</a></p>
+      <p>서울 송파구 잠실동 올림픽로 10길 50, 2층</p>
+      <p><a href="/cdn-cgi/l/email-protection#0c7e657a697e3f3b3b4c626d7a697e226f6361"><span class="__cf_email__" data-cfemail="502239263522636767103e312635227e333f3d">[email&#160;protected]</span></a></p>
+      <p><a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a></p>
     </div>
   </div>
 
@@ -984,63 +1287,607 @@ footer {
         <a href="#" data-page="about">Studio</a>
       </div>
     </div>
-    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. Seoul, Korea.</p></div>
+    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p></div>
   </footer>
 
 </div><!-- /about -->
 
 
-<script>
-// ── ROUTER ──
-const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about'};
-function go(k) {
-  Object.values(PM).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('active'); });
-  const t = document.getElementById(PM[k]);
-  if (t) { t.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); setTimeout(rvCheck, 80); }
-  document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
-  document.getElementById('mmenu').classList.remove('open');
-  if (k === 'home') {
-    const h1 = document.querySelector('#page-home .hero-h1');
-    if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+<!-- ══════════════════════════════════ -->
+<!--  LOGIN                             -->
+<!-- ══════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form">
+        <p class="auth-tag">Account</p>
+        <h1 class="auth-h">Login</h1>
+        <p class="auth-desc">계정에 로그인하세요.</p>
+
+        <div class="auth-row">
+          <label class="auth-label" for="login-email">이메일</label>
+          <input class="auth-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+          <p class="auth-err-msg" id="login-email-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="login-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password">
+            <span class="auth-pw-toggle" id="login-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="login-pw-err"></p>
+        </div>
+
+        <button class="btn btn-dark auth-submit" id="login-btn">Login</button>
+
+        <div class="auth-divider"></div>
+        <p class="auth-switch">아직 계정이 없으신가요? <a href="#" data-page="signup">회원가입</a></p>
+      </div>
+
+      <!-- Login Success -->
+      <div id="login-success" class="auth-success">
+        <div class="auth-success-icon">✓</div>
+        <h2>환영합니다</h2>
+        <p>로그인되었습니다.</p>
+        <a href="#" class="btn btn-dark" data-page="mypage">마이페이지로 이동</a>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /login -->
+
+
+<!-- ══════════════════════════════════ -->
+<!--  SIGNUP                            -->
+<!-- ══════════════════════════════════ -->
+<div id="page-signup" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Signup Form -->
+      <div id="signup-form" class="auth-form">
+        <p class="auth-tag">Account</p>
+        <h1 class="auth-h">Sign up</h1>
+        <p class="auth-desc">OBV studio 계정을 만드세요.</p>
+
+        <div class="auth-row auth-row-half">
+          <div>
+            <label class="auth-label" for="signup-last">성</label>
+            <input class="auth-input" type="text" id="signup-last" placeholder="홍" autocomplete="family-name">
+            <p class="auth-err-msg" id="signup-last-err"></p>
+          </div>
+          <div>
+            <label class="auth-label" for="signup-first">이름</label>
+            <input class="auth-input" type="text" id="signup-first" placeholder="길동" autocomplete="given-name">
+            <p class="auth-err-msg" id="signup-first-err"></p>
+          </div>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-email">이메일</label>
+          <input class="auth-input" type="email" id="signup-email" placeholder="your@email.com" autocomplete="email">
+          <p class="auth-err-msg" id="signup-email-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="signup-pw" placeholder="8자 이상" autocomplete="new-password">
+            <span class="auth-pw-toggle" id="signup-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="signup-pw-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-pw2">비밀번호 확인</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="signup-pw2" placeholder="비밀번호 재입력" autocomplete="new-password">
+          </div>
+          <p class="auth-err-msg" id="signup-pw2-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-phone">전화번호</label>
+          <input class="auth-input" type="tel" id="signup-phone" placeholder="010-0000-0000" autocomplete="tel">
+          <p class="auth-err-msg" id="signup-phone-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-addr">주소</label>
+          <input class="auth-input" type="text" id="signup-addr" placeholder="서울특별시 송파구 …" autocomplete="street-address">
+          <p class="auth-err-msg" id="signup-addr-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-addr2">상세주소 <span style="color:var(--ink-l);text-transform:none;letter-spacing:0;font-size:10px;">(선택)</span></label>
+          <input class="auth-input" type="text" id="signup-addr2" placeholder="동/호수" autocomplete="address-line2">
+        </div>
+
+        <button class="btn btn-dark auth-submit" id="signup-btn">회원가입</button>
+
+        <div class="auth-divider"></div>
+        <p class="auth-switch">이미 계정이 있으신가요? <a href="#" data-page="login">로그인</a></p>
+      </div>
+
+      <!-- Signup Success -->
+      <div id="signup-success" class="auth-success">
+        <div class="auth-success-icon">✓</div>
+        <h2>가입 완료</h2>
+        <p>OBV studio에 오신 것을 환영합니다.</p>
+        <a href="#" class="btn btn-dark" data-page="login">로그인하기</a>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /signup -->
+
+
+<!-- ══════════════════════════════════ -->
+<!--  MY PAGE                           -->
+<!-- ══════════════════════════════════ -->
+<div id="page-mypage" class="page">
+  <div class="my-page">
+    <div class="my-content">
+
+      <div class="my-header">
+        <p class="my-tag">Account</p>
+        <h1 class="my-greeting" id="my-greeting">—</h1>
+        <p class="my-email-display" id="my-email-display"></p>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">기본 정보</p>
+        <div class="my-info-row"><span class="my-info-k">이름</span><span class="my-info-v" id="my-name">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">이메일</span><span class="my-info-v" id="my-email">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">전화번호</span><span class="my-info-v" id="my-phone">—</span></div>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">주소</p>
+        <div class="my-info-row"><span class="my-info-k">주소</span><span class="my-info-v" id="my-addr">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">상세주소</span><span class="my-info-v" id="my-addr2">—</span></div>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">가입일</p>
+        <div class="my-info-row"><span class="my-info-k">등록</span><span class="my-info-v" id="my-date">—</span></div>
+      </div>
+
+      <div class="my-actions">
+        <button class="my-logout" id="logout-btn">로그아웃</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /mypage -->
+
+
+<!-- ══════════════════════════════════ -->
+<!--  ADMIN                             -->
+<!-- ══════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="adm-page">
+
+    <!-- Admin Login Gate -->
+    <div id="adm-gate">
+      <div class="adm-header">
+        <p class="adm-tag">Admin</p>
+        <h1 class="adm-h">관리자 로그인</h1>
+        <p class="adm-desc">관리자 비밀번호를 입력하세요.</p>
+      </div>
+      <div class="adm-login-wrap">
+        <div class="auth-row">
+          <label class="auth-label" for="adm-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input adm-input" type="password" id="adm-pw" placeholder="관리자 비밀번호">
+            <span class="adm-pw-toggle-btn" id="adm-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="adm-pw-err"></p>
+        </div>
+        <button class="btn btn-dark auth-submit" id="adm-login-btn">로그인</button>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <div id="adm-dashboard" class="adm-hidden">
+
+      <div class="adm-header">
+        <p class="adm-tag">Admin</p>
+        <h1 class="adm-h">회원 관리</h1>
+        <p class="adm-desc">등록된 전체 회원 목록입니다.</p>
+      </div>
+
+      <div class="adm-stat-row">
+        <div class="adm-stat">
+          <p class="adm-stat-n" id="adm-total">0</p>
+          <p class="adm-stat-label">전체 회원</p>
+        </div>
+        <div class="adm-stat">
+          <p class="adm-stat-n" id="adm-today">0</p>
+          <p class="adm-stat-label">오늘 가입</p>
+        </div>
+      </div>
+
+      <div class="adm-section">
+        <p class="adm-section-label">회원 목록</p>
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th class="col-idx">#</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>전화번호</th>
+                <th>주소</th>
+                <th>가입일</th>
+              </tr>
+            </thead>
+            <tbody id="adm-tbody"></tbody>
+          </table>
+          <p class="adm-empty" id="adm-empty" style="display:none;">등록된 회원이 없습니다.</p>
+        </div>
+      </div>
+
+      <div class="adm-actions">
+        <button class="adm-logout-btn" id="adm-logout-btn">관리자 로그아웃</button>
+        <button class="adm-logout-btn" id="adm-clear-btn" style="color:#c44;">전체 회원 삭제</button>
+      </div>
+
+    </div>
+
+  </div>
+</div><!-- /admin -->
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // ── ROUTER ──
+  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
+
+  function rvCheck() {
+    document.querySelectorAll('.rv').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 10) el.classList.add('in');
+    });
   }
-}
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-page]');
-  if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); }
-});
-document.getElementById('hbg').addEventListener('click', () => {
-  document.getElementById('mmenu').classList.toggle('open');
-});
+  window.addEventListener('scroll', rvCheck, { passive: true });
 
-// ── PRODUCT THUMBS ──
-document.querySelectorAll('.pd-th').forEach(t => {
-  t.addEventListener('click', () => {
-    document.querySelectorAll('.pd-th').forEach(x => x.classList.remove('on'));
-    t.classList.add('on');
+  function go(k) {
+    Object.values(PM).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('active'); });
+    const t = document.getElementById(PM[k]);
+    if (t) {
+      t.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // force all .rv elements in the newly active page visible
+      t.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+      setTimeout(rvCheck, 100);
+    }
+    document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
+    document.getElementById('mmenu').classList.remove('open');
+    resetAuthPage(k);
+    if (k === 'home') {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const h1 = document.querySelector('#page-home .hero-h1');
+          if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+        });
+      });
+    }
+  }
+
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-page]');
+    if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); }
   });
-});
 
-// ── PRODUCT OPTIONS ──
-document.querySelectorAll('.pd-opts').forEach(g => {
-  g.querySelectorAll('.pd-opt').forEach(b => {
-    b.addEventListener('click', () => {
-      g.querySelectorAll('.pd-opt').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
+  document.getElementById('hbg').addEventListener('click', () => {
+    document.getElementById('mmenu').classList.toggle('open');
+  });
+
+  // ── PRODUCT THUMBS ──
+  document.querySelectorAll('.pd-th').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.pd-th').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
     });
   });
+
+  // ── PRODUCT OPTIONS ──
+  document.querySelectorAll('.pd-opts').forEach(g => {
+    g.querySelectorAll('.pd-opt').forEach(b => {
+      b.addEventListener('click', () => {
+        g.querySelectorAll('.pd-opt').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+
+  // ── STORAGE (memory-first, localStorage as backup) ──
+  const _mem = {};
+  function sGet(k) {
+    if (k in _mem) return _mem[k];
+    try { const v = localStorage.getItem(k); if (v !== null) { _mem[k] = v; } return v; } catch(e) { return null; }
+  }
+  function sSet(k, v) {
+    _mem[k] = v;
+    try { localStorage.setItem(k, v); } catch(e) {}
+  }
+  function sRem(k) {
+    delete _mem[k];
+    try { localStorage.removeItem(k); } catch(e) {}
+  }
+
+  // ── AUTH STATE ──
+  let allUsers = JSON.parse(sGet('obv_users') || '[]');
+  let userData = JSON.parse(sGet('obv_user') || 'null');
+  let loggedIn = sGet('obv_logged') === '1';
+  let adminLoggedIn = false;
+  const ADMIN_PW = 'obv2025';
+
+  function saveAuth() {
+    sSet('obv_users', JSON.stringify(allUsers));
+    if (userData) sSet('obv_user', JSON.stringify(userData));
+    else sRem('obv_user');
+    sSet('obv_logged', loggedIn ? '1' : '0');
+  }
+
+  function addUser(u) {
+    const idx = allUsers.findIndex(x => x.email === u.email);
+    if (idx >= 0) allUsers[idx] = u;
+    else allUsers.push(u);
+    saveAuth();
+  }
+
+  // ── NAV AUTH TOGGLE ──
+  function updateNavAuth() {
+    const ids = ['nav-login','nav-mypage','mmenu-login','mmenu-signup','mmenu-mypage','mmenu-logout'];
+    const els = {};
+    ids.forEach(id => { els[id] = document.getElementById(id); });
+    if (loggedIn) {
+      if (els['nav-login']) els['nav-login'].classList.add('nav-auth-hide');
+      if (els['nav-mypage']) els['nav-mypage'].classList.remove('nav-auth-hide');
+      if (els['mmenu-login']) els['mmenu-login'].classList.add('nav-auth-hide');
+      if (els['mmenu-signup']) els['mmenu-signup'].classList.add('nav-auth-hide');
+      if (els['mmenu-mypage']) els['mmenu-mypage'].classList.remove('nav-auth-hide');
+      if (els['mmenu-logout']) els['mmenu-logout'].classList.remove('nav-auth-hide');
+    } else {
+      if (els['nav-login']) els['nav-login'].classList.remove('nav-auth-hide');
+      if (els['nav-mypage']) els['nav-mypage'].classList.add('nav-auth-hide');
+      if (els['mmenu-login']) els['mmenu-login'].classList.remove('nav-auth-hide');
+      if (els['mmenu-signup']) els['mmenu-signup'].classList.remove('nav-auth-hide');
+      if (els['mmenu-mypage']) els['mmenu-mypage'].classList.add('nav-auth-hide');
+      if (els['mmenu-logout']) els['mmenu-logout'].classList.add('nav-auth-hide');
+    }
+  }
+
+  function renderMyPage() {
+    if (!userData) return;
+    document.getElementById('my-greeting').textContent = userData.last + userData.first + '님';
+    document.getElementById('my-email-display').textContent = userData.email;
+    document.getElementById('my-name').textContent = userData.last + userData.first;
+    document.getElementById('my-email').textContent = userData.email;
+    document.getElementById('my-phone').textContent = userData.phone;
+    document.getElementById('my-addr').textContent = userData.addr;
+    document.getElementById('my-addr2').textContent = userData.addr2 || '—';
+    document.getElementById('my-date').textContent = userData.joinDate;
+  }
+
+  function doLogout() {
+    loggedIn = false;
+    saveAuth();
+    updateNavAuth();
+    go('home');
+  }
+
+  // ── PASSWORD TOGGLES (by specific ID, no class conflicts) ──
+  function bindPwToggle(toggleId, inputId) {
+    var tog = document.getElementById(toggleId);
+    var inp = document.getElementById(inputId);
+    if (tog && inp) {
+      tog.addEventListener('click', function() {
+        var show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        tog.textContent = show ? '숨기기' : '보기';
+      });
+    }
+  }
+  bindPwToggle('login-pw-toggle', 'login-pw');
+  bindPwToggle('signup-pw-toggle', 'signup-pw');
+  bindPwToggle('adm-pw-toggle', 'adm-pw');
+
+  // ── FORM RESET ON PAGE NAVIGATE ──
+  function resetAuthPage(pageKey) {
+    if (pageKey === 'login') {
+      if (loggedIn) { go('mypage'); return; }
+      var f = document.getElementById('login-form');
+      var s = document.getElementById('login-success');
+      if (f) { f.classList.remove('hidden'); f.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); }
+      if (s) s.classList.remove('show');
+    }
+    if (pageKey === 'signup') {
+      if (loggedIn) { go('mypage'); return; }
+      var f2 = document.getElementById('signup-form');
+      var s2 = document.getElementById('signup-success');
+      if (f2) { f2.classList.remove('hidden'); f2.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); f2.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); }
+      if (s2) s2.classList.remove('show');
+    }
+    if (pageKey === 'mypage') {
+      if (!loggedIn) { go('login'); return; }
+      renderMyPage();
+    }
+    if (pageKey === 'admin') {
+      if (!adminLoggedIn) {
+        document.getElementById('adm-gate').classList.remove('adm-hidden');
+        document.getElementById('adm-dashboard').classList.add('adm-hidden');
+        var pwI = document.getElementById('adm-pw');
+        if (pwI) pwI.value = '';
+        var errE = document.getElementById('adm-pw-err');
+        if (errE) errE.textContent = '';
+      } else {
+        renderAdminDashboard();
+      }
+    }
+  }
+
+  // ── HELPER ──
+  function setErr(id, msg) {
+    var el = document.getElementById(id);
+    var input = document.getElementById(id.replace('-err',''));
+    if (el) el.textContent = msg || '';
+    if (input) input.classList.toggle('err', !!msg);
+  }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s || '—'; return d.innerHTML; }
+
+  // ── ADMIN DASHBOARD ──
+  function renderAdminDashboard() {
+    document.getElementById('adm-gate').classList.add('adm-hidden');
+    document.getElementById('adm-dashboard').classList.remove('adm-hidden');
+    var tbody = document.getElementById('adm-tbody');
+    var emptyEl = document.getElementById('adm-empty');
+    tbody.innerHTML = '';
+    var today = new Date().toLocaleDateString('ko-KR');
+    var todayCount = 0;
+    if (allUsers.length === 0) {
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      allUsers.forEach(function(u, i) {
+        if (u.joinDate === today) todayCount++;
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td class="col-idx">' + (i+1) + '</td>' +
+          '<td>' + esc(u.last + u.first) + '</td>' +
+          '<td>' + esc(u.email) + '</td>' +
+          '<td>' + esc(u.phone) + '</td>' +
+          '<td>' + esc(u.addr) + (u.addr2 ? ' ' + esc(u.addr2) : '') + '</td>' +
+          '<td>' + esc(u.joinDate) + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+    document.getElementById('adm-total').textContent = allUsers.length;
+    document.getElementById('adm-today').textContent = todayCount;
+  }
+
+  // ── ADMIN LOGIN ──
+  document.getElementById('adm-login-btn').addEventListener('click', function() {
+    var pw = document.getElementById('adm-pw').value;
+    if (pw === ADMIN_PW) {
+      adminLoggedIn = true;
+      document.getElementById('adm-pw-err').textContent = '';
+      renderAdminDashboard();
+    } else {
+      document.getElementById('adm-pw-err').textContent = '비밀번호가 올바르지 않습니다.';
+    }
+  });
+
+  document.getElementById('adm-pw').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('adm-login-btn').click();
+  });
+
+  document.getElementById('adm-logout-btn').addEventListener('click', function() {
+    adminLoggedIn = false;
+    go('home');
+  });
+
+  document.getElementById('adm-clear-btn').addEventListener('click', function() {
+    if (confirm('정말 전체 회원 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+      allUsers = [];
+      userData = null;
+      loggedIn = false;
+      saveAuth();
+      updateNavAuth();
+      renderAdminDashboard();
+    }
+  });
+
+  // ── LOGIN ──
+  document.getElementById('login-btn').addEventListener('click', function() {
+    var ok = true;
+    var email = document.getElementById('login-email').value.trim();
+    var pw = document.getElementById('login-pw').value;
+    if (!email) { setErr('login-email-err','이메일을 입력해주세요.'); ok=false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('login-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
+    else { setErr('login-email-err',''); }
+    if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else { setErr('login-pw-err',''); }
+    if (!ok) return;
+    // verify account
+    var found = allUsers.find(function(u){ return u.email === email; });
+    if (!found) { setErr('login-email-err','가입되지 않은 이메일입니다.'); return; }
+    if (found.pw !== pw) { setErr('login-pw-err','비밀번호가 일치하지 않습니다.'); return; }
+    userData = found;
+    loggedIn = true;
+    saveAuth();
+    updateNavAuth();
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('login-success').classList.add('show');
+  });
+
+  // ── SIGNUP ──
+  document.getElementById('signup-btn').addEventListener('click', function() {
+    var ok = true;
+    var last = document.getElementById('signup-last').value.trim();
+    var first = document.getElementById('signup-first').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var pw = document.getElementById('signup-pw').value;
+    var pw2 = document.getElementById('signup-pw2').value;
+    var phone = document.getElementById('signup-phone').value.trim();
+    var addr = document.getElementById('signup-addr').value.trim();
+    var addr2 = document.getElementById('signup-addr2').value.trim();
+
+    if (!last) { setErr('signup-last-err','성을 입력해주세요.'); ok=false; } else { setErr('signup-last-err',''); }
+    if (!first) { setErr('signup-first-err','이름을 입력해주세요.'); ok=false; } else { setErr('signup-first-err',''); }
+    if (!email) { setErr('signup-email-err','이메일을 입력해주세요.'); ok=false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('signup-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
+    else { setErr('signup-email-err',''); }
+    if (!pw) { setErr('signup-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else if (pw.length < 8) { setErr('signup-pw-err','8자 이상 입력해주세요.'); ok=false; }
+    else { setErr('signup-pw-err',''); }
+    if (!pw2) { setErr('signup-pw2-err','비밀번호를 다시 입력해주세요.'); ok=false; }
+    else if (pw !== pw2) { setErr('signup-pw2-err','비밀번호가 일치하지 않습니다.'); ok=false; }
+    else { setErr('signup-pw2-err',''); }
+    if (!phone) { setErr('signup-phone-err','전화번호를 입력해주세요.'); ok=false; }
+    else if (!/^[\d\-]{10,14}$/.test(phone)) { setErr('signup-phone-err','유효한 전화번호를 입력해주세요.'); ok=false; }
+    else { setErr('signup-phone-err',''); }
+    if (!addr) { setErr('signup-addr-err','주소를 입력해주세요.'); ok=false; } else { setErr('signup-addr-err',''); }
+
+    // duplicate check
+    if (ok && allUsers.find(function(u){ return u.email === email; })) {
+      setErr('signup-email-err','이미 가입된 이메일입니다.');
+      ok = false;
+    }
+
+    if (!ok) return;
+
+    userData = { last:last, first:first, email:email, pw:pw, phone:phone, addr:addr, addr2:addr2, joinDate: new Date().toLocaleDateString('ko-KR') };
+    addUser(userData);
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('signup-success').classList.add('show');
+  });
+
+  // ── LOGOUT ──
+  document.getElementById('logout-btn').addEventListener('click', doLogout);
+  document.getElementById('mmenu-logout').addEventListener('click', function(e) { e.preventDefault(); doLogout(); });
+
+  // ── ENTER KEY for login/signup forms ──
+  ['login-email','login-pw'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('login-btn').click(); });
+  });
+  ['signup-last','signup-first','signup-email','signup-pw','signup-pw2','signup-phone','signup-addr','signup-addr2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('signup-btn').click(); });
+  });
+
+  // ── INIT ──
+  updateNavAuth();
+  go('home');
+
 });
-
-// ── SCROLL REVEAL ──
-let obs;
-function rvCheck() {
-  if (obs) obs.disconnect();
-  obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); }), {threshold: 0.06});
-  document.querySelectorAll('.page.active .rv:not(.in)').forEach(el => obs.observe(el));
-}
-
-// ── INIT ──
-go('home');
-setTimeout(()=>{ const h1=document.querySelector('#page-home .hero-h1'); if(h1){h1.classList.remove('play');void h1.offsetWidth;h1.classList.add('play');} },80);
 </script>
 </body>
 </html>
