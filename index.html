@@ -757,330 +757,155 @@ footer {
 .reveal.visible { opacity:1; transform:translateY(0); }
 .r1{transition-delay:.05s} .r2{transition-delay:.12s} .r3{transition-delay:.19s} .r4{transition-delay:.26s}
 
-
-/* ─── SPA ─── */
-.page { display:none; }
-.page.active { display:block; }
-.nav-links a { position:relative; }
-.nav-links a.nav-active { color:var(--white) !important; }
-.nav-links a.nav-active::after { content:''; position:absolute; bottom:-4px; left:0; width:100%; height:1px; background:var(--white); }
-.page-hero { padding-top:64px; min-height:36vh; display:flex; align-items:flex-end; padding-bottom:52px; padding-left:48px; padding-right:48px; border-bottom:1px solid var(--line); position:relative; overflow:hidden; background:var(--off-black); }
-.page-hero-bg { position:absolute; inset:0; background:linear-gradient(135deg, var(--off-black) 0%, var(--dark) 100%); }
-.page-hero-content { position:relative; z-index:1; }
-.page-hero-label { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--steel); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
-.page-hero-label::before { content:''; display:block; width:24px; height:1px; background:var(--steel); }
-.page-hero-title { font-family:'Bebas Neue', sans-serif; font-size:clamp(56px,7vw,100px); letter-spacing:0.03em; line-height:.92; color:var(--white); }
-.page-hero-title span { color:var(--steel); }
-.coll-filters { padding:24px 48px; border-bottom:1px solid var(--line); display:flex; background:var(--off-black); }
-.coll-filter-btn { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; background:none; border:1px solid var(--line); color:var(--silver); padding:9px 20px; cursor:none; margin-right:-1px; transition:background .3s, color .3s, border-color .3s; }
-.coll-filter-btn:hover, .coll-filter-btn.active { background:var(--white); color:var(--black); border-color:var(--white); z-index:1; }
-.coll-grid { display:grid; grid-template-columns:repeat(3,1fr); }
-.coll-item { position:relative; overflow:hidden; cursor:none; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
-.coll-item:nth-child(3n) { border-right:none; }
-.coll-item-img { aspect-ratio:3/4; overflow:hidden; background:var(--off-black); }
-.coll-item-img img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(20%) contrast(1.08); transition:transform .8s ease, filter .6s; }
-.coll-item:hover .coll-item-img img { transform:scale(1.05); filter:grayscale(0%); }
-.coll-item-info { padding:20px 24px 12px; }
-.coll-item-cat { font-family:'DM Mono', monospace; font-size:8px; letter-spacing:0.25em; text-transform:uppercase; color:var(--steel); margin-bottom:6px; }
-.coll-item-name { font-family:'Bebas Neue', sans-serif; font-size:26px; letter-spacing:0.05em; color:var(--white); margin-bottom:4px; }
-.coll-item-mat { font-size:11px; color:var(--steel); margin-bottom:10px; }
-.coll-item-price { font-family:'DM Mono', monospace; font-size:11px; color:var(--light); }
-.coll-item-actions { padding:12px 24px 24px; display:flex; gap:8px; }
-.coll-btn { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; text-decoration:none; padding:10px 18px; cursor:none; transition:all .3s; }
-.coll-btn-ghost { border:1px solid var(--steel); color:var(--silver); }
-.coll-btn-ghost:hover { border-color:var(--white); color:var(--white); }
-.coll-btn-primary { background:var(--white); color:var(--black); }
-.coll-btn-primary:hover { background:var(--light); }
-.coll-badge-tag { position:absolute; top:16px; left:16px; font-family:'DM Mono', monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; background:var(--white); color:var(--black); padding:4px 9px; }
-.pd-layout { display:grid; grid-template-columns:1fr 1fr; }
-.pd-gallery { position:sticky; top:64px; height:calc(100vh - 64px); overflow:hidden; border-right:1px solid var(--line); background:var(--off-black); display:flex; flex-direction:column; }
-.pd-main-img { flex:1; width:100%; object-fit:cover; display:block; filter:grayscale(15%) contrast(1.08); transition:transform .8s ease, opacity .3s; border-bottom:1px solid var(--line); }
-.pd-gallery:hover .pd-main-img { transform:scale(1.03); }
-.pd-thumbs { height:120px; display:grid; grid-template-columns:repeat(4,1fr); flex-shrink:0; }
-.pd-thumb { overflow:hidden; cursor:none; border-right:1px solid var(--line); }
-.pd-thumb:last-child { border-right:none; }
-.pd-thumb img { width:100%; height:100%; object-fit:cover; filter:grayscale(30%); opacity:.5; transition:opacity .3s, filter .3s; }
-.pd-thumb:hover img, .pd-thumb.active img { filter:grayscale(0%); opacity:1; }
-.pd-info { padding:52px 52px 80px; overflow-y:auto; }
-.pd-breadcrumb { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--steel); margin-bottom:32px; display:flex; align-items:center; gap:8px; }
-.pd-breadcrumb a { color:var(--steel); text-decoration:none; transition:color .2s; }
-.pd-breadcrumb a:hover { color:var(--white); }
-.pd-eyebrow { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--steel); margin-bottom:16px; display:flex; align-items:center; gap:12px; }
-.pd-eyebrow::before { content:''; display:block; width:24px; height:1px; background:var(--steel); }
-.pd-name { font-family:'Bebas Neue', sans-serif; font-size:clamp(44px,5vw,68px); letter-spacing:0.03em; line-height:.92; color:var(--white); margin-bottom:8px; }
-.pd-sub { font-family:'DM Mono', monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--silver); margin-bottom:28px; }
-.pd-price { font-family:'Bebas Neue', sans-serif; font-size:44px; letter-spacing:0.05em; color:var(--white); margin-bottom:6px; }
-.pd-price-note { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--steel); margin-bottom:28px; }
-.pd-divider { width:100%; height:1px; background:var(--line); margin:22px 0; }
-.pd-specs { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-.pd-spec-key { font-family:'DM Mono', monospace; font-size:8px; letter-spacing:0.25em; text-transform:uppercase; color:var(--steel); margin-bottom:4px; }
-.pd-spec-val { font-size:12px; color:var(--light); }
-.pd-opt-label { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:var(--silver); margin-bottom:10px; }
-.pd-options { display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
-.pd-opt-btn { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; background:none; border:1px solid var(--steel); color:var(--silver); padding:9px 16px; cursor:none; transition:all .3s; }
-.pd-opt-btn:hover, .pd-opt-btn.active { border-color:var(--white); color:var(--white); background:rgba(255,255,255,0.05); }
-.pd-actions { display:flex; gap:10px; margin-bottom:24px; }
-.pd-actions .btn-primary { flex:1; justify-content:center; }
-.pd-shipping { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.12em; color:var(--steel); line-height:2.2; }
-.pd-shipping span { color:var(--silver); }
-.pd-desc { font-size:13px; line-height:1.95; color:var(--silver); }
-.about-manifesto { padding:96px 48px; display:grid; grid-template-columns:1fr 2fr; gap:80px; border-bottom:1px solid var(--line); align-items:start; }
-.about-mani-label { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--steel); padding-top:8px; }
-.about-mani-title { font-family:'Bebas Neue', sans-serif; font-size:clamp(40px,5vw,68px); letter-spacing:0.04em; line-height:.95; color:var(--white); margin-bottom:32px; }
-.about-mani-title span { color:var(--steel); }
-.about-mani-body p { font-size:13px; line-height:1.95; color:var(--silver); margin-bottom:18px; max-width:600px; }
-.about-mani-body p strong { color:var(--light); font-weight:400; }
-.about-section-head { padding:48px 48px 36px; border-bottom:1px solid var(--line); }
-.about-section-head h2 { font-family:'Bebas Neue', sans-serif; font-size:48px; letter-spacing:0.05em; color:var(--white); }
-.team-grid { display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid var(--line); }
-.team-card { border-right:1px solid var(--line); overflow:hidden; cursor:none; }
-.team-card:last-child { border-right:none; }
-.team-img { aspect-ratio:3/4; overflow:hidden; background:var(--off-black); }
-.team-img img { width:100%; height:100%; object-fit:cover; filter:grayscale(40%) contrast(1.1); transition:transform .8s ease, filter .6s; }
-.team-card:hover .team-img img { transform:scale(1.04); filter:grayscale(0%); }
-.team-info { padding:24px 28px 32px; }
-.team-name { font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:0.04em; color:var(--white); margin-bottom:4px; }
-.team-role { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--steel); margin-bottom:12px; }
-.team-bio { font-size:12px; color:var(--silver); line-height:1.8; }
-.timeline-wrap { padding:72px 48px; border-bottom:1px solid var(--line); }
-.timeline-wrap h2 { font-family:'Bebas Neue', sans-serif; font-size:48px; letter-spacing:0.05em; color:var(--white); margin-bottom:48px; padding-bottom:20px; border-bottom:1px solid var(--line); }
-.tl-item { display:grid; grid-template-columns:100px 1fr; gap:40px; padding:24px 0; border-bottom:1px solid var(--line); align-items:start; }
-.tl-year { font-family:'Bebas Neue', sans-serif; font-size:32px; color:var(--steel); line-height:1; }
-.tl-title { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--white); margin-bottom:8px; }
-.tl-desc { font-size:12px; color:var(--silver); line-height:1.8; }
-.values-grid { display:grid; grid-template-columns:repeat(4,1fr); }
-.val-item { padding:52px 36px; border-right:1px solid var(--line); }
-.val-item:last-child { border-right:none; }
-.val-num { font-family:'Bebas Neue', sans-serif; font-size:52px; color:var(--mid); display:block; margin-bottom:16px; }
-.val-title { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--white); margin-bottom:10px; }
-.val-desc { font-size:11px; color:var(--steel); line-height:1.8; }
-.contact-layout { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--line); }
-.contact-info-side { padding:64px 52px; border-right:1px solid var(--line); background:var(--off-black); }
-.contact-info-side h2 { font-family:'Bebas Neue', sans-serif; font-size:clamp(36px,4vw,56px); letter-spacing:0.04em; line-height:.92; color:var(--white); margin-bottom:36px; }
-.c-block { margin-bottom:28px; }
-.c-label { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--steel); margin-bottom:10px; display:flex; align-items:center; gap:10px; }
-.c-label::before { content:''; display:block; width:16px; height:1px; background:var(--steel); }
-.c-text { font-size:13px; color:var(--silver); line-height:1.9; }
-.c-text a { color:var(--light); text-decoration:none; transition:color .2s; }
-.c-text a:hover { color:var(--white); }
-.hours-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.h-day { font-family:'DM Mono', monospace; font-size:10px; color:var(--steel); }
-.h-time { font-family:'DM Mono', monospace; font-size:10px; color:var(--light); }
-.contact-map-side { background:var(--dark); display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px; min-height:400px; }
-.map-pin { font-family:'Bebas Neue', sans-serif; font-size:80px; color:var(--mid); line-height:1; }
-.map-addr { font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--steel); text-align:center; line-height:1.8; }
-.contact-form-wrap { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--line); }
-.form-side { padding:64px 52px; border-right:1px solid var(--line); }
-.form-side h3 { font-family:'Bebas Neue', sans-serif; font-size:36px; letter-spacing:0.05em; color:var(--white); margin-bottom:28px; }
-.form-row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-.f-group { margin-bottom:10px; }
-.f-label { font-family:'DM Mono', monospace; font-size:8px; letter-spacing:0.25em; text-transform:uppercase; color:var(--steel); display:block; margin-bottom:7px; }
-.f-input { width:100%; background:var(--off-black); border:1px solid var(--line); color:var(--white); font-family:'Outfit', sans-serif; font-size:13px; font-weight:300; padding:12px 14px; outline:none; transition:border-color .3s; }
-.f-input:focus { border-color:var(--silver); }
-.f-input::placeholder { color:var(--steel); }
-textarea.f-input { resize:none; height:110px; }
-.f-submit { width:100%; margin-top:6px; font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; background:var(--white); color:var(--black); border:none; padding:15px; cursor:none; transition:background .3s; }
-.f-submit:hover { background:var(--light); }
-.c-bottom { display:grid; grid-template-columns:repeat(3,1fr); }
-.c-bottom-item { padding:44px 36px; border-right:1px solid var(--line); text-align:center; }
-.c-bottom-item:last-child { border-right:none; }
-.c-bottom-icon { font-family:'Bebas Neue', sans-serif; font-size:40px; color:var(--mid); display:block; margin-bottom:12px; }
-.c-bottom-title { font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:var(--white); margin-bottom:6px; }
-.c-bottom-text { font-size:11px; color:var(--steel); line-height:1.7; }
-
-/* ─── IMAGE PLACEHOLDERS ─── */
-/* 나중에 이미지를 넣을 때는 아래 .img-placeholder를 <img src="...">로 교체하세요 */
-.img-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 120px;
-  background: var(--dark);
-  border: 1px dashed rgba(255,255,255,0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+/* SPA */
+.page{display:none}.page.active{display:block}
+.nav-links a{position:relative}.nav-links a.nav-active{color:var(--white)!important}
+.nav-links a.nav-active::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:1px;background:var(--white)}
+.page-hero{padding-top:64px;min-height:36vh;display:flex;align-items:flex-end;padding-bottom:52px;padding-left:48px;padding-right:48px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;background:var(--off-black)}
+.page-hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--off-black) 0%,var(--dark) 100%)}
+.page-hero-content{position:relative;z-index:1}
+.page-hero-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--steel);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.page-hero-label::before{content:'';display:block;width:24px;height:1px;background:var(--steel)}
+.page-hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,7vw,100px);letter-spacing:.03em;line-height:.92;color:var(--white)}
+.page-hero-title span{color:var(--steel)}
+.coll-filters{padding:24px 48px;border-bottom:1px solid var(--line);display:flex;background:var(--off-black)}
+.coll-filter-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;background:none;border:1px solid var(--line);color:var(--silver);padding:9px 20px;cursor:none;margin-right:-1px;transition:all .3s}
+.coll-filter-btn:hover,.coll-filter-btn.active{background:var(--white);color:var(--black);border-color:var(--white);z-index:1}
+.coll-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.coll-item{position:relative;overflow:hidden;cursor:none;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.coll-item:nth-child(3n){border-right:none}
+.coll-item-img{aspect-ratio:3/4;overflow:hidden;background:var(--off-black)}
+.coll-item-img img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(20%) contrast(1.08);transition:transform .8s,filter .6s}
+.coll-item:hover .coll-item-img img{transform:scale(1.05);filter:grayscale(0%)}
+.coll-item-info{padding:20px 24px 12px}
+.coll-item-cat{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
+.coll-item-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.05em;color:var(--white);margin-bottom:4px}
+.coll-item-mat{font-size:11px;color:var(--steel);margin-bottom:10px}
+.coll-item-price{font-family:'DM Mono',monospace;font-size:11px;color:var(--light)}
+.coll-item-actions{padding:12px 24px 24px;display:flex;gap:8px}
+.coll-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;padding:10px 18px;cursor:none;transition:all .3s}
+.coll-btn-ghost{border:1px solid var(--steel);color:var(--silver)}.coll-btn-ghost:hover{border-color:var(--white);color:var(--white)}
+.coll-btn-primary{background:var(--white);color:var(--black)}.coll-btn-primary:hover{background:var(--light)}
+.coll-badge-tag{position:absolute;top:16px;left:16px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;background:var(--white);color:var(--black);padding:4px 9px}
+.pd-layout{display:grid;grid-template-columns:1fr 1fr}
+.pd-gallery{position:sticky;top:64px;height:calc(100vh - 64px);overflow:hidden;border-right:1px solid var(--line);background:var(--off-black);display:flex;flex-direction:column}
+.pd-main-img{flex:1;width:100%;object-fit:cover;display:block;filter:grayscale(15%) contrast(1.08);transition:transform .8s,opacity .3s;border-bottom:1px solid var(--line)}
+.pd-gallery:hover .pd-main-img{transform:scale(1.03)}
+.pd-thumbs{height:120px;display:grid;grid-template-columns:repeat(4,1fr);flex-shrink:0}
+.pd-thumb{overflow:hidden;cursor:none;border-right:1px solid var(--line)}.pd-thumb:last-child{border-right:none}
+.pd-thumb img{width:100%;height:100%;object-fit:cover;filter:grayscale(30%);opacity:.5;transition:opacity .3s,filter .3s}
+.pd-thumb:hover img,.pd-thumb.active img{filter:grayscale(0%);opacity:1}
+.pd-info{padding:52px 52px 80px;overflow-y:auto}
+.pd-breadcrumb{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--steel);margin-bottom:32px;display:flex;align-items:center;gap:8px}
+.pd-breadcrumb a{color:var(--steel);text-decoration:none;transition:color .2s}.pd-breadcrumb a:hover{color:var(--white)}
+.pd-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--steel);margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.pd-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--steel)}
+.pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5vw,68px);letter-spacing:.03em;line-height:.92;color:var(--white);margin-bottom:8px}
+.pd-sub{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--silver);margin-bottom:28px}
+.pd-price{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.05em;color:var(--white);margin-bottom:6px}
+.pd-price-note{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--steel);margin-bottom:28px}
+.pd-divider{width:100%;height:1px;background:var(--line);margin:22px 0}
+.pd-specs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pd-spec-key{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--steel);margin-bottom:4px}
+.pd-spec-val{font-size:12px;color:var(--light)}
+.pd-opt-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--silver);margin-bottom:10px}
+.pd-options{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap}
+.pd-opt-btn{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;text-transform:uppercase;background:none;border:1px solid var(--steel);color:var(--silver);padding:9px 16px;cursor:none;transition:all .3s}
+.pd-opt-btn:hover,.pd-opt-btn.active{border-color:var(--white);color:var(--white);background:rgba(255,255,255,.05)}
+.pd-actions{display:flex;gap:10px;margin-bottom:24px}.pd-actions .btn-primary{flex:1;justify-content:center}
+.pd-shipping{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--steel);line-height:2.2}
+.pd-shipping span{color:var(--silver)}.pd-desc{font-size:13px;line-height:1.95;color:var(--silver)}
+.about-manifesto{padding:96px 48px;display:grid;grid-template-columns:1fr 2fr;gap:80px;border-bottom:1px solid var(--line);align-items:start}
+.about-mani-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--steel);padding-top:8px}
+.about-mani-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,68px);letter-spacing:.04em;line-height:.95;color:var(--white);margin-bottom:32px}
+.about-mani-title span{color:var(--steel)}.about-mani-body p{font-size:13px;line-height:1.95;color:var(--silver);margin-bottom:18px;max-width:600px}
+.about-mani-body p strong{color:var(--light);font-weight:400}
+.about-section-head{padding:48px 48px 36px;border-bottom:1px solid var(--line)}
+.about-section-head h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.05em;color:var(--white)}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.team-card{border-right:1px solid var(--line);overflow:hidden;cursor:none}.team-card:last-child{border-right:none}
+.team-img{aspect-ratio:3/4;overflow:hidden;background:var(--off-black)}
+.team-img img{width:100%;height:100%;object-fit:cover;filter:grayscale(40%) contrast(1.1);transition:transform .8s,filter .6s}
+.team-card:hover .team-img img{transform:scale(1.04);filter:grayscale(0%)}
+.team-info{padding:24px 28px 32px}.team-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.04em;color:var(--white);margin-bottom:4px}
+.team-role{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--steel);margin-bottom:12px}
+.team-bio{font-size:12px;color:var(--silver);line-height:1.8}
+.timeline-wrap{padding:72px 48px;border-bottom:1px solid var(--line)}
+.timeline-wrap h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.05em;color:var(--white);margin-bottom:48px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.tl-item{display:grid;grid-template-columns:100px 1fr;gap:40px;padding:24px 0;border-bottom:1px solid var(--line);align-items:start}
+.tl-year{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--steel);line-height:1}
+.tl-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--white);margin-bottom:8px}
+.tl-desc{font-size:12px;color:var(--silver);line-height:1.8}
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.val-item{padding:52px 36px;border-right:1px solid var(--line)}.val-item:last-child{border-right:none}
+.val-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--mid);display:block;margin-bottom:16px}
+.val-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--white);margin-bottom:10px}
+.val-desc{font-size:11px;color:var(--steel);line-height:1.8}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.contact-info-side{padding:64px 52px;border-right:1px solid var(--line);background:var(--off-black)}
+.contact-info-side h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4vw,56px);letter-spacing:.04em;line-height:.92;color:var(--white);margin-bottom:36px}
+.c-block{margin-bottom:28px}.c-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--steel);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.c-label::before{content:'';display:block;width:16px;height:1px;background:var(--steel)}
+.c-text{font-size:13px;color:var(--silver);line-height:1.9}.c-text a{color:var(--light);text-decoration:none}
+.hours-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.h-day{font-family:'DM Mono',monospace;font-size:10px;color:var(--steel)}.h-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--light)}
+.contact-map-side{background:var(--dark);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;min-height:400px}
+.map-pin{font-family:'Bebas Neue',sans-serif;font-size:80px;color:var(--mid);line-height:1}
+.map-addr{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--steel);text-align:center;line-height:1.8}
+.contact-form-wrap{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.form-side{padding:64px 52px;border-right:1px solid var(--line)}
+.form-side h3{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.05em;color:var(--white);margin-bottom:28px}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.f-group{margin-bottom:10px}
+.f-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(--steel);display:block;margin-bottom:7px}
+.f-input{width:100%;background:var(--off-black);border:1px solid var(--line);color:var(--white);font-family:'Outfit',sans-serif;font-size:13px;font-weight:300;padding:12px 14px;outline:none;transition:border-color .3s}
+.f-input:focus{border-color:var(--silver)}.f-input::placeholder{color:var(--steel)}
+textarea.f-input{resize:none;height:110px}
+.f-submit{width:100%;margin-top:6px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;background:var(--white);color:var(--black);border:none;padding:15px;cursor:none;transition:background .3s}
+.f-submit:hover{background:var(--light)}
+.c-bottom{display:grid;grid-template-columns:repeat(3,1fr)}
+.c-bottom-item{padding:44px 36px;border-right:1px solid var(--line);text-align:center}.c-bottom-item:last-child{border-right:none}
+.c-bottom-icon{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--mid);display:block;margin-bottom:12px}
+.c-bottom-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--white);margin-bottom:6px}
+.c-bottom-text{font-size:11px;color:var(--steel);line-height:1.7}
+@media(max-width:768px){
+  nav{padding:0 20px;height:56px}.nav-links{display:none}.nav-right a:not(.nav-cart){display:none}.logo-sub{display:none}
+  .hero{grid-template-columns:1fr;min-height:100svh;padding:80px 24px 40px}.hero-right{display:none}.hero-title{font-size:clamp(52px,15vw,80px)}.hero-meta{gap:24px}
+  .collections-header,.featured-header,.products-header,.section-header,.reviews-header,.instagram-header{padding:36px 24px 28px}
+  .collections-grid{grid-template-columns:1fr}.collection-card{min-height:260px}
+  .featured{grid-template-columns:1fr}.featured-img{min-height:300px;border-right:none;border-bottom:1px solid var(--line)}.featured-info{padding:36px 24px}.featured-specs{grid-template-columns:1fr 1fr}
+  .products-grid{grid-template-columns:1fr 1fr}
+  .brand-story{grid-template-columns:1fr}.brand-story-img{min-height:260px;border-right:none;border-bottom:1px solid var(--line)}.brand-story-content{padding:36px 24px}
+  .reviews-grid{grid-template-columns:1fr}.review-card{border-right:none!important}
+  .instagram-grid{grid-template-columns:repeat(3,1fr)}.insta-cell:nth-child(n+4){display:none}
+  .materials-grid{grid-template-columns:1fr 1fr}.mat-item:nth-child(2n){border-right:none}
+  .lookbook{grid-template-columns:1fr 1fr}.look-item-1{grid-row:auto;grid-column:1/3;min-height:280px;border-right:none}
+  .statement{padding:56px 24px}.statement-quote{font-size:clamp(28px,9vw,48px)}
+  .cta-strip{grid-template-columns:1fr;padding:0 24px}.cta-half:first-child{border-right:none;border-bottom:1px solid var(--line);padding-right:0;padding-bottom:40px}.cta-half:last-child{padding-left:0;padding-top:40px}
+  .footer-top{grid-template-columns:1fr;padding:40px 24px;gap:36px}.footer-bottom{flex-direction:column;gap:12px;padding:20px 24px;text-align:center}
+  .coll-filters{flex-wrap:wrap;padding:16px 20px;gap:6px}.coll-filter-btn{margin-right:0}
+  .coll-grid{grid-template-columns:1fr 1fr}.coll-item:nth-child(2n){border-right:none!important}.coll-item-actions{flex-direction:column}
+  .pd-layout{grid-template-columns:1fr}.pd-gallery{position:relative;top:0;height:auto;border-right:none;border-bottom:1px solid var(--line)}.pd-main-img{height:320px;flex:none}.pd-thumbs{height:80px}.pd-info{padding:32px 24px 60px}.pd-specs{grid-template-columns:1fr 1fr}.pd-actions{flex-direction:column}
+  .about-manifesto{grid-template-columns:1fr;padding:48px 24px;gap:24px}.team-grid{grid-template-columns:1fr}.team-card{border-right:none!important;border-bottom:1px solid var(--line)}.timeline-wrap{padding:48px 24px}.tl-item{grid-template-columns:70px 1fr;gap:20px}.values-grid{grid-template-columns:1fr 1fr}.val-item:nth-child(2n){border-right:none}.val-item{padding:36px 24px}
+  .contact-layout{grid-template-columns:1fr}.contact-info-side{padding:40px 24px;border-right:none;border-bottom:1px solid var(--line)}.contact-map-side{min-height:240px}.contact-form-wrap{grid-template-columns:1fr}.form-side{padding:40px 24px;border-right:none;border-bottom:1px solid var(--line)}.form-row2{grid-template-columns:1fr}.c-bottom{grid-template-columns:1fr}.c-bottom-item{border-right:none!important;border-bottom:1px solid var(--line)}
+  .page-hero{padding:80px 24px 40px;min-height:28vh}.page-hero-title{font-size:clamp(48px,14vw,72px)}
 }
-/* hero 플레이스홀더는 position 유지 */
-.hero-right .img-placeholder {
-  position: absolute;
-  inset: 0;
-  min-height: unset;
-  opacity: 0.3;
-  z-index: 0;
+@media(max-width:480px){
+  .products-grid,.coll-grid{grid-template-columns:1fr}
+  .coll-item,.val-item,.mat-item{border-right:none!important}
+  .values-grid,.materials-grid{grid-template-columns:1fr}
 }
-.img-placeholder span {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--steel);
-}
-
-/* ═══════════════════════════════════
-   MOBILE RESPONSIVE — 768px 이하
-═══════════════════════════════════ */
-@media (max-width: 768px) {
-
-  /* NAV */
-  nav { padding:0 20px; height:56px; }
-  .nav-links { display:none; }
-  .nav-right a:not(.nav-cart) { display:none; }
-  .logo-sub { display:none; }
-
-  /* HERO */
-  .hero { grid-template-columns:1fr; min-height:100svh; padding:80px 24px 40px; }
-  .hero-right { display:none; }
-  .hero-title { font-size:clamp(56px,16vw,80px); }
-  .hero-meta { gap:24px; }
-
-  /* TICKER */
-  .ticker { padding:10px 0; }
-
-  /* SECTION PADDING */
-  .section-header,
-  .collections-header,
-  .featured-header,
-  .products-header,
-  .brand-story-header { padding:36px 24px 28px; }
-
-  /* COLLECTIONS GRID */
-  .collections-grid { grid-template-columns:1fr; }
-  .collection-card { min-height:260px; }
-
-  /* FEATURED */
-  .featured { grid-template-columns:1fr; }
-  .featured-img { min-height:300px; }
-  .featured-info { padding:36px 24px; }
-  .featured-specs { grid-template-columns:1fr 1fr; }
-
-  /* PRODUCTS GRID */
-  .products-grid { grid-template-columns:1fr 1fr; }
-
-  /* BRAND STORY */
-  .brand-story { grid-template-columns:1fr; }
-  .brand-story-img { min-height:260px; border-right:none; border-bottom:1px solid var(--line); }
-  .brand-story-content { padding:36px 24px; }
-  .brand-story-stats { gap:24px; }
-
-  /* REVIEWS */
-  .reviews-header { padding:28px 24px; flex-direction:column; gap:12px; align-items:flex-start; }
-  .reviews-grid { grid-template-columns:1fr; }
-  .review-card { border-right:none !important; }
-
-  /* INSTAGRAM */
-  .instagram-header { padding:28px 24px; flex-direction:column; gap:12px; align-items:flex-start; }
-  .instagram-grid { grid-template-columns:repeat(3,1fr); }
-  .insta-cell:nth-child(n+4) { display:none; }
-
-  /* MATERIALS */
-  .materials-grid { grid-template-columns:1fr 1fr; }
-  .mat-item { padding:32px 20px; border-right:1px solid var(--line); }
-  .mat-item:nth-child(2n) { border-right:none; }
-
-  /* LOOKBOOK */
-  .lookbook { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
-  .look-item-1 { grid-row:auto; grid-column:1/3; min-height:280px; border-right:none; }
-  .look-item-2, .look-item-3, .look-item-4, .look-item-5 { border-right:none; }
-  .look-item-2, .look-item-4 { border-right:1px solid var(--line); }
-
-  /* STATEMENT */
-  .statement { padding:56px 24px; }
-  .statement-quote { font-size:clamp(28px,9vw,48px); }
-
-  /* CTA STRIP */
-  .cta-strip { grid-template-columns:1fr; padding:0 24px; }
-  .cta-half:first-child { border-right:none; border-bottom:1px solid var(--line); padding-right:0; padding-bottom:40px; }
-  .cta-half:last-child { padding-left:0; padding-top:40px; }
-
-  /* FOOTER */
-  .footer-top { grid-template-columns:1fr; padding:40px 24px; gap:36px; }
-  .footer-bottom { flex-direction:column; gap:12px; padding:20px 24px; text-align:center; }
-
-  /* COLLECTION PAGE */
-  .coll-filters { flex-wrap:wrap; padding:16px 20px; gap:6px; }
-  .coll-filter-btn { margin-right:0; }
-  .coll-grid { grid-template-columns:1fr 1fr; }
-  .coll-item:nth-child(2n) { border-right:none; }
-  .coll-item:nth-child(3n) { border-right:1px solid var(--line); }
-  .coll-item:nth-child(2n) { border-right:none !important; }
-  .coll-item-actions { flex-direction:column; }
-
-  /* PRODUCT DETAIL */
-  .pd-layout { grid-template-columns:1fr; }
-  .pd-gallery { position:relative; top:0; height:auto; border-right:none; border-bottom:1px solid var(--line); }
-  .pd-main-img { height:320px; flex:none; }
-  .pd-thumbs { height:80px; }
-  .pd-info { padding:32px 24px 60px; }
-  .pd-specs { grid-template-columns:1fr 1fr; }
-  .pd-actions { flex-direction:column; }
-  .pd-actions .btn-primary { flex:none; }
-
-  /* ABOUT PAGE */
-  .about-manifesto { grid-template-columns:1fr; padding:48px 24px; gap:24px; }
-  .team-grid { grid-template-columns:1fr; }
-  .team-card { border-right:none !important; border-bottom:1px solid var(--line); }
-  .timeline-wrap { padding:48px 24px; }
-  .tl-item { grid-template-columns:70px 1fr; gap:20px; }
-  .values-grid { grid-template-columns:1fr 1fr; }
-  .val-item:nth-child(2n) { border-right:none; }
-  .val-item { padding:36px 24px; }
-
-  /* CONTACT PAGE */
-  .contact-layout { grid-template-columns:1fr; }
-  .contact-info-side { padding:40px 24px; border-right:none; border-bottom:1px solid var(--line); }
-  .contact-map-side { min-height:240px; }
-  .contact-form-wrap { grid-template-columns:1fr; }
-  .form-side { padding:40px 24px; border-right:none; border-bottom:1px solid var(--line); }
-  .form-row2 { grid-template-columns:1fr; }
-  .c-bottom { grid-template-columns:1fr; }
-  .c-bottom-item { border-right:none !important; border-bottom:1px solid var(--line); }
-
-  /* PAGE HERO */
-  .page-hero { padding:80px 24px 40px; min-height:28vh; }
-  .page-hero-title { font-size:clamp(48px,14vw,72px); }
-
-  /* GENERAL */
-  .btn-primary, .btn-ghost { padding:12px 20px; font-size:9px; }
-}
-
-@media (max-width: 480px) {
-  .products-grid { grid-template-columns:1fr; }
-  .coll-grid { grid-template-columns:1fr; }
-  .coll-item { border-right:none !important; }
-  .values-grid { grid-template-columns:1fr; }
-  .val-item { border-right:none !important; }
-  .materials-grid { grid-template-columns:1fr; }
-  .mat-item { border-right:none !important; }
-}
-
 </style>
 </head>
 <body>
 
 
-<!-- 
-  ╔══════════════════════════════════════════════════════════╗
-  ║  OBV STUDIO — 이미지 교체 가이드                        ║
-  ╠══════════════════════════════════════════════════════════╣
-  ║  이미지를 넣을 위치마다 아래와 같이 되어 있습니다:       ║
-  ║                                                          ║
-  ║  <div class="img-placeholder"><span>이미지명</span></div>║
-  ║                                                          ║
-  ║  ↓ 이걸 아래처럼 교체하세요:                            ║
-  ║                                                          ║
-  ║  <img src="파일경로.jpg" alt="설명">                    ║
-  ║                                                          ║
-  ║  예시:                                                   ║
-  ║  <img src="images/hero.jpg" alt="Hero">                  ║
-  ╚══════════════════════════════════════════════════════════╝
--->
 <div id="cur"></div>
 <div id="cur-ring"></div>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo" data-page="home">
+  <a href="#" class="logo">
+    <!-- OBV MARK — two overlapping rectangles (like a steel bracket) -->
     <div class="logo-mark">
       <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="2" y="2" width="16" height="16" stroke="#F0F0EE" stroke-width="1.2"/>
@@ -1093,6 +918,7 @@ textarea.f-input { resize:none; height:110px; }
       <span class="logo-sub">Objects · Berlin · Vienna</span>
     </div>
   </a>
+
   <ul class="nav-links">
     <li><a href="#" data-page="home">홈</a></li>
     <li><a href="#" data-page="collection">컬렉션</a></li>
@@ -1100,15 +926,15 @@ textarea.f-input { resize:none; height:110px; }
     <li><a href="#" data-page="about">스튜디오</a></li>
     <li><a href="#" data-page="contact">쇼룸</a></li>
   </ul>
+
   <div class="nav-right">
     <a href="#">검색</a>
     <a href="#">위시리스트</a>
     <a href="#" class="nav-cart">카트 (0)</a>
   </div>
 </nav>
-
-<!-- ═══ PAGE: HOME ═══ -->
 <div id="page-home" class="page">
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
@@ -1140,7 +966,7 @@ textarea.f-input { resize:none; height:110px; }
     </div>
   </div>
   <div class="hero-right">
-    <div class="img-placeholder"><span>OBV HERO</span></div>
+    <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=1400&q=90" alt="OBV hero" class="hero-img">
     <span class="hero-tag">SS 2025 — Steel Series</span>
     <span class="hero-img-caption">Brushed Stainless · 01</span>
   </div>
@@ -1184,7 +1010,7 @@ textarea.f-input { resize:none; height:110px; }
   </div>
   <div class="collections-grid">
     <div class="col-card reveal r1">
-      <div class="img-placeholder"><span>LIVING</span></div>
+      <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80" alt="Living">
       <div class="col-card-overlay"></div>
       <div class="col-card-body">
         <span class="col-card-num">Collection 01</span>
@@ -1194,7 +1020,7 @@ textarea.f-input { resize:none; height:110px; }
       <div class="col-card-arrow">↗</div>
     </div>
     <div class="col-card reveal r2">
-      <div class="img-placeholder"><span>TABLE</span></div>
+      <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80" alt="Table">
       <div class="col-card-overlay"></div>
       <div class="col-card-body">
         <span class="col-card-num">Collection 02</span>
@@ -1204,7 +1030,7 @@ textarea.f-input { resize:none; height:110px; }
       <div class="col-card-arrow">↗</div>
     </div>
     <div class="col-card reveal r3">
-      <div class="img-placeholder"><span>STORAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" alt="Storage">
       <div class="col-card-overlay"></div>
       <div class="col-card-body">
         <span class="col-card-num">Collection 03</span>
@@ -1219,7 +1045,7 @@ textarea.f-input { resize:none; height:110px; }
 <!-- FEATURED -->
 <section class="featured">
   <div class="featured-img-side reveal">
-    <div class="img-placeholder"><span>OBV SOFA TABLE</span></div>
+    <img src="/mnt/user-data/uploads/sofa-table.png" alt="OBV Sofa Table" onerror="this.src='https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=1000&q=90'">
     <span class="featured-img-label">— Product of the Month</span>
   </div>
   <div class="featured-content reveal r2">
@@ -1263,7 +1089,7 @@ textarea.f-input { resize:none; height:110px; }
   <div class="products-grid">
     <div class="prod-card reveal r1">
       <div class="prod-img">
-        <div class="img-placeholder"><span>IMAGE</span></div>
+        <img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=600&q=80" alt="">
         <span class="prod-badge">New</span>
         <div class="prod-quick">빠른 보기</div>
       </div>
@@ -1276,7 +1102,7 @@ textarea.f-input { resize:none; height:110px; }
     </div>
     <div class="prod-card reveal r2">
       <div class="prod-img">
-        <div class="img-placeholder"><span>IMAGE</span></div>
+        <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80" alt="">
         <div class="prod-quick">빠른 보기</div>
       </div>
       <div class="prod-info">
@@ -1288,7 +1114,7 @@ textarea.f-input { resize:none; height:110px; }
     </div>
     <div class="prod-card reveal r3">
       <div class="prod-img">
-        <div class="img-placeholder"><span>IMAGE</span></div>
+        <img src="https://images.unsplash.com/photo-1499916078039-922301b0eb9b?w=600&q=80" alt="">
         <span class="prod-badge">Best</span>
         <div class="prod-quick">빠른 보기</div>
       </div>
@@ -1301,7 +1127,7 @@ textarea.f-input { resize:none; height:110px; }
     </div>
     <div class="prod-card reveal r4">
       <div class="prod-img">
-        <div class="img-placeholder"><span>IMAGE</span></div>
+        <img src="https://images.unsplash.com/photo-1503602642458-232111445657?w=600&q=80" alt="">
         <div class="prod-quick">빠른 보기</div>
       </div>
       <div class="prod-info">
@@ -1349,27 +1175,27 @@ textarea.f-input { resize:none; height:110px; }
 <!-- LOOKBOOK -->
 <section class="lookbook reveal">
   <div class="look-item look-item-1">
-    <div class="img-placeholder"><span>IMAGE</span></div>
+    <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=1000&q=80" alt="">
     <div class="look-overlay"></div>
     <span class="look-label">Arch Side Table S-02</span>
   </div>
   <div class="look-item look-item-2">
-    <div class="img-placeholder"><span>IMAGE</span></div>
+    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80" alt="">
     <div class="look-overlay"></div>
     <span class="look-label">Grid Shelf W</span>
   </div>
   <div class="look-item look-item-3">
-    <div class="img-placeholder"><span>IMAGE</span></div>
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="">
     <div class="look-overlay"></div>
     <span class="look-label">Bloc Sofa 3S</span>
   </div>
   <div class="look-item look-item-4">
-    <div class="img-placeholder"><span>IMAGE</span></div>
+    <img src="https://images.unsplash.com/photo-1505693314120-0d443867891c?w=600&q=80" alt="">
     <div class="look-overlay"></div>
     <span class="look-label">Frame Chair</span>
   </div>
   <div class="look-item look-item-5">
-    <div class="img-placeholder"><span>IMAGE</span></div>
+    <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=600&q=80" alt="">
     <div class="look-overlay"></div>
     <span class="look-label">Arc Floor Lamp</span>
   </div>
@@ -1378,7 +1204,7 @@ textarea.f-input { resize:none; height:110px; }
 <!-- BRAND STORY -->
 <section class="brand-story reveal">
   <div class="brand-story-img">
-    <div class="img-placeholder"><span>OBV STUDIO</span></div>
+    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=85" alt="OBV Studio">
     <span class="brand-story-img-tag">— Seoul Atelier, 2019</span>
   </div>
   <div class="brand-story-content">
@@ -1499,23 +1325,23 @@ textarea.f-input { resize:none; height:110px; }
   </div>
   <div class="instagram-grid">
     <div class="insta-cell">
-      <div class="img-placeholder"><span>IMAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&q=80" alt="">
       <div class="insta-overlay"><span class="insta-icon">View</span></div>
     </div>
     <div class="insta-cell">
-      <div class="img-placeholder"><span>IMAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80" alt="">
       <div class="insta-overlay"><span class="insta-icon">View</span></div>
     </div>
     <div class="insta-cell">
-      <div class="img-placeholder"><span>IMAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&q=80" alt="">
       <div class="insta-overlay"><span class="insta-icon">View</span></div>
     </div>
     <div class="insta-cell">
-      <div class="img-placeholder"><span>IMAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&q=80" alt="">
       <div class="insta-overlay"><span class="insta-icon">View</span></div>
     </div>
     <div class="insta-cell">
-      <div class="img-placeholder"><span>IMAGE</span></div>
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80" alt="">
       <div class="insta-overlay"><span class="insta-icon">View</span></div>
     </div>
   </div>
@@ -1538,7 +1364,6 @@ textarea.f-input { resize:none; height:110px; }
 </div>
 
 <!-- FOOTER -->
-
 <footer>
   <div class="footer-top">
     <div class="footer-logo-wrap">
@@ -1604,134 +1429,35 @@ textarea.f-input { resize:none; height:110px; }
   </div>
 </footer>
 
+
 </div>
 
-<!-- ═══ PAGE: COLLECTION ═══ -->
 <div id="page-collection" class="page">
-  <div class="page-hero">
-    <div class="page-hero-bg"></div>
-    <div class="page-hero-content">
-      <p class="page-hero-label">OBV Studio / Shop</p>
-      <h1 class="page-hero-title">ALL<br><span>OBJECTS</span></h1>
-    </div>
-  </div>
-  <div class="coll-filters">
-    <button class="coll-filter-btn active" data-filter="all">All</button>
-    <button class="coll-filter-btn" data-filter="tables">Steel Tables</button>
-    <button class="coll-filter-btn" data-filter="living">Living Objects</button>
-    <button class="coll-filter-btn" data-filter="storage">Storage</button>
-    <button class="coll-filter-btn" data-filter="lighting">Lighting</button>
-  </div>
+  <div class="page-hero"><div class="page-hero-bg"></div><div class="page-hero-content"><p class="page-hero-label">OBV Studio / Shop</p><h1 class="page-hero-title">ALL<br><span>OBJECTS</span></h1></div></div>
+  <div class="coll-filters"><button class="coll-filter-btn active" data-filter="all">All</button><button class="coll-filter-btn" data-filter="tables">Steel Tables</button><button class="coll-filter-btn" data-filter="living">Living Objects</button><button class="coll-filter-btn" data-filter="storage">Storage</button><button class="coll-filter-btn" data-filter="lighting">Lighting</button></div>
   <div class="coll-grid">
-    <div class="coll-item reveal r1" data-cat="tables">
-      <span class="coll-badge-tag">Best</span>
-      <div class="coll-item-img"><div class="img-placeholder"><span>ARCH SIDE TABLE</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Steel Tables</p>
-        <p class="coll-item-name">ARCH SIDE TABLE S-02</p>
-        <p class="coll-item-mat">Brushed 316L Stainless · Satin No.4</p>
-        <p class="coll-item-price">₩ 2,400,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
-    <div class="coll-item reveal r2" data-cat="living">
-      <div class="coll-item-img"><div class="img-placeholder"><span>BLOC SOFA</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Living Objects</p>
-        <p class="coll-item-name">BLOC SOFA 3S</p>
-        <p class="coll-item-mat">Steel Frame · Wool Blend</p>
-        <p class="coll-item-price">₩ 5,800,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
-    <div class="coll-item reveal r3" data-cat="living">
-      <div class="coll-item-img"><div class="img-placeholder"><span>FRAME CHAIR</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Living Objects</p>
-        <p class="coll-item-name">FRAME CHAIR</p>
-        <p class="coll-item-mat">Powder Coat · Veg-Tan Leather</p>
-        <p class="coll-item-price">₩ 980,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
-    <div class="coll-item reveal r1" data-cat="storage">
-      <span class="coll-badge-tag">New</span>
-      <div class="coll-item-img"><div class="img-placeholder"><span>GRID SHELF</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Storage</p>
-        <p class="coll-item-name">GRID SHELF W</p>
-        <p class="coll-item-mat">Brushed Aluminium</p>
-        <p class="coll-item-price">₩ 1,240,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
-    <div class="coll-item reveal r2" data-cat="lighting">
-      <div class="coll-item-img"><div class="img-placeholder"><span>ARC FLOOR LAMP</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Lighting</p>
-        <p class="coll-item-name">ARC FLOOR LAMP</p>
-        <p class="coll-item-mat">Matte Black Steel</p>
-        <p class="coll-item-price">₩ 760,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
-    <div class="coll-item reveal r3" data-cat="tables">
-      <div class="coll-item-img"><div class="img-placeholder"><span>RAW COFFEE TABLE</span></div></div>
-      <div class="coll-item-info">
-        <p class="coll-item-cat">Steel Tables</p>
-        <p class="coll-item-name">RAW COFFEE TABLE</p>
-        <p class="coll-item-mat">Cold-Roll Steel · Raw Finish</p>
-        <p class="coll-item-price">₩ 1,680,000</p>
-      </div>
-      <div class="coll-item-actions">
-        <a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a>
-        <a href="#" class="coll-btn coll-btn-primary">카트 담기</a>
-      </div>
-    </div>
+    <div class="coll-item reveal r1" data-cat="tables"><span class="coll-badge-tag">Best</span><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Steel Tables</p><p class="coll-item-name">ARCH SIDE TABLE S-02</p><p class="coll-item-mat">Brushed 316L Stainless</p><p class="coll-item-price">₩ 2,400,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
+    <div class="coll-item reveal r2" data-cat="living"><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Living Objects</p><p class="coll-item-name">BLOC SOFA 3S</p><p class="coll-item-mat">Steel Frame · Wool Blend</p><p class="coll-item-price">₩ 5,800,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
+    <div class="coll-item reveal r3" data-cat="living"><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Living Objects</p><p class="coll-item-name">FRAME CHAIR</p><p class="coll-item-mat">Powder Coat · Leather</p><p class="coll-item-price">₩ 980,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
+    <div class="coll-item reveal r1" data-cat="storage"><span class="coll-badge-tag">New</span><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Storage</p><p class="coll-item-name">GRID SHELF W</p><p class="coll-item-mat">Brushed Aluminium</p><p class="coll-item-price">₩ 1,240,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
+    <div class="coll-item reveal r2" data-cat="lighting"><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1503602642458-232111445657?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Lighting</p><p class="coll-item-name">ARC FLOOR LAMP</p><p class="coll-item-mat">Matte Black Steel</p><p class="coll-item-price">₩ 760,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
+    <div class="coll-item reveal r3" data-cat="tables"><div class="coll-item-img"><img src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=700&q=80" alt=""></div><div class="coll-item-info"><p class="coll-item-cat">Steel Tables</p><p class="coll-item-name">RAW COFFEE TABLE</p><p class="coll-item-mat">Cold-Roll Steel</p><p class="coll-item-price">₩ 1,680,000</p></div><div class="coll-item-actions"><a href="#" class="coll-btn coll-btn-ghost" data-page="product">상세 보기</a><a href="#" class="coll-btn coll-btn-primary">카트 담기</a></div></div>
   </div>
 </div>
 
-<!-- ═══ PAGE: PRODUCT DETAIL ═══ -->
 <div id="page-product" class="page">
   <div class="pd-layout">
     <div class="pd-gallery">
-      <div class="img-placeholder"><span>ARCH SIDE TABLE</span></div>
+      <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=1200&q=90" alt="" class="pd-main-img" id="pd-main-img">
       <div class="pd-thumbs">
-        <div class="pd-thumb active" data-src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&q=85">
-          <div class="img-placeholder"><span>IMAGE</span></div>
-        </div>
-        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=800&q=85">
-          <div class="img-placeholder"><span>IMAGE</span></div>
-        </div>
-        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=85">
-          <div class="img-placeholder"><span>IMAGE</span></div>
-        </div>
-        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=85">
-          <div class="img-placeholder"><span>IMAGE</span></div>
-        </div>
+        <div class="pd-thumb active" data-src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&q=85"><img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=300&q=70" alt=""></div>
+        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=800&q=85"><img src="https://images.unsplash.com/photo-1533090481720-856c6e3c1fdc?w=300&q=70" alt=""></div>
+        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=85"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=70" alt=""></div>
+        <div class="pd-thumb" data-src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=85"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=70" alt=""></div>
       </div>
     </div>
     <div class="pd-info">
-      <p class="pd-breadcrumb">
-        <a href="#" data-page="home">Home</a>&nbsp;/&nbsp;
-        <a href="#" data-page="collection">Objects</a>&nbsp;/&nbsp;
-        <span style="color:var(--silver)">Arch Side Table S-02</span>
-      </p>
+      <p class="pd-breadcrumb"><a href="#" data-page="home">Home</a> / <a href="#" data-page="collection">Objects</a> / <span style="color:var(--silver)">Arch Side Table S-02</span></p>
       <p class="pd-eyebrow">이달의 오브젝트</p>
       <h1 class="pd-name">ARCH<br>SIDE TABLE<br>S-02</h1>
       <p class="pd-sub">Brushed Stainless Steel Series</p>
@@ -1748,225 +1474,101 @@ textarea.f-input { resize:none; height:110px; }
       </div>
       <div class="pd-divider"></div>
       <p class="pd-opt-label">마감 선택</p>
-      <div class="pd-options">
-        <button class="pd-opt-btn active">Brushed Satin</button>
-        <button class="pd-opt-btn">Mirror Polish</button>
-        <button class="pd-opt-btn">Matte Black</button>
-        <button class="pd-opt-btn">Raw Steel</button>
-      </div>
+      <div class="pd-options"><button class="pd-opt-btn active">Brushed Satin</button><button class="pd-opt-btn">Mirror Polish</button><button class="pd-opt-btn">Matte Black</button><button class="pd-opt-btn">Raw Steel</button></div>
       <p class="pd-opt-label">사이즈</p>
-      <div class="pd-options">
-        <button class="pd-opt-btn active">S — W600</button>
-        <button class="pd-opt-btn">M — W750</button>
-        <button class="pd-opt-btn">L — W900</button>
-        <button class="pd-opt-btn">Bespoke</button>
-      </div>
-      <div class="pd-actions">
-        <a href="#" class="btn-primary">장바구니 담기 →</a>
-        <a href="#" class="btn-ghost">위시리스트</a>
-      </div>
+      <div class="pd-options"><button class="pd-opt-btn active">S — W600</button><button class="pd-opt-btn">M — W750</button><button class="pd-opt-btn">L — W900</button><button class="pd-opt-btn">Bespoke</button></div>
+      <div class="pd-actions"><a href="#" class="btn-primary">장바구니 담기 →</a><a href="#" class="btn-ghost">위시리스트</a></div>
       <div class="pd-divider"></div>
-      <p class="pd-shipping">
-        <span>납기</span>&nbsp; 주문 후 3–4주 소요<br>
-        <span>배송</span>&nbsp; 화이트글러브 직접 배송 · 무료<br>
-        <span>반품</span>&nbsp; 수령 후 14일 이내 가능<br>
-        <span>Bespoke</span>&nbsp; 치수·마감 맞춤 제작 가능
-      </p>
+      <p class="pd-shipping"><span>납기</span> 주문 후 3–4주<br><span>배송</span> 화이트글러브 · 무료<br><span>반품</span> 14일 이내<br><span>Bespoke</span> 맞춤 제작 가능</p>
       <div class="pd-divider"></div>
-      <p class="pd-desc">Arch Side Table S-02는 3mm 316L 스테인리스 스틸을 냉간 굽힘(cold-bending) 공법으로 성형한 사이드 테이블입니다. 단 하나의 소재, 단 하나의 공정. 용접 자국도 볼트도 없는 순수한 형태만이 존재합니다.<br><br>Satin No.4 마감은 헤어라인 처리로 방향성 있는 반사를 만들어냅니다. 조명 각도에 따라 표면의 질감이 달라지며, 시간이 지날수록 자연스러운 패티나가 쌓입니다.</p>
+      <p class="pd-desc">Arch Side Table S-02는 3mm 316L 스테인리스 스틸을 냉간 굽힘 공법으로 성형한 사이드 테이블입니다. 단 하나의 소재, 단 하나의 공정.</p>
     </div>
   </div>
 </div>
 
-<!-- ═══ PAGE: ABOUT ═══ -->
 <div id="page-about" class="page">
-  <div class="page-hero">
-    <div class="page-hero-bg"></div>
-    <div class="page-hero-content">
-      <p class="page-hero-label">About OBV Studio</p>
-      <h1 class="page-hero-title">OBJECT<br><span>MAKERS.</span></h1>
-    </div>
-  </div>
-  <div class="about-manifesto reveal">
-    <p class="about-mani-label">— Manifesto</p>
-    <div class="about-mani-body">
-      <h2 class="about-mani-title">FORM FOLLOWS<br><span>NOTHING.</span></h2>
-      <p><strong>OBV Studio는 장식을 거부합니다.</strong> 우리가 만드는 모든 오브젝트는 "기능 그 자체가 유일한 장식"이라는 단 하나의 원칙 아래 설계됩니다.</p>
-      <p>2019년 서울 성수동의 작은 아틀리에에서 시작. 브러시드 스테인리스와 콜드 메탈을 주 소재로, 산업 현장의 공법 — 냉간 굽힘, 레이저 절단, 파우더 코팅 — 이 우리의 언어입니다.</p>
-      <p><strong>우리는 소량 생산을 고집합니다.</strong> 각 피스는 수작업으로 완성되며, 동일한 제품이 두 개 존재하지 않습니다. 미세한 마감의 차이, 소재의 결 — 그것이 OBV의 서명입니다.</p>
-    </div>
-  </div>
+  <div class="page-hero"><div class="page-hero-bg"></div><div class="page-hero-content"><p class="page-hero-label">About OBV Studio</p><h1 class="page-hero-title">OBJECT<br><span>MAKERS.</span></h1></div></div>
+  <div class="about-manifesto reveal"><p class="about-mani-label">— Manifesto</p><div class="about-mani-body"><h2 class="about-mani-title">FORM FOLLOWS<br><span>NOTHING.</span></h2><p><strong>OBV Studio는 장식을 거부합니다.</strong> 기능 그 자체가 유일한 장식이라는 원칙 아래 설계됩니다.</p><p>2019년 서울 성수동에서 시작. 냉간 굽힘, 레이저 절단, 파우더 코팅이 우리의 언어입니다.</p><p><strong>소량 생산을 고집합니다.</strong> 각 피스는 수작업으로 완성됩니다.</p></div></div>
   <div class="about-section-head reveal"><p class="section-label"><span class="section-num">— 01</span>Team</p><h2>THE MAKERS</h2></div>
   <div class="team-grid">
-    <div class="team-card reveal r1">
-      <div class="team-img"><div class="img-placeholder"><span>IMAGE</span></div></div>
-      <div class="team-info"><p class="team-name">KIM JI-HO</p><p class="team-role">Founder · Creative Director</p><p class="team-bio">베를린 UdK 산업디자인 졸업. 금속 소재와 냉간 가공 공법의 미적 가능성을 탐구합니다.</p></div>
-    </div>
-    <div class="team-card reveal r2">
-      <div class="team-img"><div class="img-placeholder"><span>IMAGE</span></div></div>
-      <div class="team-info"><p class="team-name">PARK SOO-AH</p><p class="team-role">Co-Founder · Production</p><p class="team-bio">기계공학 출신. 정밀 절곡과 표면 처리를 총괄합니다. 공차 0.1mm를 목표로 합니다.</p></div>
-    </div>
-    <div class="team-card reveal r3">
-      <div class="team-img"><div class="img-placeholder"><span>IMAGE</span></div></div>
-      <div class="team-info"><p class="team-name">LEE MIN-JUN</p><p class="team-role">Head of Bespoke</p><p class="team-bio">건축 배경의 맞춤 제작 전문가. 고객의 공간을 분석하고 치수·마감을 함께 설계합니다.</p></div>
-    </div>
+    <div class="team-card reveal r1"><div class="team-img"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80" alt=""></div><div class="team-info"><p class="team-name">KIM JI-HO</p><p class="team-role">Founder · Creative Director</p><p class="team-bio">베를린 UdK 산업디자인 졸업.</p></div></div>
+    <div class="team-card reveal r2"><div class="team-img"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80" alt=""></div><div class="team-info"><p class="team-name">PARK SOO-AH</p><p class="team-role">Co-Founder · Production</p><p class="team-bio">기계공학 출신. 공차 0.1mm를 목표로 합니다.</p></div></div>
+    <div class="team-card reveal r3"><div class="team-img"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=600&q=80" alt=""></div><div class="team-info"><p class="team-name">LEE MIN-JUN</p><p class="team-role">Head of Bespoke</p><p class="team-bio">건축 배경의 맞춤 제작 전문가.</p></div></div>
   </div>
-  <div class="timeline-wrap reveal">
-    <h2>TIMELINE</h2>
-    <div class="tl-item"><p class="tl-year">2019</p><div><p class="tl-title">Studio Founded — Seoul, Seongsu</p><p class="tl-desc">성수동 30평 아틀리에에서 OBV Studio 창립. 첫 번째 피스 Arch Side Table S-01 제작.</p></div></div>
-    <div class="tl-item"><p class="tl-year">2020</p><div><p class="tl-title">First Collection — Steel Series</p><p class="tl-desc">브러시드 스테인리스 5종 컬렉션 출시. 온라인 론칭 6시간 만에 초도 물량 완판.</p></div></div>
-    <div class="tl-item"><p class="tl-year">2022</p><div><p class="tl-title">Bespoke Service Launch</p><p class="tl-desc">맞춤 제작 서비스 개시. 치수·소재·마감을 자유롭게 지정하는 1:1 커스텀 오더.</p></div></div>
-    <div class="tl-item"><p class="tl-year">2024</p><div><p class="tl-title">Showroom Opening — Seongsu</p><p class="tl-desc">성수동 쇼룸 오픈. 전 제품을 직접 경험하고 소재 샘플을 확인할 수 있는 공간.</p></div></div>
-    <div class="tl-item"><p class="tl-year">2025</p><div><p class="tl-title">SS 2025 — Concrete Series</p><p class="tl-desc">GFRC 초경량 콘크리트와 스틸을 결합한 신 컬렉션 공개. 140+ 오브젝트 달성.</p></div></div>
+  <div class="timeline-wrap reveal"><h2>TIMELINE</h2>
+    <div class="tl-item"><p class="tl-year">2019</p><div><p class="tl-title">Studio Founded</p><p class="tl-desc">성수동 아틀리에에서 OBV Studio 창립.</p></div></div>
+    <div class="tl-item"><p class="tl-year">2020</p><div><p class="tl-title">First Collection</p><p class="tl-desc">스테인리스 5종 출시. 론칭 6시간 만에 완판.</p></div></div>
+    <div class="tl-item"><p class="tl-year">2022</p><div><p class="tl-title">Bespoke Launch</p><p class="tl-desc">맞춤 제작 서비스 개시.</p></div></div>
+    <div class="tl-item"><p class="tl-year">2024</p><div><p class="tl-title">Showroom Opening</p><p class="tl-desc">성수동 쇼룸 오픈.</p></div></div>
+    <div class="tl-item"><p class="tl-year">2025</p><div><p class="tl-title">SS 2025 Collection</p><p class="tl-desc">140+ 오브젝트 달성.</p></div></div>
   </div>
   <div class="values-grid reveal">
-    <div class="val-item r1"><span class="val-num">01</span><p class="val-title">No Ornament</p><p class="val-desc">장식 없는 형태. 기능에서 비롯되지 않은 모든 디테일을 제거합니다.</p></div>
-    <div class="val-item r2"><span class="val-num">02</span><p class="val-title">Raw Precision</p><p class="val-desc">공차 0.1mm. 기계적 정밀함이 미적 완성도가 되는 지점을 추구합니다.</p></div>
-    <div class="val-item r3"><span class="val-num">03</span><p class="val-title">Small Batch</p><p class="val-desc">소량 생산. 동일한 피스는 없습니다. 각 오브젝트는 유일합니다.</p></div>
-    <div class="val-item r4"><span class="val-num">04</span><p class="val-title">Permanence</p><p class="val-desc">유행이 아닌 시간. 316L 스테인리스는 수십 년 후에도 동일한 형태입니다.</p></div>
+    <div class="val-item r1"><span class="val-num">01</span><p class="val-title">No Ornament</p><p class="val-desc">장식 없는 형태.</p></div>
+    <div class="val-item r2"><span class="val-num">02</span><p class="val-title">Raw Precision</p><p class="val-desc">공차 0.1mm.</p></div>
+    <div class="val-item r3"><span class="val-num">03</span><p class="val-title">Small Batch</p><p class="val-desc">소량 생산.</p></div>
+    <div class="val-item r4"><span class="val-num">04</span><p class="val-title">Permanence</p><p class="val-desc">유행이 아닌 시간.</p></div>
   </div>
 </div>
 
-<!-- ═══ PAGE: CONTACT ═══ -->
 <div id="page-contact" class="page">
-  <div class="page-hero">
-    <div class="page-hero-bg"></div>
-    <div class="page-hero-content">
-      <p class="page-hero-label">Showroom &amp; Contact</p>
-      <h1 class="page-hero-title">VISIT<br><span>US.</span></h1>
-    </div>
-  </div>
+  <div class="page-hero"><div class="page-hero-bg"></div><div class="page-hero-content"><p class="page-hero-label">Showroom &amp; Contact</p><h1 class="page-hero-title">VISIT<br><span>US.</span></h1></div></div>
   <div class="contact-layout">
-    <div class="contact-info-side reveal">
-      <h2>SEOUL<br>SHOWROOM</h2>
-      <div class="c-block"><p class="c-label">주소</p><p class="c-text">서울특별시 성동구 성수이로 14길 14<br>OBV Studio Building 2F<br><a href="#">지도 보기 →</a></p></div>
-      <div class="c-block">
-        <p class="c-label">운영 시간</p>
-        <div class="hours-grid">
-          <p class="h-day">월 – 금</p><p class="h-time">11:00 – 19:00</p>
-          <p class="h-day">토</p><p class="h-time">12:00 – 18:00</p>
-          <p class="h-day">일 · 공휴일</p><p class="h-time">예약 방문만</p>
-        </div>
-      </div>
-      <div class="c-block"><p class="c-label">연락처</p><p class="c-text"><a href="#">02-1234-5678</a><br><a href="#"><span class="__cf_email__" data-cfemail="29414c45454669464b5f5a5d5c4d404607425b">[email&#160;protected]</span></a><br>카카오채널 <a href="#">@obvstudio</a></p></div>
+    <div class="contact-info-side reveal"><h2>SEOUL<br>SHOWROOM</h2>
+      <div class="c-block"><p class="c-label">주소</p><p class="c-text">서울특별시 성동구 성수이로 14길 14<br>OBV Studio Building 2F</p></div>
+      <div class="c-block"><p class="c-label">운영 시간</p><div class="hours-grid"><p class="h-day">월 – 금</p><p class="h-time">11:00 – 19:00</p><p class="h-day">토</p><p class="h-time">12:00 – 18:00</p><p class="h-day">일 · 공휴일</p><p class="h-time">예약 방문만</p></div></div>
+      <div class="c-block"><p class="c-label">연락처</p><p class="c-text"><a href="#">02-1234-5678</a><br><a href="#">hello@obvstudio.kr</a></p></div>
     </div>
-    <div class="contact-map-side reveal r2">
-      <p class="map-pin">◈</p>
-      <p class="map-addr">성수이로 14길 14<br>Seongsu-dong, Seoul</p>
-      <a href="#" class="btn-ghost" style="margin-top:12px;">네이버 지도 →</a>
-    </div>
+    <div class="contact-map-side reveal r2"><p class="map-pin">◈</p><p class="map-addr">성수이로 14길 14<br>Seongsu-dong, Seoul</p><a href="#" class="btn-ghost" style="margin-top:12px;">네이버 지도 →</a></div>
   </div>
   <div class="contact-form-wrap">
-    <div class="form-side reveal">
-      <h3>BOOK A VISIT</h3>
-      <div class="form-row2">
-        <div class="f-group"><label class="f-label">이름</label><input type="text" class="f-input" placeholder="Kim Ji-ho"></div>
-        <div class="f-group"><label class="f-label">연락처</label><input type="text" class="f-input" placeholder="010-0000-0000"></div>
-      </div>
+    <div class="form-side reveal"><h3>BOOK A VISIT</h3>
+      <div class="form-row2"><div class="f-group"><label class="f-label">이름</label><input type="text" class="f-input" placeholder="Kim Ji-ho"></div><div class="f-group"><label class="f-label">연락처</label><input type="text" class="f-input" placeholder="010-0000-0000"></div></div>
       <div class="f-group"><label class="f-label">이메일</label><input type="email" class="f-input" placeholder="hello@email.com"></div>
-      <div class="form-row2">
-        <div class="f-group"><label class="f-label">방문 희망일</label><input type="date" class="f-input"></div>
-        <div class="f-group"><label class="f-label">방문 목적</label>
-          <select class="f-input" style="appearance:none;cursor:none;">
-            <option>제품 체험</option><option>Bespoke 상담</option><option>인테리어 상담</option><option>기타</option>
-          </select>
-        </div>
-      </div>
-      <div class="f-group"><label class="f-label">메시지 (선택)</label><textarea class="f-input" placeholder="궁금하신 점이나 관심 제품을 알려주세요."></textarea></div>
+      <div class="form-row2"><div class="f-group"><label class="f-label">방문 희망일</label><input type="date" class="f-input"></div><div class="f-group"><label class="f-label">방문 목적</label><select class="f-input" style="appearance:none"><option>제품 체험</option><option>Bespoke 상담</option><option>인테리어 상담</option></select></div></div>
+      <div class="f-group"><label class="f-label">메시지</label><textarea class="f-input" placeholder="궁금하신 점을 알려주세요."></textarea></div>
       <button class="f-submit">예약 신청 →</button>
     </div>
-    <div style="padding:64px 52px;" class="reveal r2">
-      <p class="section-label" style="margin-bottom:28px;"><span class="section-num">— Note</span>쇼룸 안내</p>
-      <p style="font-size:13px;color:var(--silver);line-height:2;margin-bottom:20px;">쇼룸에서는 모든 제품을 직접 확인하고 소재 샘플을 경험하실 수 있습니다. 전담 컨설턴트가 공간에 맞는 제품과 마감을 제안해 드립니다.</p>
-      <p style="font-size:13px;color:var(--silver);line-height:2;margin-bottom:32px;">방문 예약 시 대기 없이 바로 상담을 시작하실 수 있습니다. Bespoke 상담도 함께 진행 가능합니다.</p>
+    <div style="padding:64px 52px" class="reveal r2">
+      <p class="section-label" style="margin-bottom:28px"><span class="section-num">— Note</span>쇼룸 안내</p>
+      <p style="font-size:13px;color:var(--silver);line-height:2;margin-bottom:20px">모든 제품을 직접 확인하고 소재 샘플을 경험하실 수 있습니다.</p>
       <a href="#" class="btn-ghost">카카오로 문의 →</a>
     </div>
   </div>
   <div class="c-bottom reveal">
-    <div class="c-bottom-item r1"><span class="c-bottom-icon">◉</span><p class="c-bottom-title">White-Glove Delivery</p><p class="c-bottom-text">전국 직접 배송 · 설치 포함<br>무료 제공</p></div>
-    <div class="c-bottom-item r2"><span class="c-bottom-icon">◈</span><p class="c-bottom-title">10년 품질 보증</p><p class="c-bottom-text">구조적 결함에 대한<br>10년 무상 보증</p></div>
-    <div class="c-bottom-item r3"><span class="c-bottom-icon">○</span><p class="c-bottom-title">14일 반품 보장</p><p class="c-bottom-text">수령 후 14일 이내<br>무조건 반품 가능</p></div>
+    <div class="c-bottom-item r1"><span class="c-bottom-icon">◉</span><p class="c-bottom-title">White-Glove Delivery</p><p class="c-bottom-text">전국 직접 배송 · 무료</p></div>
+    <div class="c-bottom-item r2"><span class="c-bottom-icon">◈</span><p class="c-bottom-title">10년 품질 보증</p><p class="c-bottom-text">구조적 결함 10년 무상 보증</p></div>
+    <div class="c-bottom-item r3"><span class="c-bottom-icon">○</span><p class="c-bottom-title">14일 반품 보장</p><p class="c-bottom-text">수령 후 14일 이내</p></div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ── CURSOR ──
-const cur = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
-document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
-  setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 60);
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px'},60);
 });
-function bindHover() {
-  document.querySelectorAll('a,button').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
-  });
-}
-
-// ── SPA ROUTER ──
-const pageMap = { home:'page-home', collection:'page-collection', product:'page-product', about:'page-about', contact:'page-contact' };
-
-function navigate(key) {
-  Object.values(pageMap).forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('active');
-  });
-  const target = document.getElementById(pageMap[key]);
-  if (target) {
-    target.classList.add('active');
-    window.scrollTo({ top:0, behavior:'smooth' });
-    setTimeout(observeReveals, 100);
-  }
-  document.querySelectorAll('.nav-links a').forEach(a => {
-    a.classList.toggle('nav-active', a.dataset.page === key);
-  });
+function bindHover(){document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'))});}
+const pageMap={home:'page-home',collection:'page-collection',product:'page-product',about:'page-about',contact:'page-contact'};
+function navigate(key){
+  Object.values(pageMap).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
+  const t=document.getElementById(pageMap[key]);
+  if(t){t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeReveals,100);}
+  document.querySelectorAll('.nav-links a[data-page]').forEach(a=>a.classList.toggle('nav-active',a.dataset.page===key));
   bindHover();
 }
-
-document.addEventListener('click', e => {
-  const el = e.target.closest('[data-page]');
-  if (el) { e.preventDefault(); navigate(el.dataset.page); }
-});
-
-// ── REVEAL ──
+document.addEventListener('click',e=>{const el=e.target.closest('[data-page]');if(el){e.preventDefault();navigate(el.dataset.page);}});
 let obs;
-function observeReveals() {
-  if (obs) obs.disconnect();
-  obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold:0.08 });
-  document.querySelectorAll('.page.active .reveal:not(.visible)').forEach(el => obs.observe(el));
+function observeReveals(){
+  if(obs)obs.disconnect();
+  obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.08});
+  document.querySelectorAll('.page.active .reveal:not(.visible)').forEach(el=>obs.observe(el));
 }
-
-// ── THUMBNAILS ──
-document.querySelectorAll('.pd-thumb').forEach(thumb => {
-  thumb.addEventListener('click', () => {
-    document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
-    thumb.classList.add('active');
-    const main = document.getElementById('pd-main-img');
-    if (main && thumb.dataset.src) {
-      main.style.opacity = '0';
-      setTimeout(() => { main.src = thumb.dataset.src; main.style.opacity = '1'; }, 200);
-    }
-  });
-});
-
-// ── PRODUCT OPTIONS ──
-document.querySelectorAll('.pd-options').forEach(group => {
-  group.querySelectorAll('.pd-opt-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      group.querySelectorAll('.pd-opt-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-});
-
-// ── COLLECTION FILTERS ──
-document.querySelectorAll('.coll-filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.coll-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const filter = btn.dataset.filter;
-    document.querySelectorAll('.coll-item').forEach(item => {
-      i
+document.querySelectorAll('.pd-thumb').forEach(thumb=>{thumb.addEventListener('click',()=>{document.querySelectorAll('.pd-thumb').forEach(t=>t.classList.remove('active'));thumb.classList.add('active');const m=document.getElementById('pd-main-img');if(m&&thumb.dataset.src){m.style.opacity='0';setTimeout(()=>{m.src=thumb.dataset.src;m.style.opacity='1';},200);}});});
+document.querySelectorAll('.pd-options').forEach(g=>{g.querySelectorAll('.pd-opt-btn').forEach(b=>{b.addEventListener('click',()=>{g.querySelectorAll('.pd-opt-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');});});});
+document.querySelectorAll('.coll-filter-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.coll-filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');const f=b.dataset.filter;document.querySelectorAll('.coll-item').forEach(i=>{i.style.display=(f==='all'||i.dataset.cat===f)?'':'none';});});});
+navigate('home');
+bindHover();
+observeReveals();
+</script>
+</body>
+</html>
