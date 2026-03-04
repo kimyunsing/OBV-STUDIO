@@ -16,7 +16,7 @@
   --ink-m:  #666660;
   --ink-l:  #AAAAAA;
   --line:   rgba(17,17,17,.08);
-  --nav-h:  52px;
+  --nav-h:  68px;
   --thumbH: 96px;
   --pad:    24px;
   --maxw:   1240px;
@@ -49,22 +49,22 @@ nav {
 }
 .logo-obv {
   font-family:var(--sans);
-  font-size:16px;
+  font-size:20px;
   font-weight:700;
   letter-spacing:.05em;
   text-transform:uppercase;
   color:var(--ink);
 }
 .logo-divider {
-  width:1px; height:12px;
+  width:1px; height:14px;
   background:var(--ink-l);
-  margin:0 8px;
+  margin:0 10px;
   display:inline-block;
   vertical-align:middle;
 }
 .logo-studio {
   font-family:var(--sans);
-  font-size:11px;
+  font-size:13px;
   font-weight:300;
   letter-spacing:.04em;
   color:var(--ink-m);
@@ -140,9 +140,10 @@ nav {
 .hero {
   padding-top:calc(var(--nav-h) + 72px);
   padding-left:var(--gutter); padding-right:var(--gutter);
-  padding-bottom:80px;
-  min-height:94svh;
-  display:flex; flex-direction:column; justify-content:space-between;
+  padding-bottom:36px;
+  min-height:64svh;
+  display:flex; flex-direction:column; justify-content:flex-start;
+  gap:56px;
 }
 .hero-top { }
 .hero-brand {
@@ -162,12 +163,14 @@ nav {
   font-size:14px; font-weight:300;
   color:var(--ink-m); line-height:1.7;
   margin-bottom:40px;
-  max-width:340px;
+  max-width:400px;
 }
 .hero-cta { }
+
 .hero-foot {
   display:flex; align-items:flex-end; justify-content:space-between;
-  padding-top:32px;
+  padding-top:20px;
+  margin-top:24px;
   border-top:1px solid var(--line);
 }
 .hero-status {
@@ -183,7 +186,7 @@ nav {
 
 /* HOME: INTRO STRIP */
 .home-intro {
-  padding:64px var(--gutter);
+  padding:48px var(--gutter);
   border-top:1px solid var(--line);
 }
 .home-intro-h {
@@ -572,8 +575,12 @@ footer {
   nav { padding:0 var(--gutter); }
 
   /* Hero */
-  .hero { padding-top:calc(var(--nav-h) + 100px); padding-bottom:100px; }
+  .hero { padding-top:calc(var(--nav-h) + 100px); padding-bottom:48px; min-height:70svh; }
   .hero-h1 { max-width:860px; }
+
+  /* Pull featured section up slightly */
+  .home-intro { margin-top:-8px; }
+  .home-featured { margin-top:-4px; }
 
   /* Home featured */
   .feat-img { aspect-ratio:4/3; }
@@ -621,6 +628,22 @@ footer {
 @media(max-width:520px){
   .pd-opts { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; }
   .pd-opt { width:100%; text-align:center; padding:10px; }
+}
+
+/* ── HERO GRID (two-column) ── */
+.hero-grid { display:block; }
+.hero-media { margin-top:40px; }
+.hero-media img {
+  width:100%; height:auto; display:block; object-fit:contain;
+}
+@media(min-width:900px){
+  .hero-grid {
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:80px;
+    align-items:center;
+  }
+  .hero-media { margin-top:0; }
 }
 
 /* ── HERO REVEAL ── */
@@ -671,7 +694,7 @@ footer {
   <a href="#" data-page="about">Studio</a>
   <div class="mmenu-foot">
     <a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a>
-    <a href="mailto:river377@naver.com">river377@naver.com</a>
+    <a href="/cdn-cgi/l/email-protection#93e1fae5f6e1a0a4a4d3fdf2e5f6e1bdf0fcfe"><span class="__cf_email__" data-cfemail="14667d627166272323547a756271663a777b79">[email&#160;protected]</span></a>
   </div>
 </div>
 
@@ -683,14 +706,23 @@ footer {
 
   <section class="hero">
     <div class="hero-top">
-      <p class="hero-brand">OBV studio</p>
-      <h1 class="hero-h1">
-          <span class="hero-reveal r1">Design made</span><br>
-          <span class="hero-reveal r2">obvious.</span>
-        </h1>
-      <p class="hero-sub">Objects reduced to their essential form.</p>
-      <div class="hero-cta">
-        <a href="#" class="btn btn-dark" data-page="collection">View Objects</a>
+      <div class="hero-grid">
+        <div class="hero-text">
+          <p class="hero-brand">OBV studio</p>
+          <h1 class="hero-h1">
+              <span class="hero-reveal r1">Design made</span><br>
+              <span class="hero-reveal r2">obvious.</span>
+            </h1>
+          <p class="hero-sub">Objects reduced to their essential form.</p>
+          <div class="hero-cta">
+            <a href="#" class="btn btn-dark" data-page="collection">View Objects</a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div style="aspect-ratio:4/5;background:linear-gradient(160deg, var(--bg-s) 0%, var(--bg-ss) 100%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-l);">OBV 01</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="hero-foot">
@@ -737,7 +769,7 @@ footer {
       </div>
       <div class="ft-links">
         <a href="https://instagram.com/obv_studio_" target="_blank">Instagram</a>
-        <a href="mailto:river377@naver.com">river377@naver.com</a>
+        <a href="/cdn-cgi/l/email-protection#ff8d96899a8dccc8c8bf919e899a8dd19c9092"><span class="__cf_email__" data-cfemail="a6d4cfd0c3d4959191e6c8c7d0c3d488c5c9cb">[email&#160;protected]</span></a>
       </div>
     </div>
     <div class="ft-bottom">
@@ -931,7 +963,7 @@ footer {
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Bespoke</p>
-          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="mailto:river377@naver.com">river377@naver.com</a>.</p>
+          <p class="pd-info-v">Custom dimensions, materials, and finishes available. Contact <a href="/cdn-cgi/l/email-protection#aad8c3dccfd8999d9deac4cbdccfd884c9c5c7"><span class="__cf_email__" data-cfemail="f5879c839087c6c2c2b59b94839087db969a98">[email&#160;protected]</span></a>.</p>
         </div>
         <div class="pd-info-item">
           <p class="pd-info-k">Delivery</p>
@@ -984,7 +1016,7 @@ footer {
     <p class="about-section-tag">Contact</p>
     <div class="about-contact-item">
       <p>서울 송파구 잠실동 올림픽로 10길 50, 2층</p>
-      <p><a href="mailto:river377@naver.com">river377@naver.com</a></p>
+      <p><a href="/cdn-cgi/l/email-protection#0c7e657a697e3f3b3b4c626d7a697e226f6361"><span class="__cf_email__" data-cfemail="502239263522636767103e312635227e333f3d">[email&#160;protected]</span></a></p>
       <p><a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a></p>
     </div>
   </div>
@@ -1008,7 +1040,7 @@ footer {
 </div><!-- /about -->
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 document.addEventListener('DOMContentLoaded', function() {
 
   // ── ROUTER ──
@@ -1035,8 +1067,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
     document.getElementById('mmenu').classList.remove('open');
     if (k === 'home') {
-      const h1 = document.querySelector('#page-home .hero-h1');
-      if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const h1 = document.querySelector('#page-home .hero-h1');
+          if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
+        });
+      });
     }
   }
 
