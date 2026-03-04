@@ -841,28 +841,26 @@ footer {
   text-transform:uppercase; color:var(--ink-l);
   margin-bottom:20px;
 }
-.adm-table { width:100%; border-collapse:collapse; }
-.adm-table th {
-  font-size:10px; letter-spacing:.08em;
-  text-transform:uppercase; color:var(--ink-l);
-  font-weight:300; text-align:left;
-  padding:10px 12px 10px 0;
+.adm-user-card {
+  padding:18px 0;
   border-bottom:1px solid var(--line);
-  white-space:nowrap;
 }
-.adm-table td {
-  font-size:12px; color:var(--ink);
-  padding:14px 12px 14px 0;
-  border-bottom:1px solid var(--line);
-  vertical-align:top;
+.adm-user-card:first-child { border-top:1px solid var(--line); }
+.adm-user-num {
+  font-size:10px; color:var(--ink-l);
+  letter-spacing:.08em; margin-bottom:8px;
 }
-.adm-table tr:hover td { background:rgba(17,17,17,.02); }
-.adm-table .col-idx { width:40px; color:var(--ink-l); }
-.adm-empty {
+.adm-user-name {
+  font-size:15px; font-weight:400; color:var(--ink);
+  margin-bottom:6px;
+}
+.adm-user-detail {
+  font-size:12px; color:var(--ink-m); line-height:1.9;
+}
+.adm-no-users {
   font-size:13px; color:var(--ink-l);
   padding:40px 0; text-align:center;
 }
-.adm-table-wrap { overflow-x:auto; margin:0 -4px; padding:0 4px; }
 .adm-actions { padding-top:32px; display:flex; gap:12px; flex-wrap:wrap; }
 .adm-logout-btn {
   font-size:11px; letter-spacing:.06em;
@@ -1416,7 +1414,7 @@ footer {
       <div id="signup-success" class="auth-success">
         <div class="auth-success-icon">✓</div>
         <h2>가입 완료</h2>
-        <p>OBV studio에 오신 것을 환영합니다.</p>
+        <p>OBV studio에 오신 것을 환영합니다.<br><span id="signup-count" style="font-size:11px;color:var(--ink-l);"></span></p>
         <a href="#" class="btn btn-dark" data-page="login">로그인하기</a>
       </div>
 
@@ -1496,39 +1494,13 @@ footer {
 
       <div class="adm-header">
         <p class="adm-tag">Admin</p>
-        <h1 class="adm-h">회원 관리</h1>
-        <p class="adm-desc">등록된 전체 회원 목록입니다.</p>
-      </div>
-
-      <div class="adm-stat-row">
-        <div class="adm-stat">
-          <p class="adm-stat-n" id="adm-total">0</p>
-          <p class="adm-stat-label">전체 회원</p>
-        </div>
-        <div class="adm-stat">
-          <p class="adm-stat-n" id="adm-today">0</p>
-          <p class="adm-stat-label">오늘 가입</p>
-        </div>
+        <h1 class="adm-h">회원 관리 <span id="adm-total" style="color:var(--ink-m);">0</span>명</h1>
+        <p class="adm-desc">등록된 전체 회원 목록입니다. (오늘 가입: <span id="adm-today">0</span>명)</p>
       </div>
 
       <div class="adm-section">
         <p class="adm-section-label">회원 목록</p>
-        <div class="adm-table-wrap">
-          <table class="adm-table">
-            <thead>
-              <tr>
-                <th class="col-idx">#</th>
-                <th>이름</th>
-                <th>이메일</th>
-                <th>전화번호</th>
-                <th>주소</th>
-                <th>가입일</th>
-              </tr>
-            </thead>
-            <tbody id="adm-tbody"></tbody>
-          </table>
-          <p class="adm-empty" id="adm-empty" style="display:none;">등록된 회원이 없습니다.</p>
-        </div>
+        <div id="adm-list"></div>
       </div>
 
       <div class="adm-actions">
@@ -1606,21 +1578,53 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ═════════════════════════════════
-  //  AUTH SYSTEM (with localStorage)
+  //  STORAGE (triple fallback)
   // ═════════════════════════════════
-  function _load(k, fallback) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch(e) { return fallback; } }
-  function _save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
-  function _del(k) { try { localStorage.removeItem(k); } catch(e) {} }
+  // 1. localStorage (works in normal browser)
+  // 2. window.name  (works in sandboxed iframes)
+  // 3. in-memory    (always works, lost on reload)
 
-  var DB_USERS = _load('obv_users', []);
-  var curUser = _load('obv_curuser', null);
+  function _wnLoad() {
+    try { return JSON.parse(window.name || '{}'); } catch(e) { return {}; }
+  }
+  function _wnSave(store) {
+    try { window.name = JSON.stringify(store); } catch(e) {}
+  }
+
+  function dbLoad(k, fallback) {
+    // Try localStorage
+    try {
+      var v = localStorage.getItem('obv_' + k);
+      if (v !== null) return JSON.parse(v);
+    } catch(e) {}
+    // Try window.name
+    var wn = _wnLoad();
+    if (('obv_' + k) in wn) return wn['obv_' + k];
+    return fallback;
+  }
+
+  function dbSave(k, v) {
+    try { localStorage.setItem('obv_' + k, JSON.stringify(v)); } catch(e) {}
+    var wn = _wnLoad(); wn['obv_' + k] = v; _wnSave(wn);
+  }
+
+  function dbDel(k) {
+    try { localStorage.removeItem('obv_' + k); } catch(e) {}
+    var wn = _wnLoad(); delete wn['obv_' + k]; _wnSave(wn);
+  }
+
+  // ═════════════════════════════════
+  //  AUTH STATE
+  // ═════════════════════════════════
+  var DB_USERS = dbLoad('users', []);
+  var curUser  = dbLoad('curuser', null);
   var loggedIn = curUser !== null;
-  var adminIn = false;
+  var adminIn  = false;
   var ADMIN_PW = 'obv2025';
 
   function persist() {
-    _save('obv_users', DB_USERS);
-    if (curUser) _save('obv_curuser', curUser); else _del('obv_curuser');
+    dbSave('users', DB_USERS);
+    if (curUser) dbSave('curuser', curUser); else dbDel('curuser');
   }
 
   function setErr(id, msg) {
@@ -1674,8 +1678,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (k === 'admin') {
       if (!adminIn) {
-        document.getElementById('adm-gate').classList.remove('adm-hidden');
-        document.getElementById('adm-dashboard').classList.add('adm-hidden');
+        document.getElementById('adm-gate').style.display = 'block';
+        document.getElementById('adm-dashboard').style.display = 'none';
         var ap = document.getElementById('adm-pw'); if (ap) ap.value = '';
         var ae = document.getElementById('adm-pw-err'); if (ae) ae.textContent = '';
       } else {
@@ -1686,27 +1690,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── ADMIN RENDER ──
   function renderAdmin() {
-    document.getElementById('adm-gate').classList.add('adm-hidden');
+    // Re-read from storage in case of desync
+    var freshUsers = dbLoad('users', null);
+    if (freshUsers !== null && freshUsers.length > DB_USERS.length) {
+      DB_USERS = freshUsers;
+    }
+
+    document.getElementById('adm-gate').style.display = 'none';
+    document.getElementById('adm-dashboard').style.display = 'block';
     document.getElementById('adm-dashboard').classList.remove('adm-hidden');
-    var tbody = document.getElementById('adm-tbody');
-    var emptyEl = document.getElementById('adm-empty');
-    tbody.innerHTML = '';
+
+    var list = document.getElementById('adm-list');
     var today = new Date().toLocaleDateString('ko-KR');
     var todayCount = 0;
+    var html = '';
 
     if (DB_USERS.length === 0) {
-      emptyEl.style.display = 'block';
+      html = '<p class="adm-no-users">등록된 회원이 없습니다.</p>'
+           + '<p style="font-size:11px;color:var(--ink-l);text-align:center;padding-top:8px;">이 미리보기에서 회원가입 후 새로고침 없이 바로 확인해 주세요.<br>파일을 다운로드하여 브라우저에서 열면 새로고침해도 데이터가 유지됩니다.</p>';
     } else {
-      emptyEl.style.display = 'none';
       for (var i = 0; i < DB_USERS.length; i++) {
         var u = DB_USERS[i];
         if (u.joinDate === today) todayCount++;
-        var tr = document.createElement('tr');
-        var addr = u.addr + (u.addr2 ? ' ' + u.addr2 : '');
-        tr.innerHTML = '<td class="col-idx">' + (i+1) + '</td><td>' + esc(u.last + u.first) + '</td><td>' + esc(u.email) + '</td><td>' + esc(u.phone) + '</td><td>' + esc(addr) + '</td><td>' + esc(u.joinDate) + '</td>';
-        tbody.appendChild(tr);
+        var name = (u.last || '') + (u.first || '') || '—';
+        var addrStr = (u.addr || '—') + (u.addr2 ? ' ' + u.addr2 : '');
+        html += '<div class="adm-user-card">'
+          + '<p class="adm-user-num">#' + (i+1) + '</p>'
+          + '<p class="adm-user-name">' + name + '</p>'
+          + '<p class="adm-user-detail">'
+          + (u.email || '—') + '<br>'
+          + (u.phone || '—') + '<br>'
+          + addrStr + '<br>'
+          + '가입일: ' + (u.joinDate || '—')
+          + '</p></div>';
       }
     }
+
+    list.innerHTML = html;
     document.getElementById('adm-total').textContent = DB_USERS.length;
     document.getElementById('adm-today').textContent = todayCount;
   }
@@ -1764,6 +1784,7 @@ document.addEventListener('DOMContentLoaded', function() {
     persist();
     document.getElementById('signup-form').classList.add('hidden');
     document.getElementById('signup-success').classList.add('show');
+    document.getElementById('signup-count').textContent = '현재 등록 회원: ' + DB_USERS.length + '명';
   });
 
   // ═══════════════
