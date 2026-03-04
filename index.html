@@ -734,6 +734,149 @@ footer {
   .auth-page { padding-top:calc(var(--nav-h) + 100px); }
 }
 
+/* ── MY PAGE ── */
+.my-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  padding-left:var(--gutter); padding-right:var(--gutter);
+  padding-bottom:80px;
+}
+.my-header {
+  padding-bottom:32px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:0;
+}
+.my-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.my-greeting {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:10px;
+}
+.my-email-display {
+  font-size:13px; color:var(--ink-m);
+}
+.my-section {
+  padding:32px 0;
+  border-bottom:1px solid var(--line);
+}
+.my-section-label {
+  font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:20px;
+}
+.my-info-row {
+  display:flex; justify-content:space-between;
+  align-items:baseline; padding:12px 0;
+  border-bottom:1px solid var(--line);
+  gap:16px;
+}
+.my-info-row:last-child { border-bottom:none; }
+.my-info-k {
+  font-size:11px; color:var(--ink-l);
+  flex-shrink:0; min-width:80px;
+}
+.my-info-v {
+  font-size:13px; color:var(--ink);
+  text-align:right; word-break:break-all;
+}
+.my-actions { padding-top:40px; }
+.my-logout {
+  font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-m);
+  cursor:pointer; transition:color .2s;
+  padding:8px 0; background:none; border:none;
+  font-family:var(--sans);
+}
+.my-logout:hover { color:var(--ink); }
+@media(min-width:768px){
+  .my-page { padding-top:calc(var(--nav-h) + 100px); }
+  .my-content { max-width:520px; }
+}
+.nav-auth-hide { display:none !important; }
+
+/* ── ADMIN PAGE ── */
+.adm-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  padding-left:var(--gutter); padding-right:var(--gutter);
+  padding-bottom:80px;
+}
+.adm-header { padding-bottom:32px; border-bottom:1px solid var(--line); margin-bottom:0; }
+.adm-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.adm-h {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:10px;
+}
+.adm-desc { font-size:13px; color:var(--ink-m); }
+.adm-login-wrap { max-width:420px; padding-top:40px; }
+.adm-stat-row {
+  display:flex; gap:32px; padding:28px 0;
+  border-bottom:1px solid var(--line);
+}
+.adm-stat { }
+.adm-stat-n {
+  font-size:clamp(28px,5vw,40px);
+  font-weight:300; letter-spacing:-.02em;
+  color:var(--ink); line-height:1;
+  margin-bottom:6px;
+}
+.adm-stat-label {
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-l);
+}
+.adm-section { padding:32px 0; border-bottom:1px solid var(--line); }
+.adm-section-label {
+  font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:20px;
+}
+.adm-table { width:100%; border-collapse:collapse; }
+.adm-table th {
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-l);
+  font-weight:300; text-align:left;
+  padding:10px 12px 10px 0;
+  border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+.adm-table td {
+  font-size:12px; color:var(--ink);
+  padding:14px 12px 14px 0;
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+.adm-table tr:hover td { background:rgba(17,17,17,.02); }
+.adm-table .col-idx { width:40px; color:var(--ink-l); }
+.adm-empty {
+  font-size:13px; color:var(--ink-l);
+  padding:40px 0; text-align:center;
+}
+.adm-table-wrap { overflow-x:auto; margin:0 -4px; padding:0 4px; }
+.adm-actions { padding-top:32px; display:flex; gap:12px; flex-wrap:wrap; }
+.adm-logout-btn {
+  font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--ink-m);
+  cursor:pointer; transition:color .2s;
+  padding:8px 0; background:none; border:none;
+  font-family:var(--sans);
+}
+.adm-logout-btn:hover { color:var(--ink); }
+.adm-hidden { display:none; }
+@media(min-width:768px){
+  .adm-page { padding-top:calc(var(--nav-h) + 100px); }
+}
+
 /* ── HERO GRID (two-column) ── */
 .hero-grid { display:block; }
 .hero-media { margin-top:40px; }
@@ -785,7 +928,8 @@ footer {
   </ul>
   <div class="nav-r">
     <a href="#" class="nav-r-link" data-page="collection">View Objects</a>
-    <a href="#" class="nav-r-link" data-page="login">Login</a>
+    <a href="#" class="nav-r-link" data-page="login" id="nav-login">Login</a>
+    <a href="#" class="nav-r-link nav-auth-hide" data-page="mypage" id="nav-mypage">My page</a>
     <button class="hbg" id="hbg" aria-label="Menu">
       <span></span><span></span>
     </button>
@@ -797,8 +941,10 @@ footer {
   <a href="#" data-page="home">Home</a>
   <a href="#" data-page="collection">Objects</a>
   <a href="#" data-page="about">Studio</a>
-  <a href="#" data-page="login">Login</a>
-  <a href="#" data-page="signup">Sign up</a>
+  <a href="#" data-page="login" id="mmenu-login">Login</a>
+  <a href="#" data-page="signup" id="mmenu-signup">Sign up</a>
+  <a href="#" data-page="mypage" id="mmenu-mypage" class="nav-auth-hide">My page</a>
+  <a href="#" id="mmenu-logout" class="nav-auth-hide">Logout</a>
   <div class="mmenu-foot">
     <a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a>
     <a href="/cdn-cgi/l/email-protection#93e1fae5f6e1a0a4a4d3fdf2e5f6e1bdf0fcfe"><span class="__cf_email__" data-cfemail="14667d627166272323547a756271663a777b79">[email&#160;protected]</span></a>
@@ -880,7 +1026,7 @@ footer {
       </div>
     </div>
     <div class="ft-bottom">
-      <p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동.</p>
+      <p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p>
     </div>
   </footer>
 
@@ -994,7 +1140,7 @@ footer {
         <a href="#" data-page="about">Studio</a>
       </div>
     </div>
-    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동.</p></div>
+    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p></div>
   </footer>
 
 </div><!-- /collection -->
@@ -1141,7 +1287,7 @@ footer {
         <a href="#" data-page="about">Studio</a>
       </div>
     </div>
-    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동.</p></div>
+    <div class="ft-bottom"><p class="ft-copy">© 2025 OBV studio. 서울 송파구 잠실동. <a href="#" data-page="admin" style="color:rgba(255,255,255,.15);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.45)'" onmouseout="this.style.color='rgba(255,255,255,.15)'">Admin</a></p></div>
   </footer>
 
 </div><!-- /about -->
@@ -1186,7 +1332,7 @@ footer {
         <div class="auth-success-icon">✓</div>
         <h2>환영합니다</h2>
         <p>로그인되었습니다.</p>
-        <a href="#" class="btn btn-dark" data-page="home">홈으로 이동</a>
+        <a href="#" class="btn btn-dark" data-page="mypage">마이페이지로 이동</a>
       </div>
 
     </div>
@@ -1279,11 +1425,128 @@ footer {
 </div><!-- /signup -->
 
 
+<!-- ══════════════════════════════════ -->
+<!--  MY PAGE                           -->
+<!-- ══════════════════════════════════ -->
+<div id="page-mypage" class="page">
+  <div class="my-page">
+    <div class="my-content">
+
+      <div class="my-header">
+        <p class="my-tag">Account</p>
+        <h1 class="my-greeting" id="my-greeting">—</h1>
+        <p class="my-email-display" id="my-email-display"></p>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">기본 정보</p>
+        <div class="my-info-row"><span class="my-info-k">이름</span><span class="my-info-v" id="my-name">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">이메일</span><span class="my-info-v" id="my-email">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">전화번호</span><span class="my-info-v" id="my-phone">—</span></div>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">주소</p>
+        <div class="my-info-row"><span class="my-info-k">주소</span><span class="my-info-v" id="my-addr">—</span></div>
+        <div class="my-info-row"><span class="my-info-k">상세주소</span><span class="my-info-v" id="my-addr2">—</span></div>
+      </div>
+
+      <div class="my-section">
+        <p class="my-section-label">가입일</p>
+        <div class="my-info-row"><span class="my-info-k">등록</span><span class="my-info-v" id="my-date">—</span></div>
+      </div>
+
+      <div class="my-actions">
+        <button class="my-logout" id="logout-btn">로그아웃</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /mypage -->
+
+
+<!-- ══════════════════════════════════ -->
+<!--  ADMIN                             -->
+<!-- ══════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="adm-page">
+
+    <!-- Admin Login Gate -->
+    <div id="adm-gate">
+      <div class="adm-header">
+        <p class="adm-tag">Admin</p>
+        <h1 class="adm-h">관리자 로그인</h1>
+        <p class="adm-desc">관리자 비밀번호를 입력하세요.</p>
+      </div>
+      <div class="adm-login-wrap">
+        <div class="auth-row">
+          <label class="auth-label" for="adm-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="adm-pw" placeholder="관리자 비밀번호">
+            <span class="auth-pw-toggle" id="adm-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="adm-pw-err"></p>
+        </div>
+        <button class="btn btn-dark auth-submit" id="adm-login-btn">로그인</button>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <div id="adm-dashboard" class="adm-hidden">
+
+      <div class="adm-header">
+        <p class="adm-tag">Admin</p>
+        <h1 class="adm-h">회원 관리</h1>
+        <p class="adm-desc">등록된 전체 회원 목록입니다.</p>
+      </div>
+
+      <div class="adm-stat-row">
+        <div class="adm-stat">
+          <p class="adm-stat-n" id="adm-total">0</p>
+          <p class="adm-stat-label">전체 회원</p>
+        </div>
+        <div class="adm-stat">
+          <p class="adm-stat-n" id="adm-today">0</p>
+          <p class="adm-stat-label">오늘 가입</p>
+        </div>
+      </div>
+
+      <div class="adm-section">
+        <p class="adm-section-label">회원 목록</p>
+        <div class="adm-table-wrap">
+          <table class="adm-table">
+            <thead>
+              <tr>
+                <th class="col-idx">#</th>
+                <th>이름</th>
+                <th>이메일</th>
+                <th>전화번호</th>
+                <th>주소</th>
+                <th>가입일</th>
+              </tr>
+            </thead>
+            <tbody id="adm-tbody"></tbody>
+          </table>
+          <p class="adm-empty" id="adm-empty" style="display:none;">등록된 회원이 없습니다.</p>
+        </div>
+      </div>
+
+      <div class="adm-actions">
+        <button class="adm-logout-btn" id="adm-logout-btn">관리자 로그아웃</button>
+        <button class="adm-logout-btn" id="adm-clear-btn" style="color:#c44;">전체 회원 삭제</button>
+      </div>
+
+    </div>
+
+  </div>
+</div><!-- /admin -->
+
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 document.addEventListener('DOMContentLoaded', function() {
 
   // ── ROUTER ──
-  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup'};
+  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
 
   function rvCheck() {
     document.querySelectorAll('.rv').forEach(el => {
@@ -1343,6 +1606,74 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // ── AUTH: State (persisted via localStorage) ──
+  // All registered users
+  let allUsers = JSON.parse(localStorage.getItem('obv_users') || '[]');
+  // Current logged-in user
+  let userData = JSON.parse(localStorage.getItem('obv_user') || 'null');
+  let loggedIn = localStorage.getItem('obv_logged') === '1';
+  // Admin state (session only)
+  let adminLoggedIn = false;
+  const ADMIN_PW = 'obv2025';
+
+  function saveAuth() {
+    localStorage.setItem('obv_users', JSON.stringify(allUsers));
+    if (userData) localStorage.setItem('obv_user', JSON.stringify(userData));
+    else localStorage.removeItem('obv_user');
+    localStorage.setItem('obv_logged', loggedIn ? '1' : '0');
+  }
+
+  function addUser(u) {
+    // Prevent duplicate emails
+    const exists = allUsers.findIndex(x => x.email === u.email);
+    if (exists >= 0) allUsers[exists] = u;
+    else allUsers.push(u);
+    saveAuth();
+  }
+
+  function updateNavAuth() {
+    const navLogin = document.getElementById('nav-login');
+    const navMypage = document.getElementById('nav-mypage');
+    const mmLogin = document.getElementById('mmenu-login');
+    const mmSignup = document.getElementById('mmenu-signup');
+    const mmMypage = document.getElementById('mmenu-mypage');
+    const mmLogout = document.getElementById('mmenu-logout');
+    if (loggedIn) {
+      navLogin.classList.add('nav-auth-hide');
+      navMypage.classList.remove('nav-auth-hide');
+      mmLogin.classList.add('nav-auth-hide');
+      mmSignup.classList.add('nav-auth-hide');
+      mmMypage.classList.remove('nav-auth-hide');
+      mmLogout.classList.remove('nav-auth-hide');
+    } else {
+      navLogin.classList.remove('nav-auth-hide');
+      navMypage.classList.add('nav-auth-hide');
+      mmLogin.classList.remove('nav-auth-hide');
+      mmSignup.classList.remove('nav-auth-hide');
+      mmMypage.classList.add('nav-auth-hide');
+      mmLogout.classList.add('nav-auth-hide');
+    }
+  }
+
+  function renderMyPage() {
+    if (!userData) return;
+    document.getElementById('my-greeting').textContent = userData.last + userData.first + '님';
+    document.getElementById('my-email-display').textContent = userData.email;
+    document.getElementById('my-name').textContent = userData.last + userData.first;
+    document.getElementById('my-email').textContent = userData.email;
+    document.getElementById('my-phone').textContent = userData.phone;
+    document.getElementById('my-addr').textContent = userData.addr;
+    document.getElementById('my-addr2').textContent = userData.addr2 || '—';
+    document.getElementById('my-date').textContent = userData.joinDate;
+  }
+
+  function doLogout() {
+    loggedIn = false;
+    saveAuth();
+    updateNavAuth();
+    go('home');
+  }
+
   // ── AUTH: Password toggle ──
   document.querySelectorAll('.auth-pw-toggle').forEach(tog => {
     tog.addEventListener('click', () => {
@@ -1356,18 +1687,107 @@ document.addEventListener('DOMContentLoaded', function() {
   // ── AUTH: Reset forms when navigating to auth pages ──
   function resetAuthPage(pageKey) {
     if (pageKey === 'login') {
+      if (loggedIn) { go('mypage'); return; }
       const f = document.getElementById('login-form');
       const s = document.getElementById('login-success');
       if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
       if (s) s.classList.remove('show');
     }
     if (pageKey === 'signup') {
+      if (loggedIn) { go('mypage'); return; }
       const f = document.getElementById('signup-form');
       const s = document.getElementById('signup-success');
       if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
       if (s) s.classList.remove('show');
     }
+    if (pageKey === 'mypage') {
+      if (!loggedIn) { go('login'); return; }
+      renderMyPage();
+    }
+    if (pageKey === 'admin') {
+      // Reset admin gate
+      if (!adminLoggedIn) {
+        document.getElementById('adm-gate').classList.remove('adm-hidden');
+        document.getElementById('adm-dashboard').classList.add('adm-hidden');
+        const pwInput = document.getElementById('adm-pw');
+        if (pwInput) pwInput.value = '';
+        const errEl = document.getElementById('adm-pw-err');
+        if (errEl) errEl.textContent = '';
+      } else {
+        renderAdminDashboard();
+      }
+    }
   }
+
+  // ── ADMIN ──
+  function renderAdminDashboard() {
+    document.getElementById('adm-gate').classList.add('adm-hidden');
+    document.getElementById('adm-dashboard').classList.remove('adm-hidden');
+    const tbody = document.getElementById('adm-tbody');
+    const emptyEl = document.getElementById('adm-empty');
+    tbody.innerHTML = '';
+    if (allUsers.length === 0) {
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      const today = new Date().toLocaleDateString('ko-KR');
+      let todayCount = 0;
+      allUsers.forEach((u, i) => {
+        if (u.joinDate === today) todayCount++;
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td class="col-idx">' + (i+1) + '</td>' +
+          '<td>' + esc(u.last + u.first) + '</td>' +
+          '<td>' + esc(u.email) + '</td>' +
+          '<td>' + esc(u.phone) + '</td>' +
+          '<td>' + esc(u.addr) + (u.addr2 ? ' ' + esc(u.addr2) : '') + '</td>' +
+          '<td>' + esc(u.joinDate) + '</td>';
+        tbody.appendChild(tr);
+      });
+      document.getElementById('adm-today').textContent = todayCount;
+    }
+    document.getElementById('adm-total').textContent = allUsers.length;
+  }
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s || '—'; return d.innerHTML; }
+
+  document.getElementById('adm-login-btn').addEventListener('click', () => {
+    const pw = document.getElementById('adm-pw').value;
+    if (pw === ADMIN_PW) {
+      adminLoggedIn = true;
+      renderAdminDashboard();
+    } else {
+      document.getElementById('adm-pw-err').textContent = '비밀번호가 올바르지 않습니다.';
+    }
+  });
+
+  document.getElementById('adm-pw').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('adm-login-btn').click();
+  });
+
+  document.getElementById('adm-pw-toggle').addEventListener('click', () => {
+    const input = document.getElementById('adm-pw');
+    const tog = document.getElementById('adm-pw-toggle');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    tog.textContent = show ? '숨기기' : '보기';
+  });
+
+  document.getElementById('adm-logout-btn').addEventListener('click', () => {
+    adminLoggedIn = false;
+    go('home');
+  });
+
+  document.getElementById('adm-clear-btn').addEventListener('click', () => {
+    if (confirm('정말 전체 회원 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+      allUsers = [];
+      userData = null;
+      loggedIn = false;
+      saveAuth();
+      updateNavAuth();
+      renderAdminDashboard();
+    }
+  });
 
   // helper
   function setErr(id, msg) {
@@ -1389,6 +1809,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
     else setErr('login-pw-err','');
     if (ok) {
+      // Look up registered user by email
+      const found = allUsers.find(u => u.email === email);
+      if (found) {
+        userData = found;
+      } else {
+        userData = { last:'', first:'사용자', email:email, phone:'—', addr:'—', addr2:'', joinDate: new Date().toLocaleDateString('ko-KR') };
+        addUser(userData);
+      }
+      loggedIn = true;
+      saveAuth();
+      updateNavAuth();
       document.getElementById('login-form').classList.add('hidden');
       document.getElementById('login-success').classList.add('show');
     }
@@ -1404,6 +1835,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const pw2 = document.getElementById('signup-pw2').value;
     const phone = document.getElementById('signup-phone').value.trim();
     const addr = document.getElementById('signup-addr').value.trim();
+    const addr2 = document.getElementById('signup-addr2').value.trim();
 
     if (!last) { setErr('signup-last-err','성을 입력해주세요.'); ok=false; } else setErr('signup-last-err','');
     if (!first) { setErr('signup-first-err','이름을 입력해주세요.'); ok=false; } else setErr('signup-first-err','');
@@ -1422,10 +1854,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!addr) { setErr('signup-addr-err','주소를 입력해주세요.'); ok=false; } else setErr('signup-addr-err','');
 
     if (ok) {
+      userData = { last, first, email, phone, addr, addr2, joinDate: new Date().toLocaleDateString('ko-KR') };
+      addUser(userData);
+      saveAuth();
       document.getElementById('signup-form').classList.add('hidden');
       document.getElementById('signup-success').classList.add('show');
     }
   });
+
+  // ── LOGOUT ──
+  document.getElementById('logout-btn').addEventListener('click', doLogout);
+  document.getElementById('mmenu-logout').addEventListener('click', e => { e.preventDefault(); doLogout(); });
 
   // Enter key support for auth forms
   document.querySelectorAll('.auth-input').forEach(input => {
@@ -1439,6 +1878,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ── INIT ──
+  updateNavAuth();
   go('home');
 
 });
