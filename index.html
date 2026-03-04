@@ -1606,21 +1606,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // ── AUTH: State (persisted via localStorage) ──
+  // ── SAFE STORAGE (localStorage with in-memory fallback) ──
+  const _mem = {};
+  function sGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
+  function sSet(k,v) { try { localStorage.setItem(k,v); } catch(e) {} _mem[k]=v; }
+  function sRem(k) { try { localStorage.removeItem(k); } catch(e) {} delete _mem[k]; }
+
+  // ── AUTH: State ──
   // All registered users
-  let allUsers = JSON.parse(localStorage.getItem('obv_users') || '[]');
+  let allUsers = JSON.parse(sGet('obv_users') || '[]');
   // Current logged-in user
-  let userData = JSON.parse(localStorage.getItem('obv_user') || 'null');
-  let loggedIn = localStorage.getItem('obv_logged') === '1';
+  let userData = JSON.parse(sGet('obv_user') || 'null');
+  let loggedIn = sGet('obv_logged') === '1';
   // Admin state (session only)
   let adminLoggedIn = false;
   const ADMIN_PW = 'obv2025';
 
   function saveAuth() {
-    localStorage.setItem('obv_users', JSON.stringify(allUsers));
-    if (userData) localStorage.setItem('obv_user', JSON.stringify(userData));
-    else localStorage.removeItem('obv_user');
-    localStorage.setItem('obv_logged', loggedIn ? '1' : '0');
+    sSet('obv_users', JSON.stringify(allUsers));
+    if (userData) sSet('obv_user', JSON.stringify(userData));
+    else sRem('obv_user');
+    sSet('obv_logged', loggedIn ? '1' : '0');
   }
 
   function addUser(u) {
