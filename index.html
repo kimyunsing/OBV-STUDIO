@@ -723,13 +723,13 @@ footer {
 .auth-pw-wrap {
   position:relative;
 }
-.auth-pw-toggle {
+.auth-pw-toggle, .adm-pw-toggle-btn {
   position:absolute; right:0; top:50%; transform:translateY(-50%);
   font-size:10px; letter-spacing:.06em; text-transform:uppercase;
   color:var(--ink-l); cursor:pointer; padding:4px 0;
   transition:color .2s;
 }
-.auth-pw-toggle:hover { color:var(--ink); }
+.auth-pw-toggle:hover, .adm-pw-toggle-btn:hover { color:var(--ink); }
 @media(min-width:768px){
   .auth-page { padding-top:calc(var(--nav-h) + 100px); }
 }
@@ -1482,8 +1482,8 @@ footer {
         <div class="auth-row">
           <label class="auth-label" for="adm-pw">비밀번호</label>
           <div class="auth-pw-wrap">
-            <input class="auth-input" type="password" id="adm-pw" placeholder="관리자 비밀번호">
-            <span class="auth-pw-toggle" id="adm-pw-toggle">보기</span>
+            <input class="auth-input adm-input" type="password" id="adm-pw" placeholder="관리자 비밀번호">
+            <span class="adm-pw-toggle-btn" id="adm-pw-toggle">보기</span>
           </div>
           <p class="auth-err-msg" id="adm-pw-err"></p>
         </div>
@@ -1815,14 +1815,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
     else setErr('login-pw-err','');
     if (ok) {
-      // Look up registered user by email
+      // Check registered user
       const found = allUsers.find(u => u.email === email);
-      if (found) {
-        userData = found;
-      } else {
-        userData = { last:'', first:'사용자', email:email, phone:'—', addr:'—', addr2:'', joinDate: new Date().toLocaleDateString('ko-KR') };
-        addUser(userData);
+      if (!found) {
+        setErr('login-email-err','가입되지 않은 이메일입니다.');
+        return;
       }
+      if (found.pw !== pw) {
+        setErr('login-pw-err','비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      userData = found;
       loggedIn = true;
       saveAuth();
       updateNavAuth();
@@ -1859,8 +1862,14 @@ document.addEventListener('DOMContentLoaded', function() {
     else setErr('signup-phone-err','');
     if (!addr) { setErr('signup-addr-err','주소를 입력해주세요.'); ok=false; } else setErr('signup-addr-err','');
 
+    // Check duplicate email
+    if (ok && allUsers.find(u => u.email === email)) {
+      setErr('signup-email-err','이미 가입된 이메일입니다.');
+      ok = false;
+    }
+
     if (ok) {
-      userData = { last, first, email, phone, addr, addr2, joinDate: new Date().toLocaleDateString('ko-KR') };
+      userData = { last, first, email, pw, phone, addr, addr2, joinDate: new Date().toLocaleDateString('ko-KR') };
       addUser(userData);
       saveAuth();
       document.getElementById('signup-form').classList.add('hidden');
@@ -1876,7 +1885,10 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.auth-input').forEach(input => {
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
+        // Skip admin inputs (handled separately)
+        if (input.classList.contains('adm-input')) return;
         const card = input.closest('.auth-card');
+        if (!card) return;
         const btn = card.querySelector('.auth-submit');
         if (btn) btn.click();
       }
