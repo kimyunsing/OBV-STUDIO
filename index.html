@@ -1542,361 +1542,289 @@ footer {
 </div><!-- /admin -->
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+<script>
 document.addEventListener('DOMContentLoaded', function() {
 
   // ── ROUTER ──
-  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
+  var PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
 
   function rvCheck() {
-    document.querySelectorAll('.rv').forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight + 10) el.classList.add('in');
+    document.querySelectorAll('.rv').forEach(function(el) {
+      if (el.getBoundingClientRect().top < window.innerHeight + 10) el.classList.add('in');
     });
   }
   window.addEventListener('scroll', rvCheck, { passive: true });
 
   function go(k) {
-    Object.values(PM).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('active'); });
-    const t = document.getElementById(PM[k]);
+    Object.values(PM).forEach(function(id) { var el = document.getElementById(id); if(el) el.classList.remove('active'); });
+    var t = document.getElementById(PM[k]);
     if (t) {
       t.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      // force all .rv elements in the newly active page visible
-      t.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+      t.querySelectorAll('.rv').forEach(function(el) { el.classList.add('in'); });
       setTimeout(rvCheck, 100);
     }
-    document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
+    document.querySelectorAll('.nav-links a, .mmenu a').forEach(function(a) {
+      if (a.dataset && a.dataset.page) a.classList.toggle('on', a.dataset.page === k);
+    });
     document.getElementById('mmenu').classList.remove('open');
-    resetAuthPage(k);
+    onPageEnter(k);
     if (k === 'home') {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const h1 = document.querySelector('#page-home .hero-h1');
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          var h1 = document.querySelector('#page-home .hero-h1');
           if (h1) { h1.classList.remove('play'); void h1.offsetWidth; h1.classList.add('play'); }
         });
       });
     }
   }
 
-  document.addEventListener('click', e => {
-    const el = e.target.closest('[data-page]');
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('[data-page]');
     if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); }
   });
 
-  document.getElementById('hbg').addEventListener('click', () => {
+  document.getElementById('hbg').addEventListener('click', function() {
     document.getElementById('mmenu').classList.toggle('open');
   });
 
-  // ── PRODUCT THUMBS ──
-  document.querySelectorAll('.pd-th').forEach(t => {
-    t.addEventListener('click', () => {
-      document.querySelectorAll('.pd-th').forEach(x => x.classList.remove('on'));
+  // ── PRODUCT THUMBS & OPTIONS ──
+  document.querySelectorAll('.pd-th').forEach(function(t) {
+    t.addEventListener('click', function() {
+      document.querySelectorAll('.pd-th').forEach(function(x) { x.classList.remove('on'); });
       t.classList.add('on');
     });
   });
-
-  // ── PRODUCT OPTIONS ──
-  document.querySelectorAll('.pd-opts').forEach(g => {
-    g.querySelectorAll('.pd-opt').forEach(b => {
-      b.addEventListener('click', () => {
-        g.querySelectorAll('.pd-opt').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.pd-opts').forEach(function(g) {
+    g.querySelectorAll('.pd-opt').forEach(function(b) {
+      b.addEventListener('click', function() {
+        g.querySelectorAll('.pd-opt').forEach(function(x) { x.classList.remove('on'); });
         b.classList.add('on');
       });
     });
   });
 
-  // ── SAFE STORAGE (localStorage with in-memory fallback) ──
-  const _mem = {};
-  function sGet(k) { try { return localStorage.getItem(k); } catch(e) { return _mem[k] || null; } }
-  function sSet(k,v) { try { localStorage.setItem(k,v); } catch(e) {} _mem[k]=v; }
-  function sRem(k) { try { localStorage.removeItem(k); } catch(e) {} delete _mem[k]; }
+  // ═════════════════════════════════
+  //  AUTH SYSTEM (with localStorage)
+  // ═════════════════════════════════
+  function _load(k, fallback) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch(e) { return fallback; } }
+  function _save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+  function _del(k) { try { localStorage.removeItem(k); } catch(e) {} }
 
-  // ── AUTH: State ──
-  // All registered users
-  let allUsers = JSON.parse(sGet('obv_users') || '[]');
-  // Current logged-in user
-  let userData = JSON.parse(sGet('obv_user') || 'null');
-  let loggedIn = sGet('obv_logged') === '1';
-  // Admin state (session only)
-  let adminLoggedIn = false;
-  const ADMIN_PW = 'obv2025';
+  var DB_USERS = _load('obv_users', []);
+  var curUser = _load('obv_curuser', null);
+  var loggedIn = curUser !== null;
+  var adminIn = false;
+  var ADMIN_PW = 'obv2025';
 
-  function saveAuth() {
-    sSet('obv_users', JSON.stringify(allUsers));
-    if (userData) sSet('obv_user', JSON.stringify(userData));
-    else sRem('obv_user');
-    sSet('obv_logged', loggedIn ? '1' : '0');
+  function persist() {
+    _save('obv_users', DB_USERS);
+    if (curUser) _save('obv_curuser', curUser); else _del('obv_curuser');
   }
 
-  function addUser(u) {
-    // Prevent duplicate emails
-    const exists = allUsers.findIndex(x => x.email === u.email);
-    if (exists >= 0) allUsers[exists] = u;
-    else allUsers.push(u);
-    saveAuth();
+  function setErr(id, msg) {
+    var el = document.getElementById(id);
+    var inp = document.getElementById(id.replace('-err',''));
+    if (el) el.textContent = msg || '';
+    if (inp) { if (msg) inp.classList.add('err'); else inp.classList.remove('err'); }
   }
 
-  function updateNavAuth() {
-    const navLogin = document.getElementById('nav-login');
-    const navMypage = document.getElementById('nav-mypage');
-    const mmLogin = document.getElementById('mmenu-login');
-    const mmSignup = document.getElementById('mmenu-signup');
-    const mmMypage = document.getElementById('mmenu-mypage');
-    const mmLogout = document.getElementById('mmenu-logout');
-    if (loggedIn) {
-      navLogin.classList.add('nav-auth-hide');
-      navMypage.classList.remove('nav-auth-hide');
-      mmLogin.classList.add('nav-auth-hide');
-      mmSignup.classList.add('nav-auth-hide');
-      mmMypage.classList.remove('nav-auth-hide');
-      mmLogout.classList.remove('nav-auth-hide');
-    } else {
-      navLogin.classList.remove('nav-auth-hide');
-      navMypage.classList.add('nav-auth-hide');
-      mmLogin.classList.remove('nav-auth-hide');
-      mmSignup.classList.remove('nav-auth-hide');
-      mmMypage.classList.add('nav-auth-hide');
-      mmLogout.classList.add('nav-auth-hide');
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s || '—';
+    return d.innerHTML;
+  }
+
+  // ── NAV SYNC ──
+  function syncNav() {
+    var show = { 'nav-login':!loggedIn, 'nav-mypage':loggedIn, 'mmenu-login':!loggedIn, 'mmenu-signup':!loggedIn, 'mmenu-mypage':loggedIn, 'mmenu-logout':loggedIn };
+    for (var id in show) {
+      var el = document.getElementById(id);
+      if (el) { if (show[id]) el.classList.remove('nav-auth-hide'); else el.classList.add('nav-auth-hide'); }
     }
   }
 
-  function renderMyPage() {
-    if (!userData) return;
-    document.getElementById('my-greeting').textContent = userData.last + userData.first + '님';
-    document.getElementById('my-email-display').textContent = userData.email;
-    document.getElementById('my-name').textContent = userData.last + userData.first;
-    document.getElementById('my-email').textContent = userData.email;
-    document.getElementById('my-phone').textContent = userData.phone;
-    document.getElementById('my-addr').textContent = userData.addr;
-    document.getElementById('my-addr2').textContent = userData.addr2 || '—';
-    document.getElementById('my-date').textContent = userData.joinDate;
-  }
-
-  function doLogout() {
-    loggedIn = false;
-    saveAuth();
-    updateNavAuth();
-    go('home');
-  }
-
-  // ── AUTH: Password toggle ──
-  document.querySelectorAll('.auth-pw-toggle').forEach(tog => {
-    tog.addEventListener('click', () => {
-      const input = tog.previousElementSibling;
-      const show = input.type === 'password';
-      input.type = show ? 'text' : 'password';
-      tog.textContent = show ? '숨기기' : '보기';
-    });
-  });
-
-  // ── AUTH: Reset forms when navigating to auth pages ──
-  function resetAuthPage(pageKey) {
-    if (pageKey === 'login') {
+  // ── PAGE ENTER ──
+  function onPageEnter(k) {
+    if (k === 'login') {
       if (loggedIn) { go('mypage'); return; }
-      const f = document.getElementById('login-form');
-      const s = document.getElementById('login-success');
-      if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
-      if (s) s.classList.remove('show');
+      var lf = document.getElementById('login-form');
+      var ls = document.getElementById('login-success');
+      if (lf) { lf.classList.remove('hidden'); lf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); lf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); }
+      if (ls) ls.classList.remove('show');
     }
-    if (pageKey === 'signup') {
+    if (k === 'signup') {
       if (loggedIn) { go('mypage'); return; }
-      const f = document.getElementById('signup-form');
-      const s = document.getElementById('signup-success');
-      if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
-      if (s) s.classList.remove('show');
+      var sf = document.getElementById('signup-form');
+      var ss = document.getElementById('signup-success');
+      if (sf) { sf.classList.remove('hidden'); sf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); sf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); }
+      if (ss) ss.classList.remove('show');
     }
-    if (pageKey === 'mypage') {
-      if (!loggedIn) { go('login'); return; }
-      renderMyPage();
+    if (k === 'mypage') {
+      if (!loggedIn || !curUser) { go('login'); return; }
+      document.getElementById('my-greeting').textContent = curUser.last + curUser.first + '님';
+      document.getElementById('my-email-display').textContent = curUser.email;
+      document.getElementById('my-name').textContent = curUser.last + curUser.first;
+      document.getElementById('my-email').textContent = curUser.email;
+      document.getElementById('my-phone').textContent = curUser.phone;
+      document.getElementById('my-addr').textContent = curUser.addr;
+      document.getElementById('my-addr2').textContent = curUser.addr2 || '—';
+      document.getElementById('my-date').textContent = curUser.joinDate;
     }
-    if (pageKey === 'admin') {
-      // Reset admin gate
-      if (!adminLoggedIn) {
+    if (k === 'admin') {
+      if (!adminIn) {
         document.getElementById('adm-gate').classList.remove('adm-hidden');
         document.getElementById('adm-dashboard').classList.add('adm-hidden');
-        const pwInput = document.getElementById('adm-pw');
-        if (pwInput) pwInput.value = '';
-        const errEl = document.getElementById('adm-pw-err');
-        if (errEl) errEl.textContent = '';
+        var ap = document.getElementById('adm-pw'); if (ap) ap.value = '';
+        var ae = document.getElementById('adm-pw-err'); if (ae) ae.textContent = '';
       } else {
-        renderAdminDashboard();
+        renderAdmin();
       }
     }
   }
 
-  // ── ADMIN ──
-  function renderAdminDashboard() {
+  // ── ADMIN RENDER ──
+  function renderAdmin() {
     document.getElementById('adm-gate').classList.add('adm-hidden');
     document.getElementById('adm-dashboard').classList.remove('adm-hidden');
-    const tbody = document.getElementById('adm-tbody');
-    const emptyEl = document.getElementById('adm-empty');
+    var tbody = document.getElementById('adm-tbody');
+    var emptyEl = document.getElementById('adm-empty');
     tbody.innerHTML = '';
-    if (allUsers.length === 0) {
+    var today = new Date().toLocaleDateString('ko-KR');
+    var todayCount = 0;
+
+    if (DB_USERS.length === 0) {
       emptyEl.style.display = 'block';
     } else {
       emptyEl.style.display = 'none';
-      const today = new Date().toLocaleDateString('ko-KR');
-      let todayCount = 0;
-      allUsers.forEach((u, i) => {
+      for (var i = 0; i < DB_USERS.length; i++) {
+        var u = DB_USERS[i];
         if (u.joinDate === today) todayCount++;
-        const tr = document.createElement('tr');
-        tr.innerHTML =
-          '<td class="col-idx">' + (i+1) + '</td>' +
-          '<td>' + esc(u.last + u.first) + '</td>' +
-          '<td>' + esc(u.email) + '</td>' +
-          '<td>' + esc(u.phone) + '</td>' +
-          '<td>' + esc(u.addr) + (u.addr2 ? ' ' + esc(u.addr2) : '') + '</td>' +
-          '<td>' + esc(u.joinDate) + '</td>';
+        var tr = document.createElement('tr');
+        var addr = u.addr + (u.addr2 ? ' ' + u.addr2 : '');
+        tr.innerHTML = '<td class="col-idx">' + (i+1) + '</td><td>' + esc(u.last + u.first) + '</td><td>' + esc(u.email) + '</td><td>' + esc(u.phone) + '</td><td>' + esc(addr) + '</td><td>' + esc(u.joinDate) + '</td>';
         tbody.appendChild(tr);
-      });
-      document.getElementById('adm-today').textContent = todayCount;
+      }
     }
-    document.getElementById('adm-total').textContent = allUsers.length;
+    document.getElementById('adm-total').textContent = DB_USERS.length;
+    document.getElementById('adm-today').textContent = todayCount;
   }
 
-  function esc(s) { const d = document.createElement('div'); d.textContent = s || '—'; return d.innerHTML; }
-
-  document.getElementById('adm-login-btn').addEventListener('click', () => {
-    const pw = document.getElementById('adm-pw').value;
-    if (pw === ADMIN_PW) {
-      adminLoggedIn = true;
-      renderAdminDashboard();
-    } else {
-      document.getElementById('adm-pw-err').textContent = '비밀번호가 올바르지 않습니다.';
-    }
-  });
-
-  document.getElementById('adm-pw').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('adm-login-btn').click();
-  });
-
-  document.getElementById('adm-pw-toggle').addEventListener('click', () => {
-    const input = document.getElementById('adm-pw');
-    const tog = document.getElementById('adm-pw-toggle');
-    const show = input.type === 'password';
-    input.type = show ? 'text' : 'password';
-    tog.textContent = show ? '숨기기' : '보기';
-  });
-
-  document.getElementById('adm-logout-btn').addEventListener('click', () => {
-    adminLoggedIn = false;
-    go('home');
-  });
-
-  document.getElementById('adm-clear-btn').addEventListener('click', () => {
-    if (confirm('정말 전체 회원 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
-      allUsers = [];
-      userData = null;
-      loggedIn = false;
-      saveAuth();
-      updateNavAuth();
-      renderAdminDashboard();
-    }
-  });
-
-  // helper
-  function setErr(id, msg) {
-    const el = document.getElementById(id);
-    const input = document.getElementById(id.replace('-err',''));
-    if (el) el.textContent = msg;
-    if (input) input.classList.toggle('err', !!msg);
-    return !msg;
+  // ── PW TOGGLES ──
+  function bindTog(tId, iId) {
+    var t = document.getElementById(tId), inp = document.getElementById(iId);
+    if (t && inp) t.addEventListener('click', function() {
+      if (inp.type === 'password') { inp.type = 'text'; t.textContent = '숨기기'; }
+      else { inp.type = 'password'; t.textContent = '보기'; }
+    });
   }
+  bindTog('login-pw-toggle','login-pw');
+  bindTog('signup-pw-toggle','signup-pw');
+  bindTog('adm-pw-toggle','adm-pw');
 
-  // ── LOGIN ──
-  document.getElementById('login-btn').addEventListener('click', () => {
-    let ok = true;
-    const email = document.getElementById('login-email').value.trim();
-    const pw = document.getElementById('login-pw').value;
-    if (!email) { setErr('login-email-err','이메일을 입력해주세요.'); ok=false; }
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('login-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
-    else setErr('login-email-err','');
-    if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
-    else setErr('login-pw-err','');
-    if (ok) {
-      // Check registered user
-      const found = allUsers.find(u => u.email === email);
-      if (!found) {
-        setErr('login-email-err','가입되지 않은 이메일입니다.');
-        return;
-      }
-      if (found.pw !== pw) {
-        setErr('login-pw-err','비밀번호가 일치하지 않습니다.');
-        return;
-      }
-      userData = found;
-      loggedIn = true;
-      saveAuth();
-      updateNavAuth();
-      document.getElementById('login-form').classList.add('hidden');
-      document.getElementById('login-success').classList.add('show');
-    }
-  });
+  // ═══════════════
+  //  SIGNUP
+  // ═══════════════
+  document.getElementById('signup-btn').addEventListener('click', function() {
+    var last  = document.getElementById('signup-last').value.trim();
+    var first = document.getElementById('signup-first').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    var pw    = document.getElementById('signup-pw').value;
+    var pw2   = document.getElementById('signup-pw2').value;
+    var phone = document.getElementById('signup-phone').value.trim();
+    var addr  = document.getElementById('signup-addr').value.trim();
+    var addr2 = document.getElementById('signup-addr2').value.trim();
+    var ok = true;
 
-  // ── SIGNUP ──
-  document.getElementById('signup-btn').addEventListener('click', () => {
-    let ok = true;
-    const last = document.getElementById('signup-last').value.trim();
-    const first = document.getElementById('signup-first').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const pw = document.getElementById('signup-pw').value;
-    const pw2 = document.getElementById('signup-pw2').value;
-    const phone = document.getElementById('signup-phone').value.trim();
-    const addr = document.getElementById('signup-addr').value.trim();
-    const addr2 = document.getElementById('signup-addr2').value.trim();
-
-    if (!last) { setErr('signup-last-err','성을 입력해주세요.'); ok=false; } else setErr('signup-last-err','');
+    if (!last)  { setErr('signup-last-err','성을 입력해주세요.'); ok=false; } else setErr('signup-last-err','');
     if (!first) { setErr('signup-first-err','이름을 입력해주세요.'); ok=false; } else setErr('signup-first-err','');
     if (!email) { setErr('signup-email-err','이메일을 입력해주세요.'); ok=false; }
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('signup-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
     else setErr('signup-email-err','');
-    if (!pw) { setErr('signup-pw-err','비밀번호를 입력해주세요.'); ok=false; }
-    else if (pw.length < 8) { setErr('signup-pw-err','8자 이상 입력해주세요.'); ok=false; }
+    if (!pw)        { setErr('signup-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else if (pw.length<8) { setErr('signup-pw-err','8자 이상 입력해주세요.'); ok=false; }
     else setErr('signup-pw-err','');
-    if (!pw2) { setErr('signup-pw2-err','비밀번호를 다시 입력해주세요.'); ok=false; }
-    else if (pw !== pw2) { setErr('signup-pw2-err','비밀번호가 일치하지 않습니다.'); ok=false; }
+    if (!pw2)         { setErr('signup-pw2-err','비밀번호를 다시 입력해주세요.'); ok=false; }
+    else if (pw!==pw2){ setErr('signup-pw2-err','비밀번호가 일치하지 않습니다.'); ok=false; }
     else setErr('signup-pw2-err','');
     if (!phone) { setErr('signup-phone-err','전화번호를 입력해주세요.'); ok=false; }
     else if (!/^[\d\-]{10,14}$/.test(phone)) { setErr('signup-phone-err','유효한 전화번호를 입력해주세요.'); ok=false; }
     else setErr('signup-phone-err','');
     if (!addr) { setErr('signup-addr-err','주소를 입력해주세요.'); ok=false; } else setErr('signup-addr-err','');
 
-    // Check duplicate email
-    if (ok && allUsers.find(u => u.email === email)) {
-      setErr('signup-email-err','이미 가입된 이메일입니다.');
-      ok = false;
+    if (!ok) return;
+
+    // duplicate check
+    for (var d = 0; d < DB_USERS.length; d++) {
+      if (DB_USERS[d].email === email) { setErr('signup-email-err','이미 가입된 이메일입니다.'); return; }
     }
 
-    if (ok) {
-      userData = { last, first, email, pw, phone, addr, addr2, joinDate: new Date().toLocaleDateString('ko-KR') };
-      addUser(userData);
-      saveAuth();
-      document.getElementById('signup-form').classList.add('hidden');
-      document.getElementById('signup-success').classList.add('show');
+    DB_USERS.push({ last:last, first:first, email:email, pw:pw, phone:phone, addr:addr, addr2:addr2, joinDate: new Date().toLocaleDateString('ko-KR') });
+    persist();
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('signup-success').classList.add('show');
+  });
+
+  // ═══════════════
+  //  LOGIN
+  // ═══════════════
+  document.getElementById('login-btn').addEventListener('click', function() {
+    var email = document.getElementById('login-email').value.trim();
+    var pw    = document.getElementById('login-pw').value;
+    var ok = true;
+
+    if (!email) { setErr('login-email-err','이메일을 입력해주세요.'); ok=false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('login-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
+    else setErr('login-email-err','');
+    if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else setErr('login-pw-err','');
+    if (!ok) return;
+
+    var found = null;
+    for (var i = 0; i < DB_USERS.length; i++) {
+      if (DB_USERS[i].email === email) { found = DB_USERS[i]; break; }
     }
+    if (!found) { setErr('login-email-err','가입되지 않은 이메일입니다.'); return; }
+    if (found.pw !== pw) { setErr('login-pw-err','비밀번호가 일치하지 않습니다.'); return; }
+
+    curUser = found;
+    loggedIn = true;
+    persist();
+    syncNav();
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('login-success').classList.add('show');
   });
 
   // ── LOGOUT ──
+  function doLogout() { loggedIn = false; curUser = null; persist(); syncNav(); go('home'); }
   document.getElementById('logout-btn').addEventListener('click', doLogout);
-  document.getElementById('mmenu-logout').addEventListener('click', e => { e.preventDefault(); doLogout(); });
+  document.getElementById('mmenu-logout').addEventListener('click', function(e) { e.preventDefault(); doLogout(); });
 
-  // Enter key support for auth forms
-  document.querySelectorAll('.auth-input').forEach(input => {
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        // Skip admin inputs (handled separately)
-        if (input.classList.contains('adm-input')) return;
-        const card = input.closest('.auth-card');
-        if (!card) return;
-        const btn = card.querySelector('.auth-submit');
-        if (btn) btn.click();
-      }
-    });
+  // ── ADMIN ──
+  document.getElementById('adm-login-btn').addEventListener('click', function() {
+    var pw = document.getElementById('adm-pw').value;
+    if (pw === ADMIN_PW) { adminIn = true; renderAdmin(); }
+    else { document.getElementById('adm-pw-err').textContent = '비밀번호가 올바르지 않습니다.'; }
+  });
+  document.getElementById('adm-pw').addEventListener('keydown', function(e) { if (e.key==='Enter') document.getElementById('adm-login-btn').click(); });
+  document.getElementById('adm-logout-btn').addEventListener('click', function() { adminIn = false; go('home'); });
+  document.getElementById('adm-clear-btn').addEventListener('click', function() {
+    if (confirm('정말 전체 회원 데이터를 삭제하시겠습니까?')) { DB_USERS = []; curUser = null; loggedIn = false; persist(); syncNav(); renderAdmin(); }
+  });
+
+  // ── ENTER KEY ──
+  ['login-email','login-pw'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key==='Enter') document.getElementById('login-btn').click(); });
+  });
+  ['signup-last','signup-first','signup-email','signup-pw','signup-pw2','signup-phone','signup-addr','signup-addr2'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) { if (e.key==='Enter') document.getElementById('signup-btn').click(); });
   });
 
   // ── INIT ──
-  updateNavAuth();
+  syncNav();
   go('home');
 
 });
