@@ -630,6 +630,110 @@ footer {
   .pd-opt { width:100%; text-align:center; padding:10px; }
 }
 
+/* ── AUTH PAGES (Login / Signup) ── */
+.auth-page {
+  padding-top:calc(var(--nav-h) + 60px);
+  min-height:100svh;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding-left:var(--pad); padding-right:var(--pad);
+  padding-bottom:80px;
+}
+.auth-card {
+  width:100%; max-width:420px;
+  padding-top:20px;
+}
+.auth-tag {
+  font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--ink-l);
+  margin-bottom:28px;
+}
+.auth-h {
+  font-size:clamp(28px,6vw,44px);
+  font-weight:300; letter-spacing:-.03em;
+  line-height:1.0; color:var(--ink);
+  margin-bottom:12px;
+}
+.auth-desc {
+  font-size:13px; color:var(--ink-m);
+  line-height:1.7; margin-bottom:40px;
+}
+.auth-row { margin-bottom:20px; }
+.auth-row-half {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+.auth-label {
+  display:block;
+  font-size:10px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--ink-m);
+  margin-bottom:8px;
+}
+.auth-input {
+  width:100%;
+  font-family:var(--sans); font-size:14px; font-weight:300;
+  color:var(--ink); background:transparent;
+  border:none; border-bottom:1px solid var(--line);
+  padding:10px 0; outline:none;
+  transition:border-color .25s;
+}
+.auth-input::placeholder { color:var(--ink-l); font-weight:300; }
+.auth-input:focus { border-bottom-color:var(--ink); }
+.auth-input.err { border-bottom-color:#c44; }
+.auth-err-msg {
+  font-size:11px; color:#c44;
+  margin-top:5px; min-height:16px;
+}
+.auth-submit {
+  width:100%; margin-top:28px;
+}
+.auth-divider {
+  border-top:1px solid var(--line);
+  margin:32px 0;
+}
+.auth-switch {
+  font-size:12px; color:var(--ink-m);
+  text-align:center;
+}
+.auth-switch a {
+  color:var(--ink); font-weight:400;
+  transition:opacity .2s; cursor:pointer;
+}
+.auth-switch a:hover { opacity:.6; }
+.auth-success {
+  display:none;
+  text-align:center;
+  padding:60px 0 40px;
+}
+.auth-success.show { display:block; }
+.auth-success-icon {
+  width:48px; height:48px; margin:0 auto 24px;
+  border:1.5px solid var(--ink);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; color:var(--ink);
+}
+.auth-success h2 {
+  font-size:22px; font-weight:300;
+  letter-spacing:-.02em; margin-bottom:10px;
+}
+.auth-success p {
+  font-size:13px; color:var(--ink-m);
+  line-height:1.7; margin-bottom:28px;
+}
+.auth-form.hidden { display:none; }
+.auth-pw-wrap {
+  position:relative;
+}
+.auth-pw-toggle {
+  position:absolute; right:0; top:50%; transform:translateY(-50%);
+  font-size:10px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink-l); cursor:pointer; padding:4px 0;
+  transition:color .2s;
+}
+.auth-pw-toggle:hover { color:var(--ink); }
+@media(min-width:768px){
+  .auth-page { padding-top:calc(var(--nav-h) + 100px); }
+}
+
 /* ── HERO GRID (two-column) ── */
 .hero-grid { display:block; }
 .hero-media { margin-top:40px; }
@@ -681,6 +785,7 @@ footer {
   </ul>
   <div class="nav-r">
     <a href="#" class="nav-r-link" data-page="collection">View Objects</a>
+    <a href="#" class="nav-r-link" data-page="login">Login</a>
     <button class="hbg" id="hbg" aria-label="Menu">
       <span></span><span></span>
     </button>
@@ -692,6 +797,8 @@ footer {
   <a href="#" data-page="home">Home</a>
   <a href="#" data-page="collection">Objects</a>
   <a href="#" data-page="about">Studio</a>
+  <a href="#" data-page="login">Login</a>
+  <a href="#" data-page="signup">Sign up</a>
   <div class="mmenu-foot">
     <a href="https://instagram.com/obv_studio_" target="_blank">@obv_studio_</a>
     <a href="/cdn-cgi/l/email-protection#93e1fae5f6e1a0a4a4d3fdf2e5f6e1bdf0fcfe"><span class="__cf_email__" data-cfemail="14667d627166272323547a756271663a777b79">[email&#160;protected]</span></a>
@@ -1040,11 +1147,143 @@ footer {
 </div><!-- /about -->
 
 
+<!-- ══════════════════════════════════ -->
+<!--  LOGIN                             -->
+<!-- ══════════════════════════════════ -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Login Form -->
+      <div id="login-form" class="auth-form">
+        <p class="auth-tag">Account</p>
+        <h1 class="auth-h">Login</h1>
+        <p class="auth-desc">계정에 로그인하세요.</p>
+
+        <div class="auth-row">
+          <label class="auth-label" for="login-email">이메일</label>
+          <input class="auth-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+          <p class="auth-err-msg" id="login-email-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="login-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password">
+            <span class="auth-pw-toggle" id="login-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="login-pw-err"></p>
+        </div>
+
+        <button class="btn btn-dark auth-submit" id="login-btn">Login</button>
+
+        <div class="auth-divider"></div>
+        <p class="auth-switch">아직 계정이 없으신가요? <a href="#" data-page="signup">회원가입</a></p>
+      </div>
+
+      <!-- Login Success -->
+      <div id="login-success" class="auth-success">
+        <div class="auth-success-icon">✓</div>
+        <h2>환영합니다</h2>
+        <p>로그인되었습니다.</p>
+        <a href="#" class="btn btn-dark" data-page="home">홈으로 이동</a>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /login -->
+
+
+<!-- ══════════════════════════════════ -->
+<!--  SIGNUP                            -->
+<!-- ══════════════════════════════════ -->
+<div id="page-signup" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+
+      <!-- Signup Form -->
+      <div id="signup-form" class="auth-form">
+        <p class="auth-tag">Account</p>
+        <h1 class="auth-h">Sign up</h1>
+        <p class="auth-desc">OBV studio 계정을 만드세요.</p>
+
+        <div class="auth-row auth-row-half">
+          <div>
+            <label class="auth-label" for="signup-last">성</label>
+            <input class="auth-input" type="text" id="signup-last" placeholder="홍" autocomplete="family-name">
+            <p class="auth-err-msg" id="signup-last-err"></p>
+          </div>
+          <div>
+            <label class="auth-label" for="signup-first">이름</label>
+            <input class="auth-input" type="text" id="signup-first" placeholder="길동" autocomplete="given-name">
+            <p class="auth-err-msg" id="signup-first-err"></p>
+          </div>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-email">이메일</label>
+          <input class="auth-input" type="email" id="signup-email" placeholder="your@email.com" autocomplete="email">
+          <p class="auth-err-msg" id="signup-email-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-pw">비밀번호</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="signup-pw" placeholder="8자 이상" autocomplete="new-password">
+            <span class="auth-pw-toggle" id="signup-pw-toggle">보기</span>
+          </div>
+          <p class="auth-err-msg" id="signup-pw-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-pw2">비밀번호 확인</label>
+          <div class="auth-pw-wrap">
+            <input class="auth-input" type="password" id="signup-pw2" placeholder="비밀번호 재입력" autocomplete="new-password">
+          </div>
+          <p class="auth-err-msg" id="signup-pw2-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-phone">전화번호</label>
+          <input class="auth-input" type="tel" id="signup-phone" placeholder="010-0000-0000" autocomplete="tel">
+          <p class="auth-err-msg" id="signup-phone-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-addr">주소</label>
+          <input class="auth-input" type="text" id="signup-addr" placeholder="서울특별시 송파구 …" autocomplete="street-address">
+          <p class="auth-err-msg" id="signup-addr-err"></p>
+        </div>
+
+        <div class="auth-row">
+          <label class="auth-label" for="signup-addr2">상세주소 <span style="color:var(--ink-l);text-transform:none;letter-spacing:0;font-size:10px;">(선택)</span></label>
+          <input class="auth-input" type="text" id="signup-addr2" placeholder="동/호수" autocomplete="address-line2">
+        </div>
+
+        <button class="btn btn-dark auth-submit" id="signup-btn">회원가입</button>
+
+        <div class="auth-divider"></div>
+        <p class="auth-switch">이미 계정이 있으신가요? <a href="#" data-page="login">로그인</a></p>
+      </div>
+
+      <!-- Signup Success -->
+      <div id="signup-success" class="auth-success">
+        <div class="auth-success-icon">✓</div>
+        <h2>가입 완료</h2>
+        <p>OBV studio에 오신 것을 환영합니다.</p>
+        <a href="#" class="btn btn-dark" data-page="login">로그인하기</a>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /signup -->
+
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 document.addEventListener('DOMContentLoaded', function() {
 
   // ── ROUTER ──
-  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about'};
+  const PM = {home:'page-home',collection:'page-collection',product:'page-product','product-tbd':'page-product-tbd',about:'page-about',login:'page-login',signup:'page-signup'};
 
   function rvCheck() {
     document.querySelectorAll('.rv').forEach(el => {
@@ -1066,6 +1305,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     document.querySelectorAll('.nav-links a, .mmenu a').forEach(a => a.classList.toggle('on', a.dataset.page === k));
     document.getElementById('mmenu').classList.remove('open');
+    resetAuthPage(k);
     if (k === 'home') {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -1100,6 +1340,101 @@ document.addEventListener('DOMContentLoaded', function() {
         g.querySelectorAll('.pd-opt').forEach(x => x.classList.remove('on'));
         b.classList.add('on');
       });
+    });
+  });
+
+  // ── AUTH: Password toggle ──
+  document.querySelectorAll('.auth-pw-toggle').forEach(tog => {
+    tog.addEventListener('click', () => {
+      const input = tog.previousElementSibling;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      tog.textContent = show ? '숨기기' : '보기';
+    });
+  });
+
+  // ── AUTH: Reset forms when navigating to auth pages ──
+  function resetAuthPage(pageKey) {
+    if (pageKey === 'login') {
+      const f = document.getElementById('login-form');
+      const s = document.getElementById('login-success');
+      if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
+      if (s) s.classList.remove('show');
+    }
+    if (pageKey === 'signup') {
+      const f = document.getElementById('signup-form');
+      const s = document.getElementById('signup-success');
+      if (f) { f.classList.remove('hidden'); f.querySelectorAll('.auth-input').forEach(i => { i.value=''; i.classList.remove('err'); }); f.querySelectorAll('.auth-err-msg').forEach(e => e.textContent=''); }
+      if (s) s.classList.remove('show');
+    }
+  }
+
+  // helper
+  function setErr(id, msg) {
+    const el = document.getElementById(id);
+    const input = document.getElementById(id.replace('-err',''));
+    if (el) el.textContent = msg;
+    if (input) input.classList.toggle('err', !!msg);
+    return !msg;
+  }
+
+  // ── LOGIN ──
+  document.getElementById('login-btn').addEventListener('click', () => {
+    let ok = true;
+    const email = document.getElementById('login-email').value.trim();
+    const pw = document.getElementById('login-pw').value;
+    if (!email) { setErr('login-email-err','이메일을 입력해주세요.'); ok=false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('login-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
+    else setErr('login-email-err','');
+    if (!pw) { setErr('login-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else setErr('login-pw-err','');
+    if (ok) {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('login-success').classList.add('show');
+    }
+  });
+
+  // ── SIGNUP ──
+  document.getElementById('signup-btn').addEventListener('click', () => {
+    let ok = true;
+    const last = document.getElementById('signup-last').value.trim();
+    const first = document.getElementById('signup-first').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const pw = document.getElementById('signup-pw').value;
+    const pw2 = document.getElementById('signup-pw2').value;
+    const phone = document.getElementById('signup-phone').value.trim();
+    const addr = document.getElementById('signup-addr').value.trim();
+
+    if (!last) { setErr('signup-last-err','성을 입력해주세요.'); ok=false; } else setErr('signup-last-err','');
+    if (!first) { setErr('signup-first-err','이름을 입력해주세요.'); ok=false; } else setErr('signup-first-err','');
+    if (!email) { setErr('signup-email-err','이메일을 입력해주세요.'); ok=false; }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr('signup-email-err','유효한 이메일을 입력해주세요.'); ok=false; }
+    else setErr('signup-email-err','');
+    if (!pw) { setErr('signup-pw-err','비밀번호를 입력해주세요.'); ok=false; }
+    else if (pw.length < 8) { setErr('signup-pw-err','8자 이상 입력해주세요.'); ok=false; }
+    else setErr('signup-pw-err','');
+    if (!pw2) { setErr('signup-pw2-err','비밀번호를 다시 입력해주세요.'); ok=false; }
+    else if (pw !== pw2) { setErr('signup-pw2-err','비밀번호가 일치하지 않습니다.'); ok=false; }
+    else setErr('signup-pw2-err','');
+    if (!phone) { setErr('signup-phone-err','전화번호를 입력해주세요.'); ok=false; }
+    else if (!/^[\d\-]{10,14}$/.test(phone)) { setErr('signup-phone-err','유효한 전화번호를 입력해주세요.'); ok=false; }
+    else setErr('signup-phone-err','');
+    if (!addr) { setErr('signup-addr-err','주소를 입력해주세요.'); ok=false; } else setErr('signup-addr-err','');
+
+    if (ok) {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('signup-success').classList.add('show');
+    }
+  });
+
+  // Enter key support for auth forms
+  document.querySelectorAll('.auth-input').forEach(input => {
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const card = input.closest('.auth-card');
+        const btn = card.querySelector('.auth-submit');
+        if (btn) btn.click();
+      }
     });
   });
 
