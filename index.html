@@ -1934,9 +1934,8 @@ footer {
 
 
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -2001,20 +2000,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ═════════════════════════════════
-  //  FIREBASE CONFIG
+  //  SUPABASE CONFIG
   // ═════════════════════════════════
-  // ★★★ 아래 값을 본인의 Firebase 프로젝트 설정으로 교체하세요 ★★★
-  var firebaseConfig = {
-    apiKey: "여기에-API-KEY",
-    authDomain: "여기에-프로젝트.firebaseapp.com",
-    projectId: "여기에-프로젝트-ID",
-    storageBucket: "여기에-프로젝트.appspot.com",
-    messagingSenderId: "여기에-SENDER-ID",
-    appId: "여기에-APP-ID"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  var db = firebase.firestore();
+  var SUPABASE_URL = 'https://eymmmceqcrmsuzjgmzhl.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_1b-fBQE8_IKDnvJeD6r4Vw_hbhHN3Kh';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // ═════════════════════════════════
   //  AUTH STATE (session only)
@@ -2094,59 +2084,50 @@ document.addEventListener('DOMContentLoaded', function() {
     var list = document.getElementById('adm-list');
     list.innerHTML = '<p class="adm-no-users">불러오는 중...</p>';
 
-    db.collection('users').orderBy('createdAt', 'desc').get()
-      .then(function(snap) {
+    sb.from('users').select('*').order('created_at', {ascending:false})
+      .then(function(res) {
+        var data = res.data || [];
         var today = new Date().toLocaleDateString('ko-KR');
         var todayCount = 0;
         var html = '';
-
-        if (snap.empty) {
+        if (data.length === 0) {
           html = '<p class="adm-no-users">등록된 회원이 없습니다.</p>';
         } else {
-          var idx = 0;
-          snap.forEach(function(doc) {
-            idx++;
-            var u = doc.data();
-            if (u.joinDate === today) todayCount++;
-            var name = (u.last || '') + (u.first || '') || '—';
+          data.forEach(function(u, i) {
+            if (u.join_date === today) todayCount++;
+            var name = (u.last_name || '') + (u.first_name || '') || '—';
             var addrStr = (u.addr || '—') + (u.addr2 ? ' ' + u.addr2 : '');
             html += '<div class="adm-user-card">'
-              + '<p class="adm-user-num">#' + idx + '</p>'
+              + '<p class="adm-user-num">#' + (i+1) + '</p>'
               + '<p class="adm-user-name">' + name + '</p>'
               + '<p class="adm-user-detail">'
               + (u.email || '—') + '<br>'
               + (u.phone || '—') + '<br>'
               + addrStr + '<br>'
-              + '가입일: ' + (u.joinDate || '—')
+              + '가입일: ' + (u.join_date || '—')
               + '</p></div>';
           });
         }
-
         list.innerHTML = html;
-        document.getElementById('adm-total').textContent = snap.size;
+        document.getElementById('adm-total').textContent = data.length;
         document.getElementById('adm-today').textContent = todayCount;
-      })
-      .catch(function(err) {
-        list.innerHTML = '<p class="adm-no-users" style="color:#c44;">서버 오류: ' + err.message + '</p>';
       });
 
     // Fetch bookings
     var bookList = document.getElementById('adm-book-list');
     bookList.innerHTML = '<p class="adm-no-users">불러오는 중...</p>';
 
-    db.collection('bookings').orderBy('createdAt', 'desc').get()
-      .then(function(snap) {
+    sb.from('bookings').select('*').order('created_at', {ascending:false})
+      .then(function(res) {
+        var data = res.data || [];
         var bhtml = '';
-        if (snap.empty) {
+        if (data.length === 0) {
           bhtml = '<p class="adm-no-users">예약 문의가 없습니다.</p>';
         } else {
-          var bidx = 0;
-          snap.forEach(function(doc) {
-            bidx++;
-            var b = doc.data();
+          data.forEach(function(b, i) {
             var times = (b.times || []).join(', ');
             bhtml += '<div class="adm-user-card">'
-              + '<p class="adm-user-num">#' + bidx + ' · ' + (b.status || 'pending') + '</p>'
+              + '<p class="adm-user-num">#' + (i+1) + ' · ' + (b.status || 'pending') + '</p>'
               + '<p class="adm-user-name">' + (b.name || '—') + '</p>'
               + '<p class="adm-user-detail">'
               + '날짜: ' + (b.date || '—') + '<br>'
@@ -2160,10 +2141,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         }
         bookList.innerHTML = bhtml;
-        document.getElementById('adm-book-count').textContent = snap.size;
-      })
-      .catch(function(err) {
-        bookList.innerHTML = '<p class="adm-no-users" style="color:#c44;">예약 로드 오류: ' + err.message + '</p>';
+        document.getElementById('adm-book-count').textContent = data.length;
       });
   }
 
@@ -2216,22 +2194,22 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.textContent = '처리 중...';
     btn.disabled = true;
 
-    // Check duplicate email in Firestore
-    db.collection('users').where('email', '==', email).get()
-      .then(function(snap) {
-        if (!snap.empty) {
+    // Check duplicate email in Supabase
+    sb.from('users').select('id').eq('email', email)
+      .then(function(res) {
+        if (res.data && res.data.length > 0) {
           setErr('signup-email-err','이미 가입된 이메일입니다.');
           btn.textContent = '가입하기'; btn.disabled = false;
           return;
         }
-        // Save to Firestore
+        // Save to Supabase
         var userData = {
-          last: last, first: first, email: email, pw: pw,
+          last_name: last, first_name: first, email: email, pw: pw,
           phone: phone, addr: addr, addr2: addr2,
-          joinDate: new Date().toLocaleDateString('ko-KR'),
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          join_date: new Date().toLocaleDateString('ko-KR')
         };
-        return db.collection('users').add(userData).then(function() {
+        return sb.from('users').insert([userData]).then(function(r) {
+          if (r.error) { setErr('signup-email-err','서버 오류: ' + r.error.message); btn.textContent = '가입하기'; btn.disabled = false; return; }
           document.getElementById('signup-form').classList.add('hidden');
           document.getElementById('signup-success').classList.add('show');
           document.getElementById('signup-count').textContent = '';
@@ -2245,7 +2223,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // ═══════════════
-  //  LOGIN (Firebase)
+  //  LOGIN (Supabase)
   // ═══════════════
   document.getElementById('login-btn').addEventListener('click', function() {
     var email = document.getElementById('login-email').value.trim();
@@ -2263,20 +2241,21 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.textContent = '로그인 중...';
     btn.disabled = true;
 
-    db.collection('users').where('email', '==', email).get()
-      .then(function(snap) {
-        if (snap.empty) {
+    sb.from('users').select('*').eq('email', email)
+      .then(function(res) {
+        var data = res.data || [];
+        if (data.length === 0) {
           setErr('login-email-err','가입되지 않은 이메일입니다.');
           btn.textContent = '로그인'; btn.disabled = false;
           return;
         }
-        var found = snap.docs[0].data();
+        var found = data[0];
         if (found.pw !== pw) {
           setErr('login-pw-err','비밀번호가 일치하지 않습니다.');
           btn.textContent = '로그인'; btn.disabled = false;
           return;
         }
-        curUser = found;
+        curUser = { last: found.last_name, first: found.first_name, email: found.email, phone: found.phone, addr: found.addr, addr2: found.addr2, joinDate: found.join_date };
         loggedIn = true;
         syncNav();
         document.getElementById('login-form').classList.add('hidden');
@@ -2294,7 +2273,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('logout-btn').addEventListener('click', doLogout);
   document.getElementById('mmenu-logout').addEventListener('click', function(e) { e.preventDefault(); doLogout(); });
 
-  // ── ADMIN (Firebase) ──
+  // ── ADMIN (Supabase) ──
   document.getElementById('adm-login-btn').addEventListener('click', function() {
     var pw = document.getElementById('adm-pw').value;
     if (pw === ADMIN_PW) { adminIn = true; renderAdmin(); }
@@ -2304,12 +2283,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('adm-logout-btn').addEventListener('click', function() { adminIn = false; go('home'); });
   document.getElementById('adm-clear-btn').addEventListener('click', function() {
     if (confirm('정말 전체 회원 데이터를 삭제하시겠습니까?')) {
-      // Delete all docs in users collection
-      db.collection('users').get().then(function(snap) {
-        var batch = db.batch();
-        snap.docs.forEach(function(doc) { batch.delete(doc.ref); });
-        return batch.commit();
-      }).then(function() {
+      sb.from('users').delete().neq('id', 0).then(function() {
         curUser = null; loggedIn = false; syncNav(); renderAdmin();
       });
     }
@@ -2338,16 +2312,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function loadBookings(callback) {
     var startDate = calYear + '-' + (calMonth+1) + '-1';
     var endDate = calYear + '-' + (calMonth+1) + '-31';
-    db.collection('bookings')
-      .where('date', '>=', startDate)
-      .where('date', '<=', endDate)
-      .get()
-      .then(function(snap) {
-        // Reset for this month
+    sb.from('bookings').select('date,times,name').gte('date', startDate).lte('date', endDate)
+      .then(function(res) {
+        var data = res.data || [];
         var monthPrefix = calYear + '-' + (calMonth+1) + '-';
-        Object.keys(bookedData).forEach(function(k) { if (k.indexOf(monthPrefix) === 0 || k.startsWith(calYear + '-' + (calMonth+1))) delete bookedData[k]; });
-        snap.forEach(function(doc) {
-          var b = doc.data();
+        Object.keys(bookedData).forEach(function(k) { if (k.indexOf(monthPrefix) === 0) delete bookedData[k]; });
+        data.forEach(function(b) {
           if (!b.date || !b.times) return;
           if (!bookedData[b.date]) bookedData[b.date] = [];
           b.times.forEach(function(t) {
@@ -2493,12 +2463,12 @@ document.addEventListener('DOMContentLoaded', function() {
       hours: selectedTimes.length,
       purpose: purpose, memo: memo,
       parking: parking, carnum: parking ? carnum : '',
-      status: 'pending',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      status: 'pending'
     };
 
-    db.collection('bookings').add(booking)
-      .then(function() {
+    sb.from('bookings').insert([booking])
+      .then(function(r) {
+        if (r.error) { alert('전송 실패: ' + r.error.message); btn.textContent = '예약 문의하기'; btn.disabled = false; return; }
         document.getElementById('sp-book-form').style.display = 'none';
         document.getElementById('sp-book-success').classList.add('show');
         btn.textContent = '예약 문의하기'; btn.disabled = false;
