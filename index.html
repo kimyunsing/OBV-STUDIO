@@ -1024,6 +1024,15 @@ footer {
 }
 .sp-time-slot:hover { border-color:var(--ink); color:var(--ink); }
 .sp-time-slot.selected { background:var(--ink); color:#fff; border-color:var(--ink); }
+.sp-time-slot.booked {
+  background:var(--bg-ss); color:var(--ink-l); border-color:var(--bg-ss);
+  cursor:default; pointer-events:none; position:relative;
+}
+.sp-time-slot.booked::after {
+  content:attr(data-who);
+  display:block; font-size:8px; letter-spacing:.02em;
+  color:var(--ink-l); margin-top:2px;
+}
 
 /* Booking form */
 .sp-form { margin-top:32px; }
@@ -1587,6 +1596,22 @@ footer {
           <input class="sp-form-input" type="text" id="sp-purpose" placeholder="촬영, 미팅, 전시 등">
         </div>
         <div class="sp-form-row">
+          <label class="sp-form-label">주차 여부 *</label>
+          <div style="display:flex;gap:12px;margin-top:6px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-m);cursor:pointer;">
+              <input type="radio" name="sp-parking" value="yes" id="sp-parking-yes" style="accent-color:var(--ink);" onclick="document.getElementById('sp-carnum-wrap').style.display='block'"> 주차 필요
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-m);cursor:pointer;">
+              <input type="radio" name="sp-parking" value="no" id="sp-parking-no" checked style="accent-color:var(--ink);" onclick="document.getElementById('sp-carnum-wrap').style.display='none';document.getElementById('sp-carnum').value=''"> 주차 불필요
+            </label>
+          </div>
+        </div>
+        <div class="sp-form-row" id="sp-carnum-wrap" style="display:none;">
+          <label class="sp-form-label" for="sp-carnum">차량 번호</label>
+          <input class="sp-form-input" type="text" id="sp-carnum" placeholder="12가 3456">
+          <p class="sp-form-err" id="sp-carnum-err"></p>
+        </div>
+        <div class="sp-form-row">
           <label class="sp-form-label" for="sp-memo">요청사항</label>
           <textarea class="sp-form-textarea" id="sp-memo" placeholder="기타 요청사항이 있으시면 적어주세요."></textarea>
         </div>
@@ -2129,6 +2154,7 @@ document.addEventListener('DOMContentLoaded', function() {
               + '연락처: ' + (b.phone || '—') + '<br>'
               + '이메일: ' + (b.email || '—') + '<br>'
               + '목적: ' + (b.purpose || '—') + '<br>'
+              + (b.parking ? '주차: 예 (' + (b.carnum || '—') + ')<br>' : '')
               + (b.memo ? '메모: ' + b.memo : '')
               + '</p></div>';
           });
@@ -2303,9 +2329,35 @@ document.addEventListener('DOMContentLoaded', function() {
   //  SPACE: Calendar + Booking
   // ═══════════════════════════════
   var calYear, calMonth, selectedDate = null, selectedTimes = [];
-  var today = new Date();
-  calYear = today.getFullYear();
-  calMonth = today.getMonth();
+  var bookedData = {}; // { '2025-3-15': [{time:'10:00',name:'홍길동'}, ...] }
+  var todayDate = new Date();
+  calYear = todayDate.getFullYear();
+  calMonth = todayDate.getMonth();
+
+  // Load bookings for visible month from Firebase
+  function loadBookings(callback) {
+    var startDate = calYear + '-' + (calMonth+1) + '-1';
+    var endDate = calYear + '-' + (calMonth+1) + '-31';
+    db.collection('bookings')
+      .where('date', '>=', startDate)
+      .where('date', '<=', endDate)
+      .get()
+      .then(function(snap) {
+        // Reset for this month
+        var monthPrefix = calYear + '-' + (calMonth+1) + '-';
+        Object.keys(bookedData).forEach(function(k) { if (k.indexOf(monthPrefix) === 0 || k.startsWith(calYear + '-' + (calMonth+1))) delete bookedData[k]; });
+        snap.forEach(function(doc) {
+          var b = doc.data();
+          if (!b.date || !b.times) return;
+          if (!bookedData[b.date]) bookedData[b.date] = [];
+          b.times.forEach(function(t) {
+            bookedData[b.date].push({ time: t, name: b.name || '예약됨' });
+          });
+        });
+        if (callback) callback();
+      })
+      .catch(function() { if (callback) callback(); });
+  }
 
   function renderCal() {
     var title = document.getElementById('sp-cal-title');
@@ -2321,13 +2373,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var firstDay = new Date(calYear, calMonth, 1).getDay();
     var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-    var todayStr = today.getFullYear() + '-' + (today.getMonth()+1) + '-' + today.getDate();
+    var todayStr = todayDate.getFullYear() + '-' + (todayDate.getMonth()+1) + '-' + todayDate.getDate();
 
     for (var i = 0; i < firstDay; i++) html += '<div class="sp-cal-day empty"></div>';
     for (var d = 1; d <= daysInMonth; d++) {
       var dateObj = new Date(calYear, calMonth, d);
       var dateStr = calYear + '-' + (calMonth+1) + '-' + d;
-      var isPast = dateObj < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      var isPast = dateObj < new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
       var isToday = dateStr === todayStr;
       var cls = 'sp-cal-day';
       if (isPast) cls += ' disabled';
@@ -2337,7 +2389,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     grid.innerHTML = html;
 
-    // Bind clicks
     grid.querySelectorAll('.sp-cal-day:not(.disabled):not(.empty):not(.booked)').forEach(function(el) {
       el.addEventListener('click', function() {
         selectedDate = el.dataset.date;
@@ -2354,13 +2405,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!grid) return;
     var slots = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
     var html = '';
+    var dayBookings = (selectedDate && bookedData[selectedDate]) ? bookedData[selectedDate] : [];
+
     slots.forEach(function(s) {
-      var cls = 'sp-time-slot';
-      if (selectedTimes.indexOf(s) >= 0) cls += ' selected';
-      html += '<button class="' + cls + '" data-time="' + s + '">' + s + '</button>';
+      var booked = null;
+      for (var i = 0; i < dayBookings.length; i++) {
+        if (dayBookings[i].time === s) { booked = dayBookings[i]; break; }
+      }
+      if (booked) {
+        html += '<button class="sp-time-slot booked" data-time="' + s + '" data-who="' + booked.name + '" disabled>' + s + '</button>';
+      } else {
+        var cls = 'sp-time-slot';
+        if (selectedTimes.indexOf(s) >= 0) cls += ' selected';
+        html += '<button class="' + cls + '" data-time="' + s + '">' + s + '</button>';
+      }
     });
     grid.innerHTML = html;
-    grid.querySelectorAll('.sp-time-slot').forEach(function(el) {
+
+    grid.querySelectorAll('.sp-time-slot:not(.booked)').forEach(function(el) {
       el.addEventListener('click', function() {
         var t = el.dataset.time;
         var idx = selectedTimes.indexOf(t);
@@ -2385,17 +2447,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Calendar nav
+  // Calendar nav — reload bookings on month change
   document.getElementById('sp-cal-prev').addEventListener('click', function() {
     calMonth--;
     if (calMonth < 0) { calMonth = 11; calYear--; }
-    renderCal();
+    loadBookings(function() { renderCal(); renderTimes(); });
   });
   document.getElementById('sp-cal-next').addEventListener('click', function() {
     calMonth++;
     if (calMonth > 11) { calMonth = 0; calYear++; }
-    renderCal();
+    loadBookings(function() { renderCal(); renderTimes(); });
   });
+
+  // Parking toggle is handled via inline onclick
 
   // Booking form submit
   document.getElementById('sp-submit-btn').addEventListener('click', function() {
@@ -2404,12 +2468,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var email = document.getElementById('sp-email').value.trim();
     var purpose = document.getElementById('sp-purpose').value.trim();
     var memo = document.getElementById('sp-memo').value.trim();
+    var parking = document.querySelector('input[name="sp-parking"]:checked').value === 'yes';
+    var carnum = document.getElementById('sp-carnum').value.trim();
     var ok = true;
 
     if (!name) { document.getElementById('sp-name-err').textContent = '이름을 입력해주세요.'; ok = false; }
     else { document.getElementById('sp-name-err').textContent = ''; }
     if (!phone) { document.getElementById('sp-phone-err').textContent = '연락처를 입력해주세요.'; ok = false; }
     else { document.getElementById('sp-phone-err').textContent = ''; }
+    if (parking && !carnum) { document.getElementById('sp-carnum-err').textContent = '차량 번호를 입력해주세요.'; ok = false; }
+    else { var ce = document.getElementById('sp-carnum-err'); if (ce) ce.textContent = ''; }
     if (!selectedDate) { alert('날짜를 선택해 주세요.'); return; }
     if (selectedTimes.length === 0) { alert('시간을 선택해 주세요.'); return; }
     if (!ok) return;
@@ -2424,6 +2492,7 @@ document.addEventListener('DOMContentLoaded', function() {
       times: selectedTimes,
       hours: selectedTimes.length,
       purpose: purpose, memo: memo,
+      parking: parking, carnum: parking ? carnum : '',
       status: 'pending',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -2440,9 +2509,11 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 
-  // Init calendar and time slots
-  renderCal();
-  renderTimes();
+  // Init calendar — load bookings first then render
+  loadBookings(function() {
+    renderCal();
+    renderTimes();
+  });
 
   // Reset space page on enter
   var origOnPageEnter = onPageEnter;
@@ -2452,17 +2523,18 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedTimes = [];
       calYear = new Date().getFullYear();
       calMonth = new Date().getMonth();
-      renderCal();
-      renderTimes();
+      loadBookings(function() { renderCal(); renderTimes(); });
       updateSelectedInfo();
       document.getElementById('sp-book-form').style.display = 'block';
       document.getElementById('sp-book-success').classList.remove('show');
-      ['sp-name','sp-phone','sp-email','sp-purpose','sp-memo'].forEach(function(id) {
+      ['sp-name','sp-phone','sp-email','sp-purpose','sp-memo','sp-carnum'].forEach(function(id) {
         var el = document.getElementById(id); if (el) el.value = '';
       });
-      ['sp-name-err','sp-phone-err','sp-email-err'].forEach(function(id) {
+      ['sp-name-err','sp-phone-err','sp-email-err','sp-carnum-err'].forEach(function(id) {
         var el = document.getElementById(id); if (el) el.textContent = '';
       });
+      document.getElementById('sp-parking-no').checked = true;
+      document.getElementById('sp-carnum-wrap').style.display = 'none';
     }
     origOnPageEnter(k);
   };
