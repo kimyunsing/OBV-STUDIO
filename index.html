@@ -14,7 +14,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);font-size:14p
 a{color:inherit;text-decoration:none;}button{font-family:inherit;background:none;border:none;cursor:pointer;color:inherit;}img{display:block;max-width:100%;}
 .page{display:none;}.page.active{display:block;}
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gutter);border-bottom:1px solid var(--line);}
-.nav-logo{height:40px;cursor:pointer;}.nav-logo img{height:100%;}
+.nav-logo{height:56px;cursor:pointer;}.nav-logo img{height:100%;}
 .nav-links{display:none;list-style:none;gap:28px;}
 @media(min-width:768px){.nav-links{display:flex;}}
 .nav-links a{font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-m);transition:color .2s;}
@@ -33,7 +33,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .btn-line{background:transparent;color:var(--ink);border:1px solid var(--line);}.btn-line:hover{border-color:var(--ink);}
 .rv{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease;}.rv.in{opacity:1;transform:none;}
 .hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 var(--gutter);position:relative;}
-.hero-logo{width:clamp(180px,35vw,340px);margin-bottom:32px;opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;}
+.hero-logo{width:clamp(280px,50vw,520px);margin-bottom:32px;opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;}
 .hero-logo img{width:100%;}
 .hero-tagline{font-family:var(--body);font-size:clamp(11px,1.8vw,15px);font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-m);opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;}
 .hero-scroll{position:absolute;bottom:32px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-l);writing-mode:vertical-rl;opacity:0;animation:fadeUp 1s ease 1s forwards;}
@@ -70,7 +70,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .about-contact{font-size:13px;color:var(--ink-m);line-height:2.4;}.about-contact a{transition:color .2s;}.about-contact a:hover{color:var(--ink);}
 @media(min-width:768px){.about-page{padding-top:calc(var(--nav-h)+80px);}.about-section{padding:72px var(--gutter);}}
 footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
-.ft-top{display:flex;flex-direction:column;gap:32px;margin-bottom:40px;}.ft-logo{height:18px;}.ft-logo img{height:100%;filter:invert(1);}
+.ft-top{display:flex;flex-direction:column;gap:32px;margin-bottom:40px;}.ft-logo{height:28px;}.ft-logo img{height:100%;filter:invert(1);}
 .ft-links{display:flex;flex-direction:column;gap:10px;}.ft-links a{font-size:11px;font-weight:300;letter-spacing:.04em;color:rgba(255,255,255,.45);transition:color .2s;}.ft-links a:hover{color:#fff;}
 .ft-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;}.ft-copy{font-size:10px;letter-spacing:.04em;color:rgba(255,255,255,.2);}
 @media(min-width:768px){.ft-top{flex-direction:row;justify-content:space-between;}}
@@ -117,7 +117,8 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 <body>
 <nav>
   <div class="nav-logo" data-page="home"><img src="logo.png" alt="obvio"></div>
-  <ul class="nav-links"><li><a href="#" data-page="space">Space</a></li><li><a href="#" data-page="about">About</a></li></ul>
+  <a href="#" data-page="objects">Objects</a>
+  <ul class="nav-links"><li><a href="#" data-page="space">Space</a></li><li><a href="#" data-page="objects">Objects</a></li><li><a href="#" data-page="about">About</a></li></ul>
   <div class="nav-r">
     <a href="#" data-page="login" id="nav-login">Login</a>
     <a href="#" data-page="mypage" id="nav-mypage" class="nav-auth-hide">My page</a>
@@ -126,6 +127,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 </nav>
 <div class="mmenu" id="mmenu">
   <a href="#" data-page="space">Space</a>
+  <a href="#" data-page="objects">Objects</a>
   <a href="#" data-page="about">About</a>
   <a href="#" data-page="login" id="mmenu-login">Login</a>
   <a href="#" data-page="signup" id="mmenu-signup">Sign up</a>
@@ -144,34 +146,51 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <span class="hero-scroll">Scroll</span>
   </section>
   <section class="home-strip rv">
-    <p class="home-strip-tag">Space</p>
-    <h2 class="home-strip-h">촬영, 전시, 쇼룸, 미팅</h2>
-    <p class="home-strip-p">서울 잠실에 위치한 미니멀 스튜디오 공간.</p>
+    
+    <h2 class="home-strip-h">About Space</h2>
+    <p class="home-strip-p">A minimal studio space in Jamsil, Seoul.<br>Photography, exhibitions, showrooms, and meetings.</p>
     <a href="#" class="home-strip-link" data-page="space">View Space</a>
     <div class="home-space-img"><span>STUDIO INTERIOR</span></div>
   </section>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <a href="#" data-page="objects">Objects</a>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
 
 <div id="page-space" class="page"><div class="sp-page">
   <div class="sp-section"><p class="sp-tag">Gallery</p><div class="sp-gallery"><div class="sp-gallery-item"><span>01</span></div><div class="sp-gallery-item"><span>02</span></div><div class="sp-gallery-item"><span>03</span></div><div class="sp-gallery-item"><span>04</span></div></div></div>
-  <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">기본 인원</span><span class="sp-info-v">3인 (추가 1인당 ₩5,000)</span></div><div class="sp-info-item"><span class="sp-info-k">최소 예약</span><span class="sp-info-v">2시간</span></div><div class="sp-info-item"><span class="sp-info-k">출입</span><span class="sp-info-v">도어락 (비밀번호 예약 시 안내)</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
+  <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">면적</span><span class="sp-info-v">119㎡</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
   <div class="sp-section"><p class="sp-tag">Equipment</p><p class="sp-h">구비 물품</p><p class="sp-p">스팀 다리미 · 포맥스 E400 조명 2대 (소프트박스 포함) · 마샬 액톤 3 블루투스 스피커 · 전신거울 · 화장대</p></div>
-  <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 40,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div></div>
+  <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 40,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">3명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div></div>
   <div class="sp-section"><p class="sp-tag">전시 대관</p><p class="sp-h">전시 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">1일</span><span class="sp-price-val">₩ 260,000</span></div><div class="sp-price-row"><span class="sp-price-label">3일</span><span class="sp-price-val">₩ 700,000</span></div><div class="sp-price-row"><span class="sp-price-label">7일</span><span class="sp-price-val">₩ 1,600,000</span></div><div class="sp-price-row"><span class="sp-price-label">2주</span><span class="sp-price-val">₩ 3,000,000</span></div></div><p class="sp-price-note">사전 답사 가능 · 전시 계획서 사전 제출 필수 · 오프닝 행사 가능</p></div>
   <div class="sp-section"><p class="sp-tag">촬영 안내</p><p class="sp-p">실내 외부 신발 착용 불가 (실내 슬리퍼 구비) · 바닥 오염/훼손 시 배상 · 가구/소품 파손 시 실비 배상 · 사용 후 원위치 정리 필수</p></div>
   <div class="sp-section"><p class="sp-tag">전시 안내</p><p class="sp-p">실내 신발 착용 가능 (입장 전 매트에서 이물질 제거) · 스튜디오 내 가구 디스플레이 용도 사용 가능 · 와이어 레일 설치 가능 · 설치: 계약 시작일 오전 6시부터 · 철수: 계약 종료일 오후 10시까지</p></div>
   <div class="sp-section"><p class="sp-tag">증빙</p><p class="sp-p">개인: 현금영수증 · 사업자: 세금계산서 (부가세 10% 별도)</p></div>
   <div class="sp-section"><p class="sp-tag">주차</p><p class="sp-p">1대 가능 (차량번호 사전 전달 필수)<br><br>추가 주차:<br>새마을시장노상공영주차장 (도보 9분)<br>봉상시길노상공영주차장 (도보 8분)<br>아시아공원공영주차장 (도보 8분)</p></div>
 </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <a href="#" data-page="objects">Objects</a>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
 
 <div id="page-about" class="page"><div class="about-page">
+
+<div id="page-objects" class="page"><div class="sp-page">
+  <div class="sp-section"><p class="sp-tag">Objects</p><p class="sp-h">Furniture & Goods</p></div>
+  <div class="sp-section" style="padding-top:0;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">01</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
+    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">02</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
+    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">03</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
+    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">04</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
+    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;grid-column:1/-1;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">05</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
+  </div></div>
+</div>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+</div>
+
   <div class="about-section"><p class="about-tag">About</p><p class="about-h">obvio studio</p><p class="about-p">Clear. Obvious. obvio.<br>2026년 서울 잠실에서 시작된 스튜디오.</p></div>
   <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p><a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p></div></div>
 </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <a href="#" data-page="objects">Objects</a>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
 
 <div id="page-login" class="page"><div class="auth-page"><div class="auth-card">
@@ -223,7 +242,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var PM={home:'page-home',space:'page-space',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
+  var PM={home:'page-home',space:'page-space',objects:'page-objects',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
   function rvCheck(){document.querySelectorAll('.rv').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight+10)el.classList.add('in');});}
   window.addEventListener('scroll',rvCheck,{passive:true});
   function go(k){Object.values(PM).forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('active');});var t=document.getElementById(PM[k]);if(t){t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});t.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});setTimeout(rvCheck,100);}document.querySelectorAll('.nav-links a,.mmenu a').forEach(function(a){if(a.dataset&&a.dataset.page)a.classList.toggle('on',a.dataset.page===k);});document.getElementById('mmenu').classList.remove('open');onPageEnter(k);}
