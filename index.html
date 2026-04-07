@@ -7,12 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFFFFF;--ink:#111;--ink-m:#555;--ink-l:#999;--line:rgba(17,17,17,.1);--nav-h:64px;--pad:20px;--maxw:1200px;--gutter:max(var(--pad),calc((100vw - var(--maxw))/2));--head:'Syne',sans-serif;--body:'DM Sans',sans-serif;}
+:root{--bg:#fff;--ink:#111;--ink-m:#555;--ink-l:#999;--line:rgba(17,17,17,.1);--nav-h:64px;--pad:20px;--maxw:1200px;--gutter:max(var(--pad),calc((100vw - var(--maxw))/2));--head:'Syne',sans-serif;--body:'DM Sans',sans-serif;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
 body{font-family:var(--body);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.7;font-weight:300;}
 a{color:inherit;text-decoration:none;}button{font-family:inherit;background:none;border:none;cursor:pointer;color:inherit;}img{display:block;max-width:100%;}
 .page{display:none;}.page.active{display:block;}
+
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gutter);border-bottom:1px solid var(--line);}
 .nav-logo{height:20px;cursor:pointer;}.nav-logo img{height:100%;}
 .nav-links{display:none;list-style:none;gap:28px;}
@@ -24,52 +26,62 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 @media(min-width:768px){.nav-r a{display:block;}}.nav-r a:hover{color:var(--ink);}
 .hbg{display:flex;flex-direction:column;gap:5px;padding:4px;}.hbg span{display:block;width:20px;height:1px;background:var(--ink);}
 @media(min-width:768px){.hbg{display:none;}}
-.mmenu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:190;background:var(--bg);padding:48px var(--pad);flex-direction:column;}
-.mmenu.open{display:flex;overflow-y:auto;}.mmenu a{font-family:var(--body);font-size:20px;font-weight:400;color:var(--ink);padding:20px 0 24px;border-bottom:none;line-height:1.6;display:block;overflow:visible;position:relative;}
-.mmenu a::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--line);}
-.mmenu-foot{margin-top:auto;padding-top:24px;}.mmenu-foot a{font-size:11px;color:var(--ink-l);padding:8px 0;border-bottom:none;display:block;font-family:var(--body);position:relative;}
-.mmenu-foot a::after{display:none;}
 .nav-auth-hide{display:none !important;}
+
+/* MOBILE MENU */
+.mmenu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:190;background:var(--bg);padding:48px var(--pad);flex-direction:column;overflow-y:auto;}
+.mmenu.open{display:flex;}
+.mmenu a{font-family:var(--body);font-size:20px;font-weight:400;color:var(--ink);padding:20px 0 24px;line-height:1.6;display:block;overflow:visible;position:relative;}
+.mmenu a::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--line);}
+.mmenu-foot{margin-top:auto;padding-top:24px;}
+.mmenu-foot a{font-size:11px;color:var(--ink-l);padding:8px 0;display:block;font-family:var(--body);position:relative;}
+.mmenu-foot a::after{display:none;}
+
+/* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:14px 28px;transition:all .25s;cursor:pointer;font-family:var(--body);}
 .btn-dark{background:var(--ink);color:#fff;border:1px solid var(--ink);}.btn-dark:hover{background:#333;}
-.btn-line{background:transparent;color:var(--ink);border:1px solid var(--line);}.btn-line:hover{border-color:var(--ink);}
+
+/* REVEALS */
 .rv{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease;}.rv.in{opacity:1;transform:none;}
-.page-enter .sp-section,.page-enter .about-section{opacity:0;transform:translateY(20px);animation:pageSlideIn .8s ease forwards;}
-.page-enter .sp-section:nth-child(1){animation-delay:0s;}
+
+/* PAGE TRANSITIONS */
+.page-enter .sp-section,.page-enter .about-section{opacity:0;transform:translateY(20px);animation:pageIn .8s ease forwards;}
 .page-enter .sp-section:nth-child(2){animation-delay:.1s;}
 .page-enter .sp-section:nth-child(3){animation-delay:.15s;}
 .page-enter .sp-section:nth-child(4){animation-delay:.2s;}
-.page-enter .about-section:nth-child(1){animation-delay:0s;}
 .page-enter .about-section:nth-child(2){animation-delay:.15s;}
-@keyframes pageSlideIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pageIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* GALLERY VERTICAL */
 .sp-gallery-v{display:flex;flex-direction:column;gap:4px;margin-top:16px;}
 .sp-gallery-v img{width:100%;display:block;opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease;}
 .sp-gallery-v img.in{opacity:1;transform:none;}
+
+/* OBJECTS ANIMATION */
 .obj-item{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
 .obj-item.in{opacity:1;transform:none;}
 .obj-item:nth-child(1){transition-delay:.1s}.obj-item:nth-child(2){transition-delay:.2s}.obj-item:nth-child(3){transition-delay:.3s}.obj-item:nth-child(4){transition-delay:.4s}.obj-item:nth-child(5){transition-delay:.5s}
+
+/* HERO */
 .hero{min-height:100svh;padding-top:var(--nav-h);position:relative;overflow:hidden;}
 .hero-img{width:100%;height:calc(100svh - var(--nav-h));object-fit:cover;opacity:0;animation:heroFade 4s ease forwards;}
 @keyframes heroFade{from{opacity:0;transform:scale(1.01);}to{opacity:1;transform:scale(1);}}
 .hero::before{content:"";position:absolute;top:0;left:0;right:0;bottom:0;background:#000;z-index:2;animation:darkReveal 4s ease forwards;pointer-events:none;}
 @keyframes darkReveal{from{opacity:1;}to{opacity:0;}}
-.hero-logo{width:clamp(220px,38vw,420px);margin-bottom:32px;opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;}
-.hero-logo img{width:100%;}
-.hero-tagline{font-family:var(--body);font-size:clamp(11px,1.8vw,15px);font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-m);opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;}
-.hero-scroll{position:absolute;bottom:32px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-l);writing-mode:vertical-rl;opacity:0;animation:fadeUp 1s ease 1s forwards;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* HOME STRIP */
 .home-strip{padding:80px var(--gutter);border-top:1px solid var(--line);}
-.home-strip-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:24px;}
 .home-strip-h{font-family:var(--head);font-size:clamp(20px,4vw,32px);font-weight:500;letter-spacing:-.02em;line-height:1.3;color:var(--ink);margin-bottom:16px;max-width:520px;}
 .home-strip-p{font-size:13px;color:var(--ink-m);line-height:1.9;max-width:440px;}
 .home-strip-link{display:inline-block;margin-top:24px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);border-bottom:1px solid var(--ink);padding-bottom:2px;transition:opacity .2s;}
 .home-strip-link:hover{opacity:.5;}
-.home-space-img{width:100%;aspect-ratio:16/7;background:linear-gradient(160deg,#F0F0EE,#E5E5E2);margin-top:40px;display:flex;align-items:center;justify-content:center;}
-.home-space-img span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-l);}
-.sp-page{padding-top:calc(var(--nav-h) + 40px);}
+
+/* SPACE */
+.sp-page{padding-top:calc(var(--nav-h)+40px);}
 .sp-section{padding:56px var(--gutter);border-top:1px solid var(--line);}.sp-section:first-child{border-top:none;}
 .sp-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:20px;}
-.sp-h{font-family:var(--head);font-size:clamp(18px,3.5vw,26px);font-weight:500;letter-spacing:-.01em;line-height:1.5;color:var(--ink);margin-bottom:16px;}
+.sp-h{font-family:var(--head);font-size:clamp(18px,3.5vw,26px);font-weight:500;letter-spacing:-.01em;line-height:1.4;color:var(--ink);margin-bottom:16px;}
 .sp-p{font-size:13px;color:var(--ink-m);line-height:2.0;max-width:540px;}
 .sp-info-grid{display:grid;grid-template-columns:1fr;gap:0;}
 .sp-info-item{padding:14px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:16px;}
@@ -78,63 +90,70 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .sp-price-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);}.sp-price-row:last-child{border-bottom:none;}
 .sp-price-label{font-size:13px;color:var(--ink);}.sp-price-val{font-size:14px;font-weight:500;color:var(--ink);}
 .sp-price-note{font-size:11px;color:var(--ink-l);margin-top:16px;line-height:1.8;}
-.sp-gallery{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:16px;}
-.sp-gallery-item{aspect-ratio:4/3;background:linear-gradient(140deg,#F0F0EE,#E5E5E2);display:flex;align-items:center;justify-content:center;}
-.sp-gallery-item span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);}
-@media(min-width:768px){.sp-page{padding-top:calc(var(--nav-h)+80px);}.sp-section{padding:72px var(--gutter);}.sp-info-grid{grid-template-columns:1fr 1fr;gap:0 48px;}.sp-gallery{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:768px){.sp-page{padding-top:calc(var(--nav-h)+80px);}.sp-section{padding:72px var(--gutter);}.sp-info-grid{grid-template-columns:1fr 1fr;gap:0 48px;}}
+
+/* ABOUT */
 .about-page{padding-top:calc(var(--nav-h)+48px);}
 .about-section{padding:56px var(--gutter);border-top:1px solid var(--line);}.about-section:first-child{border-top:none;}
 .about-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:20px;}
-.about-h{font-family:var(--head);font-size:clamp(18px,3.5vw,26px);font-weight:500;letter-spacing:-.01em;line-height:1.3;color:var(--ink);margin-bottom:16px;}
+.about-h{font-family:var(--head);font-size:clamp(18px,3.5vw,26px);font-weight:500;letter-spacing:-.01em;line-height:1.4;color:var(--ink);margin-bottom:16px;}
 .about-p{font-size:13px;color:var(--ink-m);line-height:2.0;max-width:480px;}
 .about-contact{font-size:13px;color:var(--ink-m);line-height:2.4;}.about-contact a{transition:color .2s;}.about-contact a:hover{color:var(--ink);}
 @media(min-width:768px){.about-page{padding-top:calc(var(--nav-h)+80px);}.about-section{padding:72px var(--gutter);}}
+
+/* FOOTER */
 footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .ft-top{display:flex;flex-direction:column;gap:32px;margin-bottom:40px;}.ft-logo{height:28px;}.ft-logo img{height:100%;filter:invert(1);}
 .ft-links{display:flex;flex-direction:column;gap:10px;}.ft-links a{font-size:11px;font-weight:300;letter-spacing:.04em;color:rgba(255,255,255,.45);transition:color .2s;}.ft-links a:hover{color:#fff;}
 .ft-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;}.ft-copy{font-size:10px;letter-spacing:.04em;color:rgba(255,255,255,.2);}
 @media(min-width:768px){.ft-top{flex-direction:row;justify-content:space-between;}}
+
+/* AUTH */
 .auth-page{padding-top:calc(var(--nav-h)+48px);min-height:100svh;display:flex;align-items:flex-start;justify-content:center;padding-left:var(--pad);padding-right:var(--pad);padding-bottom:80px;}
 .auth-card{width:100%;max-width:400px;padding-top:20px;}
 .auth-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:28px;}
-.auth-h{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.3;color:var(--ink);margin-bottom:12px;}
-.auth-desc{font-size:13px;color:var(--ink-m);line-height:1.7;margin-bottom:36px;}
+.auth-h{font-family:var(--body);font-size:clamp(24px,5vw,36px);font-weight:400;letter-spacing:-.02em;line-height:1.4;color:var(--ink);margin-bottom:12px;}
 .auth-row{margin-bottom:18px;}.auth-row-half{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .auth-label{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-m);margin-bottom:8px;}
 .auth-input{width:100%;font-family:var(--body);font-size:14px;font-weight:300;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--line);padding:10px 0;outline:none;transition:border-color .25s;}
 .auth-input::placeholder{color:var(--ink-l);font-weight:300;}.auth-input:focus{border-bottom-color:var(--ink);}.auth-input.err{border-bottom-color:#c44;}
 .auth-err-msg{font-size:11px;color:#c44;margin-top:5px;min-height:16px;}.auth-submit{width:100%;margin-top:24px;}
 .auth-divider{border-top:1px solid var(--line);margin:28px 0;}.auth-switch{font-size:12px;color:var(--ink-m);text-align:center;}
-.auth-switch a{color:var(--ink);font-weight:400;transition:opacity .2s;cursor:pointer;}.auth-switch a:hover{opacity:.5;}
+.auth-switch a{color:var(--ink);font-weight:400;cursor:pointer;}
 .auth-success{display:none;text-align:center;padding:48px 0;}.auth-success.show{display:block;}
 .auth-success-icon{width:48px;height:48px;margin:0 auto 20px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.auth-success h2{font-family:var(--head);font-size:20px;font-weight:500;margin-bottom:10px;}.auth-success p{font-size:13px;color:var(--ink-m);margin-bottom:24px;}
+.auth-success h2{font-family:var(--body);font-size:20px;font-weight:400;margin-bottom:10px;}.auth-success p{font-size:13px;color:var(--ink-m);margin-bottom:24px;}
 .auth-form.hidden{display:none;}.auth-pw-wrap{position:relative;}
-.auth-pw-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-l);cursor:pointer;padding:4px 0;transition:color .2s;}.auth-pw-toggle:hover{color:var(--ink);}
+.auth-pw-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-l);cursor:pointer;}.auth-pw-toggle:hover{color:var(--ink);}
 @media(min-width:768px){.auth-page{padding-top:calc(var(--nav-h)+100px);}}
+
+/* MY PAGE */
 .my-page{padding-top:calc(var(--nav-h)+48px);min-height:100svh;padding-left:var(--gutter);padding-right:var(--gutter);padding-bottom:80px;}
 .my-header{padding-bottom:28px;border-bottom:1px solid var(--line);}.my-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:24px;}
-.my-greeting{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.3;margin-bottom:8px;}.my-email-display{font-size:13px;color:var(--ink-m);}
+.my-greeting{font-family:var(--body);font-size:clamp(24px,5vw,36px);font-weight:400;letter-spacing:-.02em;line-height:1.4;margin-bottom:8px;}.my-email-display{font-size:13px;color:var(--ink-m);}
 .my-section{padding:28px 0;border-bottom:1px solid var(--line);}.my-section-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-l);margin-bottom:16px;}
 .my-info-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);gap:16px;}.my-info-row:last-child{border-bottom:none;}
 .my-info-k{font-size:11px;color:var(--ink-l);flex-shrink:0;min-width:80px;}.my-info-v{font-size:13px;color:var(--ink);text-align:right;word-break:break-all;}
-.my-actions{padding-top:32px;}.my-logout{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;transition:color .2s;padding:8px 0;}.my-logout:hover{color:var(--ink);}
+.my-actions{padding-top:32px;}.my-logout{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;}.my-logout:hover{color:var(--ink);}
 @media(min-width:768px){.my-page{padding-top:calc(var(--nav-h)+80px);}}
+
+/* ADMIN */
 .adm-page{padding-top:calc(var(--nav-h)+48px);min-height:100svh;padding-left:var(--gutter);padding-right:var(--gutter);padding-bottom:80px;}
 .adm-header{padding-bottom:28px;border-bottom:1px solid var(--line);}.adm-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:24px;}
-.adm-h{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.3;margin-bottom:8px;}.adm-desc{font-size:13px;color:var(--ink-m);}
+.adm-h{font-family:var(--body);font-size:clamp(24px,5vw,36px);font-weight:400;letter-spacing:-.02em;line-height:1.4;margin-bottom:8px;}
 .adm-login-wrap{max-width:400px;padding-top:32px;}.adm-section{padding:28px 0;border-bottom:1px solid var(--line);}
 .adm-section-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-l);margin-bottom:16px;}
 .adm-user-card{padding:16px 0;border-bottom:1px solid var(--line);}.adm-user-card:first-child{border-top:1px solid var(--line);}
 .adm-user-num{font-size:10px;color:var(--ink-l);letter-spacing:.06em;margin-bottom:6px;}.adm-user-name{font-size:14px;font-weight:400;margin-bottom:4px;}
 .adm-user-detail{font-size:12px;color:var(--ink-m);line-height:1.9;}.adm-no-users{font-size:13px;color:var(--ink-l);padding:32px 0;text-align:center;}
 .adm-actions{padding-top:28px;display:flex;gap:12px;flex-wrap:wrap;}
-.adm-logout-btn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;transition:color .2s;padding:8px 0;}.adm-logout-btn:hover{color:var(--ink);}
+.adm-logout-btn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;}.adm-logout-btn:hover{color:var(--ink);}
 .adm-hidden{display:none;}
 @media(min-width:768px){.adm-page{padding-top:calc(var(--nav-h)+80px);}}
 </style>
 </head>
 <body>
+
 <nav>
   <div class="nav-logo" data-page="home"><img src="logo.png" alt="obvio"></div>
   <ul class="nav-links"><li><a href="#" data-page="space">Space</a></li><li><a href="#" data-page="objects">Objects</a></li><li><a href="#" data-page="about">About</a></li></ul>
@@ -144,6 +163,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span></button>
   </div>
 </nav>
+
 <div class="mmenu" id="mmenu">
   <a href="#" data-page="space">Space</a>
   <a href="#" data-page="objects">Objects</a>
@@ -158,44 +178,41 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   </div>
 </div>
 
+<!-- HOME -->
 <div id="page-home" class="page">
   <section class="hero">
     <img class="hero-img" src="studio.jpg" alt="obvio studio">
-    
-    
   </section>
   <section class="home-strip rv">
-    
     <h2 class="home-strip-h">About Space</h2>
     <p class="home-strip-p">A minimal studio space in Jamsil, Seoul.<br>Photography, exhibitions, showrooms, and meetings.</p>
     <a href="#" class="home-strip-link" data-page="space">View Space</a>
-    <div class="home-space-img"><span>STUDIO INTERIOR</span></div>
   </section>
-
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
-<div id="page-space" class="page"><div class="sp-page">
-  <div class="sp-section"><p class="sp-tag">Gallery</p><div class="sp-gallery-v"><img src="space1.jpg" alt="obvio studio" class="gal-img"><img src="space2.jpg" alt="obvio studio" class="gal-img"><img src="space3.jpg" alt="obvio studio" class="gal-img"><img src="space4.jpg" alt="obvio studio" class="gal-img"></div></div>
-  <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 송파구 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">면적</span><span class="sp-info-v">119㎡</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
-  <div class="sp-section"><p class="sp-tag">Equipment</p><p class="sp-h">구비 물품</p><p class="sp-p">스팀 다리미 · 포맥스 E400 조명 2대 (소프트박스 포함) · 마샬 액톤 3 블루투스 스피커 · 전신거울 · 화장대</p></div>
-  <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 40,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">3명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div></div>
-  <div class="sp-section"><p class="sp-tag">전시 대관</p><p class="sp-h">전시 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">1일</span><span class="sp-price-val">₩ 260,000</span></div><div class="sp-price-row"><span class="sp-price-label">3일</span><span class="sp-price-val">₩ 700,000</span></div><div class="sp-price-row"><span class="sp-price-label">7일</span><span class="sp-price-val">₩ 1,600,000</span></div><div class="sp-price-row"><span class="sp-price-label">2주</span><span class="sp-price-val">₩ 3,000,000</span></div></div><p class="sp-price-note">사전 답사 가능 · 전시 계획서 사전 제출 필수 · 오프닝 행사 가능</p></div>
-  <div class="sp-section"><p class="sp-tag">촬영 안내</p><p class="sp-p">실내 외부 신발 착용 불가 (실내 슬리퍼 구비) · 바닥 오염/훼손 시 배상 · 가구/소품 파손 시 실비 배상 · 사용 후 원위치 정리 필수</p></div>
-  <div class="sp-section"><p class="sp-tag">전시 안내</p><p class="sp-p">실내 신발 착용 가능 (입장 전 매트에서 이물질 제거) · 스튜디오 내 가구 디스플레이 용도 사용 가능 · 와이어 레일 설치 가능 · 설치: 계약 시작일 오전 6시부터 · 철수: 계약 종료일 오후 10시까지</p></div>
-  <div class="sp-section"><p class="sp-tag">증빙</p><p class="sp-p">개인: 현금영수증 · 사업자: 세금계산서 (부가세 10% 별도)</p></div>
-  <div class="sp-section"><p class="sp-tag">주차</p><p class="sp-p">1대 가능 (차량번호 사전 전달 필수)<br><br>추가 주차:<br>새마을시장노상공영주차장 (도보 9분)<br>봉상시길노상공영주차장 (도보 8분)<br>아시아공원공영주차장 (도보 8분)</p></div>
+<!-- SPACE -->
+<div id="page-space" class="page">
+  <div class="sp-page">
+    <div class="sp-section"><p class="sp-tag">Gallery</p><div class="sp-gallery-v"><img src="space1.jpg" alt="obvio studio" class="gal-img"><img src="space2.jpg" alt="obvio studio" class="gal-img"><img src="space3.jpg" alt="obvio studio" class="gal-img"><img src="space4.jpg" alt="obvio studio" class="gal-img"></div></div>
+    <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 송파구 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">면적</span><span class="sp-info-v">119&#13217;</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
+    <div class="sp-section"><p class="sp-tag">Equipment</p><p class="sp-h">구비 물품</p><p class="sp-p">스팀 다리미 &middot; 포맥스 E400 조명 2대 (소프트박스 포함) &middot; 마샬 액톤 3 블루투스 스피커 &middot; 전신거울 &middot; 화장대</p></div>
+    <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">&yen; 40,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">3명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 &yen; 5,000</span></div></div></div>
+    <div class="sp-section"><p class="sp-tag">전시 대관</p><p class="sp-h">전시 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">1일</span><span class="sp-price-val">&yen; 260,000</span></div><div class="sp-price-row"><span class="sp-price-label">3일</span><span class="sp-price-val">&yen; 700,000</span></div><div class="sp-price-row"><span class="sp-price-label">7일</span><span class="sp-price-val">&yen; 1,600,000</span></div><div class="sp-price-row"><span class="sp-price-label">2주</span><span class="sp-price-val">&yen; 3,000,000</span></div></div><p class="sp-price-note">사전 답사 가능 &middot; 전시 계획서 사전 제출 필수 &middot; 오프닝 행사 가능</p></div>
+    <div class="sp-section"><p class="sp-tag">촬영 안내</p><p class="sp-p">실내 외부 신발 착용 불가 (실내 슬리퍼 구비) &middot; 바닥 오염/훼손 시 배상 &middot; 가구/소품 파손 시 실비 배상 &middot; 사용 후 원위치 정리 필수</p></div>
+    <div class="sp-section"><p class="sp-tag">전시 안내</p><p class="sp-p">실내 신발 착용 가능 (입장 전 매트에서 이물질 제거) &middot; 스튜디오 내 가구 디스플레이 용도 사용 가능 &middot; 와이어 레일 설치 가능 &middot; 설치: 계약 시작일 오전 6시부터 &middot; 철수: 계약 종료일 오후 10시까지</p></div>
+    <div class="sp-section"><p class="sp-tag">증빙</p><p class="sp-p">개인: 현금영수증 &middot; 사업자: 세금계산서 (부가세 10% 별도)</p></div>
+    <div class="sp-section"><p class="sp-tag">주차</p><p class="sp-p">1대 가능 (차량번호 사전 전달 필수)<br><br>추가 주차:<br>새마을시장노상공영주차장 (도보 9분)<br>봉상시길노상공영주차장 (도보 8분)<br>아시아공원공영주차장 (도보 8분)</p></div>
+  </div>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
-</div>
-
+<!-- OBJECTS -->
 <div id="page-objects" class="page">
   <div class="sp-page">
     <div class="sp-section" style="min-height:80svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
       <p class="sp-tag" style="margin-bottom:24px;">Objects</p>
-      <p style="font-family:var(--body);font-size:clamp(28px,6vw,48px);font-weight:400;letter-spacing:-.01em;color:var(--ink);line-height:1.4;margin-bottom:16px;">Coming Soon</p>
-      
+      <p style="font-family:var(--body);font-size:clamp(28px,6vw,48px);font-weight:400;letter-spacing:-.01em;color:var(--ink);line-height:1.4;margin-bottom:48px;">Coming Soon</p>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:480px;" id="obj-grid">
         <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">01</p></div>
         <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">02</p></div>
@@ -205,27 +222,29 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
       </div>
     </div>
   </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
+<!-- ABOUT -->
 <div id="page-about" class="page">
   <div class="about-page">
     <div class="about-section"><p class="about-tag">About</p><p class="about-h">obvio studio</p><p class="about-p">Clear. Obvious. obvio.<br>2026년 서울 잠실에서 시작된 스튜디오.</p></div>
-    <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 송파구 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p>Instagram : <a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p><p>Email : <a href="/cdn-cgi/l/email-protection#e5978c938097d6d2d2a58b84938097cb868a88"><span class="__cf_email__" data-cfemail="6f1d06190a1d5c58582f010e190a1d410c0002">[email&#160;protected]</span></a></p></div></div>
+    <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 송파구 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p>Instagram: <a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p><p>Email: <a href="mailto:river377@naver.com">river377@naver.com</a></p></div></div>
   </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
-
+<!-- LOGIN -->
 <div id="page-login" class="page"><div class="auth-page"><div class="auth-card">
   <div id="login-form" class="auth-form"><p class="auth-tag">Account</p><h1 class="auth-h">Login</h1>
     <div class="auth-row"><label class="auth-label" for="login-email">이메일</label><input class="auth-input" type="email" id="login-email" placeholder="your@email.com"><p class="auth-err-msg" id="login-email-err"></p></div>
     <div class="auth-row"><label class="auth-label" for="login-pw">비밀번호</label><div class="auth-pw-wrap"><input class="auth-input" type="password" id="login-pw" placeholder="비밀번호"><span class="auth-pw-toggle" id="login-pw-toggle">보기</span></div><p class="auth-err-msg" id="login-pw-err"></p></div>
     <button class="btn btn-dark auth-submit" id="login-btn">로그인</button><div class="auth-divider"></div><p class="auth-switch">계정이 없으신가요? <a href="#" data-page="signup">회원가입</a></p>
   </div>
-  <div id="login-success" class="auth-success"><div class="auth-success-icon">✓</div><h2>환영합니다</h2><a href="#" class="btn btn-dark" data-page="mypage">마이페이지</a></div>
+  <div id="login-success" class="auth-success"><div class="auth-success-icon">&#10003;</div><h2>환영합니다</h2><a href="#" class="btn btn-dark" data-page="mypage">마이페이지</a></div>
 </div></div></div>
 
+<!-- SIGNUP -->
 <div id="page-signup" class="page"><div class="auth-page"><div class="auth-card">
   <div id="signup-form" class="auth-form"><p class="auth-tag">Account</p><h1 class="auth-h">Sign up</h1>
     <div class="auth-row-half"><div class="auth-row"><label class="auth-label" for="signup-last">성</label><input class="auth-input" type="text" id="signup-last"><p class="auth-err-msg" id="signup-last-err"></p></div><div class="auth-row"><label class="auth-label" for="signup-first">이름</label><input class="auth-input" type="text" id="signup-first"><p class="auth-err-msg" id="signup-first-err"></p></div></div>
@@ -237,9 +256,10 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <div class="auth-row"><label class="auth-label" for="signup-addr2">상세주소</label><input class="auth-input" type="text" id="signup-addr2"></div>
     <button class="btn btn-dark auth-submit" id="signup-btn">회원가입</button><div class="auth-divider"></div><p class="auth-switch">이미 계정이 있으신가요? <a href="#" data-page="login">로그인</a></p>
   </div>
-  <div id="signup-success" class="auth-success"><div class="auth-success-icon">✓</div><h2>가입 완료</h2><a href="#" class="btn btn-dark" data-page="login">로그인하기</a></div>
+  <div id="signup-success" class="auth-success"><div class="auth-success-icon">&#10003;</div><h2>가입 완료</h2><a href="#" class="btn btn-dark" data-page="login">로그인하기</a></div>
 </div></div></div>
 
+<!-- MYPAGE -->
 <div id="page-mypage" class="page"><div class="my-page">
   <div class="my-header"><p class="my-tag">Account</p><h1 class="my-greeting" id="my-greeting"></h1><p class="my-email-display" id="my-email-display"></p></div>
   <div class="my-section"><p class="my-section-label">회원 정보</p>
@@ -253,6 +273,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   <div class="my-actions"><button class="my-logout" id="logout-btn">로그아웃</button></div>
 </div></div>
 
+<!-- ADMIN -->
 <div id="page-admin" class="page"><div class="adm-page">
   <div id="adm-gate"><div class="adm-header"><p class="adm-tag">Admin</p><h1 class="adm-h">관리자</h1></div>
     <div class="adm-login-wrap"><div class="auth-row"><label class="auth-label" for="adm-pw">비밀번호</label><div class="auth-pw-wrap"><input class="auth-input" type="password" id="adm-pw" placeholder="관리자 비밀번호"><span class="auth-pw-toggle" id="adm-pw-toggle">보기</span></div><p class="auth-err-msg" id="adm-pw-err"></p></div><button class="btn btn-dark auth-submit" id="adm-login-btn">로그인</button></div>
@@ -263,44 +284,125 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   </div>
 </div></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var PM={home:'page-home',space:'page-space',objects:'page-objects',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
-  function rvCheck(){document.querySelectorAll('.rv').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight+10)el.classList.add('in');});document.querySelectorAll('.gal-img').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight-20)el.classList.add('in');});}
-  window.addEventListener('scroll',rvCheck,{passive:true});
-  function go(k){Object.values(PM).forEach(function(id){var el=document.getElementById(id);if(el){el.classList.remove('active');el.classList.remove('page-enter');}});var t=document.getElementById(PM[k]);if(t){t.classList.add('active');t.classList.add('page-enter');window.scrollTo({top:0,behavior:'smooth'});t.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});setTimeout(rvCheck,100);}document.querySelectorAll('.nav-links a,.mmenu a').forEach(function(a){if(a.dataset&&a.dataset.page)a.classList.toggle('on',a.dataset.page===k);});document.getElementById('mmenu').classList.remove('open');onPageEnter(k);}
-  document.addEventListener('click',function(e){var el=e.target.closest('[data-page]');if(el&&el.dataset.page){e.preventDefault();go(el.dataset.page);}});
-  document.getElementById('hbg').addEventListener('click',function(){document.getElementById('mmenu').classList.toggle('open');});
+  var PM = {home:'page-home',space:'page-space',objects:'page-objects',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
 
-  var SUPABASE_URL='https://eymmmceqcrmsuzjgmzhl.supabase.co';
-  var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bW1tY2VxY3Jtc3V6amdtemhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDQ0ODMsImV4cCI6MjA4ODYyMDQ4M30.9UJUGakqFQVU-yIXWo96qTWWl8DD-N5L3duBjmkyL1M';
-  var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  var curUser=null,loggedIn=false,adminIn=false,ADMIN_PW='obvio2026';
-
-  function setErr(id,msg){var el=document.getElementById(id);var inp=document.getElementById(id.replace('-err',''));if(el)el.textContent=msg||'';if(inp){if(msg)inp.classList.add('err');else inp.classList.remove('err');}}
-  function syncNav(){var show={'nav-login':!loggedIn,'nav-mypage':loggedIn,'mmenu-login':!loggedIn,'mmenu-signup':!loggedIn,'mmenu-mypage':loggedIn,'mmenu-logout':loggedIn};for(var id in show){var el=document.getElementById(id);if(el){if(show[id])el.classList.remove('nav-auth-hide');else el.classList.add('nav-auth-hide');}}}
-  function onPageEnter(k){
-    if(k==='login'){if(loggedIn){go('mypage');return;}var lf=document.getElementById('login-form'),ls=document.getElementById('login-success');if(lf){lf.classList.remove('hidden');lf.querySelectorAll('input').forEach(function(i){i.value='';i.classList.remove('err');});lf.querySelectorAll('.auth-err-msg').forEach(function(e){e.textContent='';});}if(ls)ls.classList.remove('show');}
-    if(k==='signup'){if(loggedIn){go('mypage');return;}var sf=document.getElementById('signup-form'),ss=document.getElementById('signup-success');if(sf){sf.classList.remove('hidden');sf.querySelectorAll('input').forEach(function(i){i.value='';i.classList.remove('err');});sf.querySelectorAll('.auth-err-msg').forEach(function(e){e.textContent='';});}if(ss)ss.classList.remove('show');}
-    if(k==='mypage'){if(!loggedIn||!curUser){go('login');return;}document.getElementById('my-greeting').textContent=curUser.last+curUser.first+'님';document.getElementById('my-email-display').textContent=curUser.email;document.getElementById('my-name').textContent=curUser.last+curUser.first;document.getElementById('my-email').textContent=curUser.email;document.getElementById('my-phone').textContent=curUser.phone;document.getElementById('my-addr').textContent=curUser.addr;document.getElementById('my-addr2').textContent=curUser.addr2||'—';document.getElementById('my-date').textContent=curUser.joinDate;}
-    if(k==='objects'){var items=document.querySelectorAll('.obj-item');items.forEach(function(el){el.classList.remove('in');});setTimeout(function(){items.forEach(function(el){el.classList.add('in');});},100);}if(k==='admin'){if(!adminIn){document.getElementById('adm-gate').style.display='block';document.getElementById('adm-dashboard').style.display='none';var ap=document.getElementById('adm-pw');if(ap)ap.value='';var ae=document.getElementById('adm-pw-err');if(ae)ae.textContent='';}else{renderAdmin();}}
+  function rvCheck() {
+    document.querySelectorAll('.rv').forEach(function(el) { if (el.getBoundingClientRect().top < window.innerHeight + 10) el.classList.add('in'); });
+    document.querySelectorAll('.gal-img').forEach(function(el) { if (el.getBoundingClientRect().top < window.innerHeight - 20) el.classList.add('in'); });
   }
-  function renderAdmin(){document.getElementById('adm-gate').style.display='none';document.getElementById('adm-dashboard').style.display='block';document.getElementById('adm-dashboard').classList.remove('adm-hidden');var list=document.getElementById('adm-list');list.innerHTML='<p class="adm-no-users">불러오는 중...</p>';sb.from('users').select('*').order('created_at',{ascending:false}).then(function(res){var data=res.data||[],html='';if(data.length===0){html='<p class="adm-no-users">등록된 회원이 없습니다.</p>';}else{data.forEach(function(u,i){var name=(u.last_name||'')+(u.first_name||'')||'—';html+='<div class="adm-user-card"><p class="adm-user-num">#'+(i+1)+'</p><p class="adm-user-name">'+name+'</p><p class="adm-user-detail">'+(u.email||'—')+'<br>'+(u.phone||'—')+'<br>'+(u.addr||'—')+'<br>가입일: '+(u.join_date||'—')+'</p></div>';});}list.innerHTML=html;document.getElementById('adm-total').textContent=data.length;});}
+  window.addEventListener('scroll', rvCheck, { passive: true });
 
-  function bindTog(tId,iId){var t=document.getElementById(tId),inp=document.getElementById(iId);if(t&&inp)t.addEventListener('click',function(){if(inp.type==='password'){inp.type='text';t.textContent='숨기기';}else{inp.type='password';t.textContent='보기';}});}
-  bindTog('login-pw-toggle','login-pw');bindTog('signup-pw-toggle','signup-pw');bindTog('adm-pw-toggle','adm-pw');
+  function go(k) {
+    Object.values(PM).forEach(function(id) { var el = document.getElementById(id); if (el) { el.classList.remove('active'); el.classList.remove('page-enter'); } });
+    var t = document.getElementById(PM[k]);
+    if (t) {
+      t.classList.add('active');
+      t.classList.add('page-enter');
+      window.scrollTo({ top: 0 });
+      setTimeout(rvCheck, 100);
+    }
+    document.querySelectorAll('.nav-links a,.mmenu a').forEach(function(a) { if (a.dataset && a.dataset.page) a.classList.toggle('on', a.dataset.page === k); });
+    document.getElementById('mmenu').classList.remove('open');
+    onPageEnter(k);
+  }
 
-  document.getElementById('signup-btn').addEventListener('click',function(){var last=document.getElementById('signup-last').value.trim(),first=document.getElementById('signup-first').value.trim(),email=document.getElementById('signup-email').value.trim(),pw=document.getElementById('signup-pw').value,pw2=document.getElementById('signup-pw2').value,phone=document.getElementById('signup-phone').value.trim(),addr=document.getElementById('signup-addr').value.trim(),addr2=document.getElementById('signup-addr2').value.trim(),ok=true;if(!last){setErr('signup-last-err','필수');ok=false;}else setErr('signup-last-err','');if(!first){setErr('signup-first-err','필수');ok=false;}else setErr('signup-first-err','');if(!email||email.indexOf('@')<1||email.lastIndexOf('.')<email.indexOf('@')){setErr('signup-email-err','유효한 이메일');ok=false;}else setErr('signup-email-err','');if(!pw||pw.length<8){setErr('signup-pw-err','8자 이상');ok=false;}else setErr('signup-pw-err','');if(pw!==pw2){setErr('signup-pw2-err','불일치');ok=false;}else setErr('signup-pw2-err','');if(!phone){setErr('signup-phone-err','필수');ok=false;}else setErr('signup-phone-err','');if(!addr){setErr('signup-addr-err','필수');ok=false;}else setErr('signup-addr-err','');if(!ok)return;var btn=document.getElementById('signup-btn');btn.textContent='처리 중...';btn.disabled=true;sb.from('users').select('id').eq('email',email).then(function(res){if(res.error){setErr('signup-email-err','서버 연결 오류');btn.textContent='회원가입';btn.disabled=false;return;}if(res.data&&res.data.length>0){setErr('signup-email-err','이미 가입됨');btn.textContent='회원가입';btn.disabled=false;return;}return sb.from('users').insert([{last_name:last,first_name:first,email:email,pw:pw,phone:phone,addr:addr,addr2:addr2,join_date:new Date().toLocaleDateString('ko-KR')}]).then(function(r){if(r.error){setErr('signup-email-err','저장 오류: '+r.error.message);btn.textContent='회원가입';btn.disabled=false;return;}document.getElementById('signup-form').classList.add('hidden');document.getElementById('signup-success').classList.add('show');btn.textContent='회원가입';btn.disabled=false;});}).catch(function(e){setErr('signup-email-err','서버 연결 실패. 다시 시도해주세요.');btn.textContent='회원가입';btn.disabled=false;});});
+  document.addEventListener('click', function(e) { var el = e.target.closest('[data-page]'); if (el && el.dataset.page) { e.preventDefault(); go(el.dataset.page); } });
+  document.getElementById('hbg').addEventListener('click', function() { document.getElementById('mmenu').classList.toggle('open'); });
 
-  document.getElementById('login-btn').addEventListener('click',function(){var email=document.getElementById('login-email').value.trim(),pw=document.getElementById('login-pw').value,ok=true;if(!email){setErr('login-email-err','필수');ok=false;}else setErr('login-email-err','');if(!pw){setErr('login-pw-err','필수');ok=false;}else setErr('login-pw-err','');if(!ok)return;var btn=document.getElementById('login-btn');btn.textContent='로그인 중...';btn.disabled=true;sb.from('users').select('*').eq('email',email).then(function(res){var data=res.data||[];if(data.length===0){setErr('login-email-err','미가입 이메일');btn.textContent='로그인';btn.disabled=false;return;}var f=data[0];if(f.pw!==pw){setErr('login-pw-err','비밀번호 오류');btn.textContent='로그인';btn.disabled=false;return;}curUser={last:f.last_name,first:f.first_name,email:f.email,phone:f.phone,addr:f.addr,addr2:f.addr2,joinDate:f.join_date};loggedIn=true;syncNav();document.getElementById('login-form').classList.add('hidden');document.getElementById('login-success').classList.add('show');btn.textContent='로그인';btn.disabled=false;});});
+  var SUPABASE_URL = 'https://eymmmceqcrmsuzjgmzhl.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5bW1tY2VxY3Jtc3V6amdtemhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDQ0ODMsImV4cCI6MjA4ODYyMDQ4M30.9UJUGakqFQVU-yIXWo96qTWWl8DD-N5L3duBjmkyL1M';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  var curUser = null, loggedIn = false, adminIn = false, ADMIN_PW = 'obvio2026';
 
-  function doLogout(){loggedIn=false;curUser=null;syncNav();go('home');}
-  document.getElementById('logout-btn').addEventListener('click',doLogout);
-  document.getElementById('mmenu-logout').addEventListener('click',function(e){e.preventDefault();doLogout();});
-  document.getElementById('adm-login-btn').addEventListener('click',function(){var pw=document.getElementById('adm-pw').value;if(pw===ADMIN_PW){adminIn=true;renderAdmin();}else{document.getElementById('adm-pw-err').textContent='비밀번호 오류';}});
-  document.getElementById('adm-pw').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('adm-login-btn').click();});
-  document.getElementById('adm-logout-btn').addEventListener('click',function(){adminIn=false;go('home');});
-  document.getElementById('adm-clear-btn').addEventListener('click',function(){if(confirm('정말 삭제하시겠습니까?')){sb.from('users').delete().neq('id',0).then(function(){curUser=null;loggedIn=false;syncNav();renderAdmin();});}});
-  ['login-email','login-pw'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('login-btn').click();});});
-  ['signup-last','signup-first','signup-email','signup-pw','signup-pw2','signup-phone','signup-addr','sign
+  function setErr(id, msg) { var el = document.getElementById(id); var inp = document.getElementById(id.replace('-err','')); if (el) el.textContent = msg || ''; if (inp) { if (msg) inp.classList.add('err'); else inp.classList.remove('err'); } }
+  function syncNav() {
+    var s = {'nav-login':!loggedIn,'nav-mypage':loggedIn,'mmenu-login':!loggedIn,'mmenu-signup':!loggedIn,'mmenu-mypage':loggedIn,'mmenu-logout':loggedIn};
+    for (var id in s) { var el = document.getElementById(id); if (el) { if (s[id]) el.classList.remove('nav-auth-hide'); else el.classList.add('nav-auth-hide'); } }
+  }
+
+  function onPageEnter(k) {
+    if (k === 'login') { if (loggedIn) { go('mypage'); return; } var lf = document.getElementById('login-form'), ls = document.getElementById('login-success'); if (lf) { lf.classList.remove('hidden'); lf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); lf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ls) ls.classList.remove('show'); }
+    if (k === 'signup') { if (loggedIn) { go('mypage'); return; } var sf = document.getElementById('signup-form'), ss = document.getElementById('signup-success'); if (sf) { sf.classList.remove('hidden'); sf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); sf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ss) ss.classList.remove('show'); }
+    if (k === 'mypage') { if (!loggedIn || !curUser) { go('login'); return; } document.getElementById('my-greeting').textContent = curUser.last + curUser.first + '님'; document.getElementById('my-email-display').textContent = curUser.email; document.getElementById('my-name').textContent = curUser.last + curUser.first; document.getElementById('my-email').textContent = curUser.email; document.getElementById('my-phone').textContent = curUser.phone; document.getElementById('my-addr').textContent = curUser.addr; document.getElementById('my-addr2').textContent = curUser.addr2 || '-'; document.getElementById('my-date').textContent = curUser.joinDate; }
+    if (k === 'objects') { var items = document.querySelectorAll('.obj-item'); items.forEach(function(el){ el.classList.remove('in'); }); setTimeout(function(){ items.forEach(function(el){ el.classList.add('in'); }); }, 100); }
+    if (k === 'admin') { if (!adminIn) { document.getElementById('adm-gate').style.display = 'block'; document.getElementById('adm-dashboard').style.display = 'none'; var ap = document.getElementById('adm-pw'); if (ap) ap.value = ''; } else { renderAdmin(); } }
+  }
+
+  function renderAdmin() {
+    document.getElementById('adm-gate').style.display = 'none';
+    var d = document.getElementById('adm-dashboard'); d.style.display = 'block'; d.classList.remove('adm-hidden');
+    var list = document.getElementById('adm-list');
+    list.innerHTML = '<p class="adm-no-users">불러오는 중...</p>';
+    sb.from('users').select('*').order('created_at',{ascending:false}).then(function(res) {
+      var data = res.data || [], html = '';
+      if (data.length === 0) { html = '<p class="adm-no-users">등록된 회원이 없습니다.</p>'; }
+      else { data.forEach(function(u, i) { var name = (u.last_name||'') + (u.first_name||'') || '-'; html += '<div class="adm-user-card"><p class="adm-user-num">#'+(i+1)+'</p><p class="adm-user-name">'+name+'</p><p class="adm-user-detail">'+(u.email||'-')+'<br>'+(u.phone||'-')+'<br>'+(u.addr||'-')+'<br>가입일: '+(u.join_date||'-')+'</p></div>'; }); }
+      list.innerHTML = html;
+      document.getElementById('adm-total').textContent = data.length;
+    });
+  }
+
+  function bindTog(tId, iId) { var t = document.getElementById(tId), inp = document.getElementById(iId); if (t && inp) t.addEventListener('click', function() { if (inp.type === 'password') { inp.type = 'text'; t.textContent = '숨기기'; } else { inp.type = 'password'; t.textContent = '보기'; } }); }
+  bindTog('login-pw-toggle','login-pw'); bindTog('signup-pw-toggle','signup-pw'); bindTog('adm-pw-toggle','adm-pw');
+
+  document.getElementById('signup-btn').addEventListener('click', function() {
+    var last = document.getElementById('signup-last').value.trim(), first = document.getElementById('signup-first').value.trim(), email = document.getElementById('signup-email').value.trim(), pw = document.getElementById('signup-pw').value, pw2 = document.getElementById('signup-pw2').value, phone = document.getElementById('signup-phone').value.trim(), addr = document.getElementById('signup-addr').value.trim(), addr2 = document.getElementById('signup-addr2').value.trim(), ok = true;
+    if (!last) { setErr('signup-last-err','필수'); ok = false; } else setErr('signup-last-err','');
+    if (!first) { setErr('signup-first-err','필수'); ok = false; } else setErr('signup-first-err','');
+    if (!email || email.indexOf('@') < 1 || email.lastIndexOf('.') < email.indexOf('@')) { setErr('signup-email-err','유효한 이메일'); ok = false; } else setErr('signup-email-err','');
+    if (!pw || pw.length < 8) { setErr('signup-pw-err','8자 이상'); ok = false; } else setErr('signup-pw-err','');
+    if (pw !== pw2) { setErr('signup-pw2-err','불일치'); ok = false; } else setErr('signup-pw2-err','');
+    if (!phone) { setErr('signup-phone-err','필수'); ok = false; } else setErr('signup-phone-err','');
+    if (!addr) { setErr('signup-addr-err','필수'); ok = false; } else setErr('signup-addr-err','');
+    if (!ok) return;
+    var btn = document.getElementById('signup-btn'); btn.textContent = '처리 중...'; btn.disabled = true;
+    sb.from('users').select('id').eq('email', email).then(function(res) {
+      if (res.error) { setErr('signup-email-err','서버 오류'); btn.textContent = '회원가입'; btn.disabled = false; return; }
+      if (res.data && res.data.length > 0) { setErr('signup-email-err','이미 가입됨'); btn.textContent = '회원가입'; btn.disabled = false; return; }
+      return sb.from('users').insert([{last_name:last, first_name:first, email:email, pw:pw, phone:phone, addr:addr, addr2:addr2, join_date:new Date().toLocaleDateString('ko-KR')}]).then(function(r) {
+        if (r.error) { setErr('signup-email-err', r.error.message); btn.textContent = '회원가입'; btn.disabled = false; return; }
+        document.getElementById('signup-form').classList.add('hidden');
+        document.getElementById('signup-success').classList.add('show');
+        btn.textContent = '회원가입'; btn.disabled = false;
+      });
+    }).catch(function() { setErr('signup-email-err','서버 연결 실패'); btn.textContent = '회원가입'; btn.disabled = false; });
+  });
+
+  document.getElementById('login-btn').addEventListener('click', function() {
+    var email = document.getElementById('login-email').value.trim(), pw = document.getElementById('login-pw').value, ok = true;
+    if (!email) { setErr('login-email-err','필수'); ok = false; } else setErr('login-email-err','');
+    if (!pw) { setErr('login-pw-err','필수'); ok = false; } else setErr('login-pw-err','');
+    if (!ok) return;
+    var btn = document.getElementById('login-btn'); btn.textContent = '로그인 중...'; btn.disabled = true;
+    sb.from('users').select('*').eq('email', email).then(function(res) {
+      var data = res.data || [];
+      if (data.length === 0) { setErr('login-email-err','미가입 이메일'); btn.textContent = '로그인'; btn.disabled = false; return; }
+      var f = data[0];
+      if (f.pw !== pw) { setErr('login-pw-err','비밀번호 오류'); btn.textContent = '로그인'; btn.disabled = false; return; }
+      curUser = {last:f.last_name, first:f.first_name, email:f.email, phone:f.phone, addr:f.addr, addr2:f.addr2, joinDate:f.join_date};
+      loggedIn = true; syncNav();
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('login-success').classList.add('show');
+      btn.textContent = '로그인'; btn.disabled = false;
+    });
+  });
+
+  function doLogout() { loggedIn = false; curUser = null; syncNav(); go('home'); }
+  document.getElementById('logout-btn').addEventListener('click', doLogout);
+  document.getElementById('mmenu-logout').addEventListener('click', function(e) { e.preventDefault(); doLogout(); });
+  document.getElementById('adm-login-btn').addEventListener('click', function() { var pw = document.getElementById('adm-pw').value; if (pw === ADMIN_PW) { adminIn = true; renderAdmin(); } else { document.getElementById('adm-pw-err').textContent = '비밀번호 오류'; } });
+  document.getElementById('adm-pw').addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('adm-login-btn').click(); });
+  document.getElementById('adm-logout-btn').addEventListener('click', function() { adminIn = false; go('home'); });
+  document.getElementById('adm-clear-btn').addEventListener('click', function() { if (confirm('정말 삭제하시겠습니까?')) { sb.from('users').delete().neq('id',0).then(function() { curUser = null; loggedIn = false; syncNav(); renderAdmin(); }); } });
+  ['login-email','login-pw'].forEach(function(id) { var el = document.getElementById(id); if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('login-btn').click(); }); });
+  ['signup-last','signup-first','signup-email','signup-pw','signup-pw2','signup-phone','signup-addr','signup-addr2'].forEach(function(id) { var el = document.getElementById(id); if (el) el.addEventListener('keydown', function(e) { if (e.key === 'Enter') document.getElementById('signup-btn').click(); }); });
+
+  syncNav();
+  go('home');
+});
+</script>
+</body>
+</html>
