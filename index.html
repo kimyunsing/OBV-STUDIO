@@ -32,6 +32,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .btn-dark{background:var(--ink);color:#fff;border:1px solid var(--ink);}.btn-dark:hover{background:#333;}
 .btn-line{background:transparent;color:var(--ink);border:1px solid var(--line);}.btn-line:hover{border-color:var(--ink);}
 .rv{opacity:0;transform:translateY(16px);transition:opacity .8s ease,transform .8s ease;}.rv.in{opacity:1;transform:none;}
+.obj-item{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.obj-item.in{opacity:1;transform:none;}
+.obj-item:nth-child(1){transition-delay:.1s}.obj-item:nth-child(2){transition-delay:.2s}.obj-item:nth-child(3){transition-delay:.3s}.obj-item:nth-child(4){transition-delay:.4s}.obj-item:nth-child(5){transition-delay:.5s}
 .hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 var(--gutter);position:relative;}
 .hero-logo{width:clamp(220px,38vw,420px);margin-bottom:32px;opacity:0;animation:fadeUp 1.2s cubic-bezier(.16,1,.3,1) forwards;}
 .hero-logo img{width:100%;}
@@ -74,7 +77,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .ft-links{display:flex;flex-direction:column;gap:10px;}.ft-links a{font-size:11px;font-weight:300;letter-spacing:.04em;color:rgba(255,255,255,.45);transition:color .2s;}.ft-links a:hover{color:#fff;}
 .ft-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;}.ft-copy{font-size:10px;letter-spacing:.04em;color:rgba(255,255,255,.2);}
 @media(min-width:768px){.ft-top{flex-direction:row;justify-content:space-between;}}
-.auth-page{padding-top:calc(var(--nav-h)+60px);min-height:100svh;display:flex;align-items:flex-start;justify-content:center;padding-left:var(--pad);padding-right:var(--pad);padding-bottom:80px;}
+.auth-page{padding-top:calc(var(--nav-h)+40px);min-height:100svh;display:flex;align-items:flex-start;justify-content:center;padding-left:var(--pad);padding-right:var(--pad);padding-bottom:80px;}
 .auth-card{width:100%;max-width:400px;padding-top:20px;}
 .auth-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:28px;}
 .auth-h{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:12px;}
@@ -100,7 +103,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .my-info-k{font-size:11px;color:var(--ink-l);flex-shrink:0;min-width:80px;}.my-info-v{font-size:13px;color:var(--ink);text-align:right;word-break:break-all;}
 .my-actions{padding-top:32px;}.my-logout{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;transition:color .2s;padding:8px 0;}.my-logout:hover{color:var(--ink);}
 @media(min-width:768px){.my-page{padding-top:calc(var(--nav-h)+80px);}}
-.adm-page{padding-top:calc(var(--nav-h)+60px);min-height:100svh;padding-left:var(--gutter);padding-right:var(--gutter);padding-bottom:80px;}
+.adm-page{padding-top:calc(var(--nav-h)+40px);min-height:100svh;padding-left:var(--gutter);padding-right:var(--gutter);padding-bottom:80px;}
 .adm-header{padding-bottom:28px;border-bottom:1px solid var(--line);}.adm-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-l);margin-bottom:24px;}
 .adm-h{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px;}.adm-desc{font-size:13px;color:var(--ink-m);}
 .adm-login-wrap{max-width:400px;padding-top:32px;}.adm-section{padding:28px 0;border-bottom:1px solid var(--line);}
@@ -170,27 +173,32 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
 
-<div id="page-about" class="page"><div class="about-page">
-
-<div id="page-objects" class="page"><div class="sp-page">
-  <div class="sp-section"><p class="sp-tag">Objects</p><p class="sp-h">Furniture & Goods</p></div>
-  <div class="sp-section" style="padding-top:0;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">01</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
-    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">02</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
-    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">03</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
-    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">04</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
-    <div style="aspect-ratio:1;background:#F5F5F3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;grid-column:1/-1;"><p style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:8px;">05</p><p style="font-family:var(--head);font-size:14px;font-weight:500;color:#111;margin-bottom:8px;">—</p><p style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#999;">Coming Soon</p></div>
-  </div></div>
-</div>
+<div id="page-objects" class="page">
+  <div class="sp-page">
+    <div class="sp-section" style="min-height:80svh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+      <p class="sp-tag" style="margin-bottom:24px;">Objects</p>
+      <p style="font-family:var(--head);font-size:clamp(28px,6vw,48px);font-weight:500;letter-spacing:-.02em;color:var(--ink);margin-bottom:16px;">Coming Soon</p>
+      <p style="font-size:13px;color:var(--ink-m);max-width:360px;line-height:1.8;margin-bottom:48px;">obvio studio에서 디자인한 가구와 굿즈를 곧 만나보실 수 있습니다.</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:480px;" id="obj-grid">
+        <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">01</p></div>
+        <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">02</p></div>
+        <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">03</p></div>
+        <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">04</p></div>
+        <div class="obj-item" style="aspect-ratio:1;background:#F5F5F3;display:flex;align-items:center;justify-content:center;"><p style="font-size:10px;letter-spacing:.1em;color:#bbb;">05</p></div>
+      </div>
+    </div>
+  </div>
   <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
 
-  <div class="about-section"><p class="about-tag">About</p><p class="about-h">obvio studio</p><p class="about-p">Clear. Obvious. obvio.<br>2026년 서울 잠실에서 시작된 스튜디오.</p></div>
-  <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p><a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p></div></div>
-</div>
-
+<div id="page-about" class="page">
+  <div class="about-page">
+    <div class="about-section"><p class="about-tag">About</p><p class="about-h">obvio studio</p><p class="about-p">Clear. Obvious. obvio.<br>2026년 서울 잠실에서 시작된 스튜디오.</p></div>
+    <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p><a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p></div></div>
+  </div>
   <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">© 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1);transition:color .2s;" onmouseover="this.style.color='rgba(255,255,255,.3)'" onmouseout="this.style.color='rgba(255,255,255,.1)'">Admin</a></p></div></footer>
 </div>
+
 
 <div id="page-login" class="page"><div class="auth-page"><div class="auth-card">
   <div id="login-form" class="auth-form"><p class="auth-tag">Account</p><h1 class="auth-h">Login</h1>
@@ -259,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(k==='login'){if(loggedIn){go('mypage');return;}var lf=document.getElementById('login-form'),ls=document.getElementById('login-success');if(lf){lf.classList.remove('hidden');lf.querySelectorAll('input').forEach(function(i){i.value='';i.classList.remove('err');});lf.querySelectorAll('.auth-err-msg').forEach(function(e){e.textContent='';});}if(ls)ls.classList.remove('show');}
     if(k==='signup'){if(loggedIn){go('mypage');return;}var sf=document.getElementById('signup-form'),ss=document.getElementById('signup-success');if(sf){sf.classList.remove('hidden');sf.querySelectorAll('input').forEach(function(i){i.value='';i.classList.remove('err');});sf.querySelectorAll('.auth-err-msg').forEach(function(e){e.textContent='';});}if(ss)ss.classList.remove('show');}
     if(k==='mypage'){if(!loggedIn||!curUser){go('login');return;}document.getElementById('my-greeting').textContent=curUser.last+curUser.first+'님';document.getElementById('my-email-display').textContent=curUser.email;document.getElementById('my-name').textContent=curUser.last+curUser.first;document.getElementById('my-email').textContent=curUser.email;document.getElementById('my-phone').textContent=curUser.phone;document.getElementById('my-addr').textContent=curUser.addr;document.getElementById('my-addr2').textContent=curUser.addr2||'—';document.getElementById('my-date').textContent=curUser.joinDate;}
-    if(k==='admin'){if(!adminIn){document.getElementById('adm-gate').style.display='block';document.getElementById('adm-dashboard').style.display='none';var ap=document.getElementById('adm-pw');if(ap)ap.value='';var ae=document.getElementById('adm-pw-err');if(ae)ae.textContent='';}else{renderAdmin();}}
+    if(k==='objects'){var items=document.querySelectorAll('.obj-item');items.forEach(function(el){el.classList.remove('in');});setTimeout(function(){items.forEach(function(el){el.classList.add('in');});},100);}if(k==='admin'){if(!adminIn){document.getElementById('adm-gate').style.display='block';document.getElementById('adm-dashboard').style.display='none';var ap=document.getElementById('adm-pw');if(ap)ap.value='';var ae=document.getElementById('adm-pw-err');if(ae)ae.textContent='';}else{renderAdmin();}}
   }
   function renderAdmin(){document.getElementById('adm-gate').style.display='none';document.getElementById('adm-dashboard').style.display='block';document.getElementById('adm-dashboard').classList.remove('adm-hidden');var list=document.getElementById('adm-list');list.innerHTML='<p class="adm-no-users">불러오는 중...</p>';sb.from('users').select('*').order('created_at',{ascending:false}).then(function(res){var data=res.data||[],html='';if(data.length===0){html='<p class="adm-no-users">등록된 회원이 없습니다.</p>';}else{data.forEach(function(u,i){var name=(u.last_name||'')+(u.first_name||'')||'—';html+='<div class="adm-user-card"><p class="adm-user-num">#'+(i+1)+'</p><p class="adm-user-name">'+name+'</p><p class="adm-user-detail">'+(u.email||'—')+'<br>'+(u.phone||'—')+'<br>'+(u.addr||'—')+'<br>가입일: '+(u.join_date||'—')+'</p></div>';});}list.innerHTML=html;document.getElementById('adm-total').textContent=data.length;});}
 
