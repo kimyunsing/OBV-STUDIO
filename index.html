@@ -64,7 +64,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 
 /* HERO */
 .hero{min-height:100svh;padding-top:var(--nav-h);position:relative;overflow:hidden;}
-.hero-slide{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;opacity:0;transition:opacity 1.5s ease;object-fit:cover;width:100%;height:calc(100svh - var(--nav-h));}
+.hero-slide{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;opacity:0;transition:opacity 1.5s ease;width:100%;height:calc(100svh - var(--nav-h));object-fit:cover;object-position:center;}
+@media(min-width:768px){.hero-slide{object-fit:contain;}.hero{background:#2a2a2a;}}
 .hero-slide.active{opacity:1;}
 
 @keyframes heroFade{from{opacity:0;transform:scale(1.01);}to{opacity:1;transform:scale(1);}}
