@@ -66,9 +66,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 /* OBJECTS PRODUCT CARDS */
 .obj-grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:24px;}
 .obj-detail-layout{display:flex;flex-direction:column;gap:32px;}
-.obj-detail-hero{width:100%;aspect-ratio:4/3;overflow:hidden;background:#F5F5F3;}
-.obj-detail-hero img{width:100%;height:100%;object-fit:cover;}
-@media(min-width:768px){.obj-detail-layout{flex-direction:row-reverse;align-items:flex-start;gap:48px;}.obj-detail-info{flex:0 0 340px;}.obj-detail-hero{flex:1;aspect-ratio:1/1;}}
+.obj-detail-hero{width:100%;aspect-ratio:1/1;overflow:hidden;background:#F5F5F3;display:flex;align-items:center;justify-content:center;}
+.obj-detail-hero img{width:100%;height:100%;object-fit:contain;}
+@media(min-width:768px){.obj-detail-layout{flex-direction:row;align-items:flex-start;gap:48px;}.obj-detail-info{flex:0 0 340px;order:2;}.obj-detail-hero{flex:1;order:1;}}
 .obj-card{display:block;cursor:pointer;}
 .obj-card-img{aspect-ratio:4/3;overflow:hidden;background:#F5F5F3;}
 .obj-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
@@ -244,6 +244,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <div id="obj-detail" style="display:none;">
       <div class="sp-section">
         <div class="obj-detail-layout">
+          <div class="obj-detail-hero"><img src="obj01-main.jpg" alt="obvio 001"></div>
           <div class="obj-detail-info">
             <a href="#" id="obj-back" class="home-strip-link" style="margin-bottom:24px;display:inline-block;">← Back</a>
             <p class="sp-h">obvio 001</p>
@@ -256,7 +257,6 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
               <a href="mailto:obviostudio.site@gmail.com" class="btn btn-line" style="width:100%;">obviostudio.site@gmail.com</a>
             </div>
           </div>
-          <div class="obj-detail-hero"><img src="obj01-main.jpg" alt="obvio 001"></div>
         </div>
       </div>
       <div class="sp-section">
