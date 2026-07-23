@@ -62,7 +62,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .obj-item.in{opacity:1;transform:none;}
 .obj-item:nth-child(1){transition-delay:.1s}.obj-item:nth-child(2){transition-delay:.2s}.obj-item:nth-child(3){transition-delay:.3s}.obj-item:nth-child(4){transition-delay:.4s}.obj-item:nth-child(5){transition-delay:.5s}
 
-/* HERO */
+/* OBJECTS PRODUCT CARDS */
+.obj-grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:24px;}
+.obj-card{display:block;cursor:pointer;}
+.obj-card-img{aspect-ratio:4/3;overflow:hidden;background:#F5F5F3;}
+.obj-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
+.obj-card:hover .obj-card-img img{transform:scale(1.04);}
+.obj-card-name{margin-top:12px;font-family:var(--head);font-size:16px;font-weight:500;color:var(--ink);}
+@media(min-width:600px){.obj-grid{grid-template-columns:repeat(3,1fr);gap:20px;}}
+
+
 .hero{min-height:100svh;padding-top:var(--nav-h);position:relative;overflow:hidden;}
 .hero-slide{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;opacity:0;transition:opacity 1.5s ease;width:100%;height:calc(100svh - var(--nav-h));object-fit:cover;object-position:center;}
 @media(min-width:768px){.hero-slide{object-fit:contain;}.hero{background:#fff;}}
@@ -213,32 +222,52 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 <!-- OBJECTS -->
 <div id="page-objects" class="page">
   <div class="sp-page">
-    <div class="sp-section">
-      <p class="sp-tag">Objects</p>
-      <p class="sp-h">obvio 001</p>
-      <p class="sp-p">Steel frame, matte black finish.<br>Multi-functional piece — chair, side table, or shelf.</p>
-      <div class="sp-price-card" style="margin-top:24px;max-width:320px;">
-        <div class="sp-price-row"><span class="sp-price-label">Price</span><span class="sp-price-val">Upon inquiry</span></div>
-      </div>
-      <a href="https://instagram.com/obvio.site" target="_blank" class="btn btn-dark" style="margin-top:24px;">Inquire on Instagram</a>
-    </div>
-    <div class="sp-section">
-      <p class="sp-tag">Gallery</p>
-      <div class="sp-gallery-v">
-        <img src="obj01-7.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-6.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-5.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-1.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-2.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-3.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-4.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-8.jpg" alt="obvio 001" class="gal-img">
-        <img src="obj01-9.jpg" alt="obvio 001" class="gal-img">
+
+    <!-- LIST VIEW -->
+    <div id="obj-list">
+      <div class="sp-section">
+        <p class="sp-tag">Objects</p>
+        <div class="obj-grid">
+          <a href="#" class="obj-card" data-obj="obvio-001">
+            <div class="obj-card-img"><img src="obj01-7.jpg" alt="obvio 001"></div>
+            <p class="obj-card-name">obvio 001</p>
+          </a>
+        </div>
       </div>
     </div>
+
+    <!-- DETAIL VIEW -->
+    <div id="obj-detail" style="display:none;">
+      <div class="sp-section">
+        <a href="#" id="obj-back" class="home-strip-link" style="margin-bottom:24px;display:inline-block;">← Back</a>
+        <p class="sp-tag">Objects</p>
+        <p class="sp-h">obvio 001</p>
+        <p class="sp-p">Steel frame, matte black finish.<br>Multi-functional piece — chair, side table, or shelf.</p>
+        <div class="sp-price-card" style="margin-top:24px;max-width:320px;">
+          <div class="sp-price-row"><span class="sp-price-label">Price</span><span class="sp-price-val">Upon inquiry</span></div>
+        </div>
+        <a href="https://instagram.com/obvio.objects" target="_blank" class="btn btn-dark" style="margin-top:24px;">Inquire on Instagram</a>
+      </div>
+      <div class="sp-section">
+        <p class="sp-tag">Gallery</p>
+        <div class="sp-gallery-v">
+          <img src="obj01-7.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-6.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-5.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-1.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-2.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-3.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-4.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-8.jpg" alt="obvio 001" class="gal-img">
+          <img src="obj01-9.jpg" alt="obvio 001" class="gal-img">
+        </div>
+      </div>
+    </div>
+
   </div>
   <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
+
 
 
 <!-- ABOUT -->
@@ -343,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (k === 'login') { if (loggedIn) { go('mypage'); return; } var lf = document.getElementById('login-form'), ls = document.getElementById('login-success'); if (lf) { lf.classList.remove('hidden'); lf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); lf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ls) ls.classList.remove('show'); }
     if (k === 'signup') { if (loggedIn) { go('mypage'); return; } var sf = document.getElementById('signup-form'), ss = document.getElementById('signup-success'); if (sf) { sf.classList.remove('hidden'); sf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); sf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ss) ss.classList.remove('show'); }
     if (k === 'mypage') { if (!loggedIn || !curUser) { go('login'); return; } document.getElementById('my-greeting').textContent = curUser.last + curUser.first + '님'; document.getElementById('my-email-display').textContent = curUser.email; document.getElementById('my-name').textContent = curUser.last + curUser.first; document.getElementById('my-email').textContent = curUser.email; document.getElementById('my-phone').textContent = curUser.phone; document.getElementById('my-addr').textContent = curUser.addr; document.getElementById('my-addr2').textContent = curUser.addr2 || '-'; document.getElementById('my-date').textContent = curUser.joinDate; }
-    if (k === 'objects') { var items = document.querySelectorAll('.obj-item'); items.forEach(function(el){ el.classList.remove('in'); }); setTimeout(function(){ items.forEach(function(el){ el.classList.add('in'); }); }, 100); }
+    if (k === 'objects') { document.getElementById('obj-list').style.display = 'block'; document.getElementById('obj-detail').style.display = 'none'; window.scrollTo({top:0}); }
     if (k === 'admin') { if (!adminIn) { document.getElementById('adm-gate').style.display = 'block'; document.getElementById('adm-dashboard').style.display = 'none'; var ap = document.getElementById('adm-pw'); if (ap) ap.value = ''; } else { renderAdmin(); } }
   }
 
@@ -426,6 +455,24 @@ document.addEventListener('DOMContentLoaded', function() {
       slides[cur].classList.add('active');
     }, 3000);
   }
+
+  // Objects: list -> detail toggle
+  document.querySelectorAll('.obj-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('obj-list').style.display = 'none';
+      document.getElementById('obj-detail').style.display = 'block';
+      window.scrollTo({top:0});
+      setTimeout(rvCheck, 100);
+    });
+  });
+  var objBack = document.getElementById('obj-back');
+  if (objBack) objBack.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('obj-detail').style.display = 'none';
+    document.getElementById('obj-list').style.display = 'block';
+    window.scrollTo({top:0});
+  });
 
   syncNav();
   go('home');
