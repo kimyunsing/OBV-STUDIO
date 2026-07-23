@@ -484,7 +484,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   syncNav();
   var initialHash = location.hash.replace('#', '');
-  if (initialHash && PM[initialHash]) { go(initialHash, true); }
+  var params = new URLSearchParams(location.search);
+  var pageParam = params.get('page');
+  if (pageParam && PM[pageParam]) { go(pageParam, true); }
+  else if (initialHash && PM[initialHash]) { go(initialHash, true); }
   else { go('home', true); }
 
   window.addEventListener('hashchange', function() {
