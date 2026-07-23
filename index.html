@@ -65,10 +65,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 
 /* OBJECTS PRODUCT CARDS */
 .obj-grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:24px;}
-.obj-detail-layout{display:flex;flex-direction:column;gap:32px;}
-.obj-detail-hero{width:100%;aspect-ratio:1/1;overflow:hidden;background:#F5F5F3;display:flex;align-items:center;justify-content:center;}
+.obj-detail-layout{display:grid;grid-template-areas:"top" "hero" "bottom";gap:24px;}
+.obj-detail-hero{grid-area:hero;width:100%;aspect-ratio:1/1;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;}
 .obj-detail-hero img{width:100%;height:100%;object-fit:contain;}
-@media(min-width:768px){.obj-detail-layout{flex-direction:row;align-items:flex-start;gap:48px;}.obj-detail-info{flex:0 0 340px;order:2;}.obj-detail-hero{flex:1;order:1;}}
+.obj-detail-top{grid-area:top;}
+.obj-detail-bottom{grid-area:bottom;}
+@media(min-width:768px){.obj-detail-layout{grid-template-columns:1fr 340px;grid-template-areas:"hero top" "hero bottom";column-gap:48px;row-gap:24px;align-items:start;}}
 .obj-card{display:block;cursor:pointer;}
 .obj-card-img{aspect-ratio:4/3;overflow:hidden;background:#F5F5F3;}
 .obj-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
@@ -244,12 +246,14 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <div id="obj-detail" style="display:none;">
       <div class="sp-section">
         <div class="obj-detail-layout">
-          <div class="obj-detail-hero"><img src="obj01-main.jpg" alt="obvio 001"></div>
-          <div class="obj-detail-info">
+          <div class="obj-detail-top">
             <a href="#" id="obj-back" class="home-strip-link" style="margin-bottom:24px;display:inline-block;">← Back</a>
             <p class="sp-h">obvio 001</p>
             <p class="sp-p">Steel frame, matte black finish.<br>Multi-functional piece — chair, side table, or shelf.<br>Size: H870 × W520 × D500 (mm)</p>
-            <div class="sp-price-card" style="margin-top:24px;max-width:320px;">
+          </div>
+          <div class="obj-detail-hero"><img src="obj01-main.jpg" alt="obvio 001"></div>
+          <div class="obj-detail-bottom">
+            <div class="sp-price-card" style="max-width:320px;">
               <div class="sp-price-row"><span class="sp-price-label">Price</span><span class="sp-price-val">Upon inquiry</span></div>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;max-width:320px;">
