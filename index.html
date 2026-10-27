@@ -246,6 +246,11 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 .bk-agree{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-m);cursor:pointer;margin-top:8px;line-height:1.7;}
 .bk-agree input{width:15px;height:15px;accent-color:var(--ink);margin-top:3px;flex-shrink:0;}
 .bk-agree-detail{font-size:11px;color:var(--ink-l);line-height:1.8;margin:6px 0 0 25px;}
+.bk-file{display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed var(--ink-l);padding:16px;font-size:13px;color:var(--ink-m);cursor:pointer;transition:border-color .2s,color .2s;text-align:center;word-break:break-all;}
+.bk-file:hover{border-color:var(--ink);color:var(--ink);}
+.bk-file.has{border-style:solid;border-color:var(--ink);color:var(--ink);}
+.bk-file input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;}
+.bk-file-del{font-size:11px;color:var(--ink-l);text-decoration:underline;margin-top:8px;}
 .bk-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
 .bk-alert{font-size:12px;color:#c44;margin-top:16px;line-height:1.7;}
 .bk-alert:empty{display:none;}
@@ -257,6 +262,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 .bk-done h2{font-family:var(--body);font-size:22px;font-weight:400;margin-bottom:8px;}
 .bk-done p{font-size:13px;color:var(--ink-m);line-height:1.9;}
 .bk-cta{margin-top:24px;}
+/* iOS는 16px 미만 입력칸을 누르면 화면을 확대함 → 모바일에서 16px로 */
+@media(max-width:767px){.auth-input,textarea.auth-input{font-size:16px;}}
 </style>
 </head>
 <body>
@@ -373,11 +380,18 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         <div class="auth-row bk-hide" id="bk-tax-row"><label class="auth-label">세금계산서</label>
           <div class="bk-chips bk-chips-2" id="bk-tax"><button type="button" class="bk-chip" data-tax="1">발행</button><button type="button" class="bk-chip" data-tax="0">미발행</button></div>
           <p class="auth-err-msg" id="bk-tax-err"></p></div>
-        <div class="auth-row bk-hide" id="bk-biz-row"><label class="auth-label" for="bk-biz">사업자등록번호</label><input class="auth-input" type="text" id="bk-biz" inputmode="numeric" placeholder="000-00-00000" maxlength="20"><p class="auth-err-msg" id="bk-biz-err"></p></div>
+        <div class="bk-hide" id="bk-biz-row">
+          <div class="auth-row"><label class="auth-label" for="bk-biz">사업자등록번호</label><input class="auth-input" type="text" id="bk-biz" inputmode="numeric" placeholder="000-00-00000" maxlength="20"><p class="auth-err-msg" id="bk-biz-err"></p></div>
+          <div class="auth-row"><label class="auth-label">사업자등록증<span class="bk-opt">사진 또는 PDF</span></label>
+            <label class="bk-file" id="bk-file-btn"><input type="file" id="bk-biz-file" accept="image/*,application/pdf"><span id="bk-file-name">파일 첨부</span></label>
+            <button type="button" class="bk-file-del bk-hide" id="bk-file-del">삭제</button>
+            <p class="bk-note">번호 입력 또는 등록증 첨부 중 하나만 해도 돼요.</p>
+            <p class="auth-err-msg" id="bk-file-err"></p></div>
+        </div>
         <div class="bk-hp" aria-hidden="true"><label>website<input type="text" id="bk-website" tabindex="-1" autocomplete="off"></label></div>
 
         <label class="bk-agree"><input type="checkbox" id="bk-agree"><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>
-        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호, 사업자등록번호(세금계산서 발행 시) · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
+        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호, 사업자등록번호·사업자등록증(세금계산서 발행 시) · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
         <p class="auth-err-msg" id="bk-agree-err"></p>
 
         <button type="button" class="btn btn-dark auth-submit" id="bk-submit">예약 신청하기</button>
@@ -525,7 +539,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   var BOOKING_API = 'https://script.google.com/macros/s/AKfycbzqJDRaHi1NXC0SPKMV_y4L9RRlbXhR0IvRTz4PvipmwchNlrKTizrLGTgJHB7zymSv/exec';
 
   var DAY = 86400000, DN = ['일', '월', '화', '수', '목', '금', '토'];
-  var S = { type: 'rental', tier: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4, pay: null, tax: null,
+  var S = { type: 'rental', tier: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4, pay: null, tax: null, bizFile: null,
             cfg: null, today: null, first: null, last: null, loadedTo: null, busy: {}, fetchedAt: 0, loading: false, sending: false };
 
   function $(id) { return document.getElementById(id); }
@@ -750,6 +764,37 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-biz-row').classList.toggle('bk-hide', !(S.pay === 'transfer' && S.tax === true));
   }
 
+  /* 사업자등록증: 사진은 긴 변 2000px JPEG로 줄여서, PDF는 그대로 (10MB까지) */
+  function clearFile() {
+    S.bizFile = null; var inp = $('bk-biz-file'); if (inp) inp.value = '';
+    $('bk-file-name').textContent = '파일 첨부'; $('bk-file-btn').classList.remove('has'); $('bk-file-del').classList.add('bk-hide');
+  }
+  function setFile(name, type, dataUrl) {
+    S.bizFile = { name: name, type: type, data: dataUrl.split(',')[1] };
+    $('bk-file-name').textContent = '✓ ' + name; $('bk-file-btn').classList.add('has'); $('bk-file-del').classList.remove('bk-hide');
+    $('bk-file-err').textContent = ''; fieldErr('bk-biz', '');
+  }
+  function onFile(file) {
+    if (!file) return;
+    var err = $('bk-file-err'); err.textContent = '';
+    if (file.type === 'application/pdf') {
+      if (file.size > 10 * 1024 * 1024) { err.textContent = '10MB 이하 파일만 올릴 수 있어요'; return; }
+      var fr = new FileReader(); fr.onload = function () { setFile(file.name, file.type, fr.result); }; fr.readAsDataURL(file); return;
+    }
+    if (!/^image\//.test(file.type)) { err.textContent = '사진 또는 PDF만 올릴 수 있어요'; return; }
+    $('bk-file-name').textContent = '불러오는 중...';
+    var url = URL.createObjectURL(file), img = new Image();
+    img.onload = function () {
+      var max = 2000, w = img.naturalWidth, h = img.naturalHeight, r = Math.min(1, max / Math.max(w, h));
+      var c = document.createElement('canvas'); c.width = Math.round(w * r); c.height = Math.round(h * r);
+      var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      setFile(file.name.replace(/\.[^.]+$/, '') + '.jpg', 'image/jpeg', c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); clearFile(); err.textContent = '이 파일은 열 수 없어요. 다른 사진이나 PDF로 올려주세요'; };
+    img.src = url;
+  }
+
   function scrollTo(id) {
     setTimeout(function () { var el = $(id); if (el && !el.hidden) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
   }
@@ -769,7 +814,12 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-pay-err').textContent = S.pay ? '' : '결제 방식을 선택해주세요'; ok = !!S.pay && ok;
     if (S.pay === 'transfer') { $('bk-tax-err').textContent = S.tax === null ? '세금계산서 발행 여부를 선택해주세요' : ''; ok = S.tax !== null && ok; }
     var biz = $('bk-biz').value.trim();
-    if (S.pay === 'transfer' && S.tax) ok = fieldErr('bk-biz', biz.replace(/\D/g, '').length === 10 ? '' : '10자리를 확인해주세요') && ok;
+    $('bk-file-err').textContent = '';
+    if (S.pay === 'transfer' && S.tax) {
+      var digits = biz.replace(/\D/g, '').length;
+      if (!biz && !S.bizFile) { fieldErr('bk-biz', '번호 입력 또는 등록증 첨부가 필요해요'); ok = false; }
+      else ok = fieldErr('bk-biz', !biz || digits === 10 ? '' : '10자리를 확인해주세요') && ok;
+    }
     $('bk-agree-err').textContent = $('bk-agree').checked ? '' : '동의가 필요해요';
     ok = $('bk-agree').checked && ok;
     $('bk-submit-err').textContent = '';
@@ -777,7 +827,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 
     var payload = { type: S.type, date: S.date, name: name, phone: phone, email: email, purpose: purpose,
       car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value, pay: S.pay };
-    if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) payload.bizNo = biz; }
+    if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) { payload.bizNo = biz; if (S.bizFile) payload.bizFile = S.bizFile; } }
     if (S.type === 'rental') { payload.guests = S.guests; if (S.full) payload.fullDay = true; else { payload.start = S.start; payload.hours = S.hours; } }
     else { payload.tier = S.tier; payload.start = S.start; }
 
@@ -803,7 +853,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     window.scrollTo({ top: 0 });
   }
   function reset() {
-    S.date = null; clearSlot(); S.tier = null; S.pay = null; S.tax = null; S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
+    S.date = null; clearSlot(); S.tier = null; S.pay = null; S.tax = null; clearFile(); S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
     ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website', 'bk-biz'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
     $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-pay-err').textContent = ''; $('bk-tax-err').textContent = ''; $('bk-submit-err').textContent = '';
     $('bk-flow').hidden = false; $('bk-done').hidden = true;
@@ -858,6 +908,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       $(id).addEventListener('input', function () { if ($(id).classList.contains('err')) fieldErr(id, ''); });
     });
     $('bk-agree').addEventListener('change', function () { if (this.checked) $('bk-agree-err').textContent = ''; });
+    $('bk-biz-file').addEventListener('change', function () { onFile(this.files && this.files[0]); });
+    $('bk-file-del').addEventListener('click', clearFile);
     $('bk-submit').addEventListener('click', submit);
     $('bk-again').addEventListener('click', function () { reset(); refresh(); window.scrollTo({ top: 0 }); });
   }
