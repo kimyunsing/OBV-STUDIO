@@ -381,17 +381,15 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
           <div class="bk-chips bk-chips-2" id="bk-tax"><button type="button" class="bk-chip" data-tax="1">발행</button><button type="button" class="bk-chip" data-tax="0">미발행</button></div>
           <p class="auth-err-msg" id="bk-tax-err"></p></div>
         <div class="bk-hide" id="bk-biz-row">
-          <div class="auth-row"><label class="auth-label" for="bk-biz">사업자등록번호</label><input class="auth-input" type="text" id="bk-biz" inputmode="numeric" placeholder="000-00-00000" maxlength="20"><p class="auth-err-msg" id="bk-biz-err"></p></div>
-          <div class="auth-row"><label class="auth-label">사업자등록증<span class="bk-opt">사진 또는 PDF</span></label>
+          <div class="auth-row"><label class="auth-label">사업자등록증<span class="bk-opt">사진 또는 PDF · 세금계산서 발행용</span></label>
             <label class="bk-file" id="bk-file-btn"><input type="file" id="bk-biz-file" accept="image/*,application/pdf"><span id="bk-file-name">파일 첨부</span></label>
             <button type="button" class="bk-file-del bk-hide" id="bk-file-del">삭제</button>
-            <p class="bk-note">번호 입력 또는 등록증 첨부 중 하나만 해도 돼요.</p>
             <p class="auth-err-msg" id="bk-file-err"></p></div>
         </div>
         <div class="bk-hp" aria-hidden="true"><label>website<input type="text" id="bk-website" tabindex="-1" autocomplete="off"></label></div>
 
         <label class="bk-agree"><input type="checkbox" id="bk-agree"><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>
-        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호, 사업자등록번호·사업자등록증(세금계산서 발행 시) · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
+        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호, 사업자등록증(세금계산서 발행 시) · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
         <p class="auth-err-msg" id="bk-agree-err"></p>
 
         <button type="button" class="btn btn-dark auth-submit" id="bk-submit">예약 신청하기</button>
@@ -772,7 +770,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   function setFile(name, type, dataUrl) {
     S.bizFile = { name: name, type: type, data: dataUrl.split(',')[1] };
     $('bk-file-name').textContent = '✓ ' + name; $('bk-file-btn').classList.add('has'); $('bk-file-del').classList.remove('bk-hide');
-    $('bk-file-err').textContent = ''; fieldErr('bk-biz', '');
+    $('bk-file-err').textContent = '';
   }
   function onFile(file) {
     if (!file) return;
@@ -813,13 +811,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     ok = fieldErr('bk-purpose', S.type === 'profile' || purpose ? '' : '필수') && ok;
     $('bk-pay-err').textContent = S.pay ? '' : '결제 방식을 선택해주세요'; ok = !!S.pay && ok;
     if (S.pay === 'transfer') { $('bk-tax-err').textContent = S.tax === null ? '세금계산서 발행 여부를 선택해주세요' : ''; ok = S.tax !== null && ok; }
-    var biz = $('bk-biz').value.trim();
     $('bk-file-err').textContent = '';
-    if (S.pay === 'transfer' && S.tax) {
-      var digits = biz.replace(/\D/g, '').length;
-      if (!biz && !S.bizFile) { fieldErr('bk-biz', '번호 입력 또는 등록증 첨부가 필요해요'); ok = false; }
-      else ok = fieldErr('bk-biz', !biz || digits === 10 ? '' : '10자리를 확인해주세요') && ok;
-    }
+    if (S.pay === 'transfer' && S.tax && !S.bizFile) { $('bk-file-err').textContent = '사업자등록증을 첨부해주세요'; ok = false; }
     $('bk-agree-err').textContent = $('bk-agree').checked ? '' : '동의가 필요해요';
     ok = $('bk-agree').checked && ok;
     $('bk-submit-err').textContent = '';
@@ -827,7 +820,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 
     var payload = { type: S.type, date: S.date, name: name, phone: phone, email: email, purpose: purpose,
       car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value, pay: S.pay };
-    if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) { payload.bizNo = biz; if (S.bizFile) payload.bizFile = S.bizFile; } }
+    if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) payload.bizFile = S.bizFile; }
     if (S.type === 'rental') { payload.guests = S.guests; if (S.full) payload.fullDay = true; else { payload.start = S.start; payload.hours = S.hours; } }
     else { payload.tier = S.tier; payload.start = S.start; }
 
@@ -854,7 +847,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   }
   function reset() {
     S.date = null; clearSlot(); S.tier = null; S.pay = null; S.tax = null; clearFile(); S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
-    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website', 'bk-biz'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
+    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
     $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-pay-err').textContent = ''; $('bk-tax-err').textContent = ''; $('bk-submit-err').textContent = '';
     $('bk-flow').hidden = false; $('bk-done').hidden = true;
   }
@@ -904,7 +897,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       var b = e.target.closest('[data-tax]'); if (!b) return;
       S.tax = b.dataset.tax === '1'; $('bk-tax-err').textContent = ''; renderPay();
     });
-    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-biz'].forEach(function (id) {
+    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose'].forEach(function (id) {
       $(id).addEventListener('input', function () { if ($(id).classList.contains('err')) fieldErr(id, ''); });
     });
     $('bk-agree').addEventListener('change', function () { if (this.checked) $('bk-agree-err').textContent = ''; });
