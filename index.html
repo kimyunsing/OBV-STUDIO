@@ -229,6 +229,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-chip small{display:block;font-size:10px;color:var(--ink-l);margin-top:1px;}
 .bk-chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
 .bk-chip.on small{color:rgba(255,255,255,.65);}
+.bk-chips-2{grid-template-columns:1fr 1fr;}
 .bk-chip-wide{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;text-align:left;}
 .bk-chip-wide small{display:inline;margin:0;font-size:12px;}
 
@@ -366,10 +367,17 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         <div class="auth-row"><label class="auth-label" for="bk-purpose" id="bk-purpose-label">촬영 내용</label><input class="auth-input" type="text" id="bk-purpose" maxlength="300"><p class="auth-err-msg" id="bk-purpose-err"></p></div>
         <div class="auth-row" id="bk-car-row"><label class="auth-label" for="bk-car">차량번호<span class="bk-opt">선택 · 주차 1대</span></label><input class="auth-input" type="text" id="bk-car" placeholder="12가 3456" maxlength="20"><p class="auth-err-msg"></p></div>
         <div class="auth-row"><label class="auth-label" for="bk-memo">요청사항<span class="bk-opt">선택</span></label><textarea class="auth-input" id="bk-memo" rows="3" maxlength="800"></textarea><p class="auth-err-msg"></p></div>
+        <div class="auth-row"><label class="auth-label">결제 방식</label>
+          <div class="bk-chips bk-chips-2" id="bk-pay"><button type="button" class="bk-chip" data-pay="card">카드 결제<small>결제 링크 발송</small></button><button type="button" class="bk-chip" data-pay="transfer">계좌이체<small>계좌번호 안내</small></button></div>
+          <p class="auth-err-msg" id="bk-pay-err"></p></div>
+        <div class="auth-row bk-hide" id="bk-tax-row"><label class="auth-label">세금계산서</label>
+          <div class="bk-chips bk-chips-2" id="bk-tax"><button type="button" class="bk-chip" data-tax="1">발행</button><button type="button" class="bk-chip" data-tax="0">미발행</button></div>
+          <p class="auth-err-msg" id="bk-tax-err"></p></div>
+        <div class="auth-row bk-hide" id="bk-biz-row"><label class="auth-label" for="bk-biz">사업자등록번호</label><input class="auth-input" type="text" id="bk-biz" inputmode="numeric" placeholder="000-00-00000" maxlength="20"><p class="auth-err-msg" id="bk-biz-err"></p></div>
         <div class="bk-hp" aria-hidden="true"><label>website<input type="text" id="bk-website" tabindex="-1" autocomplete="off"></label></div>
 
         <label class="bk-agree"><input type="checkbox" id="bk-agree"><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>
-        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호 · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
+        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호, 사업자등록번호(세금계산서 발행 시) · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
         <p class="auth-err-msg" id="bk-agree-err"></p>
 
         <button type="button" class="btn btn-dark auth-submit" id="bk-submit">예약 신청하기</button>
@@ -517,7 +525,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   var BOOKING_API = 'https://script.google.com/macros/s/AKfycbzqJDRaHi1NXC0SPKMV_y4L9RRlbXhR0IvRTz4PvipmwchNlrKTizrLGTgJHB7zymSv/exec';
 
   var DAY = 86400000, DN = ['일', '월', '화', '수', '목', '금', '토'];
-  var S = { type: 'rental', tier: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4,
+  var S = { type: 'rental', tier: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4, pay: null, tax: null,
             cfg: null, today: null, first: null, last: null, loadedTo: null, busy: {}, fetchedAt: 0, loading: false, sending: false };
 
   function $(id) { return document.getElementById(id); }
@@ -731,7 +739,15 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     html += '<div class="sp-price-row bk-total"><span class="sp-price-label">예상 금액</span><span class="sp-price-val">' + won(pr.total) + '</span></div>';
     $('bk-summary').innerHTML = html + '<p class="sp-price-note" style="margin-top:12px;">' + esc([isR ? R.priceNote : S.cfg.profile.priceNote, pr.note].filter(Boolean).join(' · ')) + '</p>';
     $('bk-purpose-label').innerHTML = isR ? '촬영 내용' : '촬영 용도<span class="bk-opt">선택</span>';
+    renderPay();
     $('bk-purpose').placeholder = isR ? '예: 의류 룩북, 유튜브 콘텐츠, 제품 촬영' : '예: 배우 프로필, 이력서, SNS';
+  }
+
+  function renderPay() {
+    document.querySelectorAll('#bk-pay [data-pay]').forEach(function (b) { var on = S.pay === b.dataset.pay; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    document.querySelectorAll('#bk-tax [data-tax]').forEach(function (b) { var on = S.tax === (b.dataset.tax === '1'); b.classList.toggle('on', S.tax !== null && on); b.setAttribute('aria-pressed', S.tax !== null && on); });
+    $('bk-tax-row').classList.toggle('bk-hide', S.pay !== 'transfer');   // 카드면 세금계산서 선택지 숨김
+    $('bk-biz-row').classList.toggle('bk-hide', !(S.pay === 'transfer' && S.tax === true));
   }
 
   function scrollTo(id) {
@@ -750,13 +766,18 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     ok = fieldErr('bk-phone', pd.length >= 9 && pd.length <= 12 ? '' : '연락처를 확인해주세요') && ok;
     ok = fieldErr('bk-email', !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : '이메일 형식을 확인해주세요') && ok;
     ok = fieldErr('bk-purpose', S.type === 'profile' || purpose ? '' : '필수') && ok;
+    $('bk-pay-err').textContent = S.pay ? '' : '결제 방식을 선택해주세요'; ok = !!S.pay && ok;
+    if (S.pay === 'transfer') { $('bk-tax-err').textContent = S.tax === null ? '세금계산서 발행 여부를 선택해주세요' : ''; ok = S.tax !== null && ok; }
+    var biz = $('bk-biz').value.trim();
+    if (S.pay === 'transfer' && S.tax) ok = fieldErr('bk-biz', biz.replace(/\D/g, '').length === 10 ? '' : '10자리를 확인해주세요') && ok;
     $('bk-agree-err').textContent = $('bk-agree').checked ? '' : '동의가 필요해요';
     ok = $('bk-agree').checked && ok;
     $('bk-submit-err').textContent = '';
     if (!ok) { var firstErr = document.querySelector('#bk-step-form .auth-input.err'); if (firstErr) firstErr.focus(); return; }
 
     var payload = { type: S.type, date: S.date, name: name, phone: phone, email: email, purpose: purpose,
-      car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value };
+      car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value, pay: S.pay };
+    if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) payload.bizNo = biz; }
     if (S.type === 'rental') { payload.guests = S.guests; if (S.full) payload.fullDay = true; else { payload.start = S.start; payload.hours = S.hours; } }
     else { payload.tier = S.tier; payload.start = S.start; }
 
@@ -782,9 +803,9 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     window.scrollTo({ top: 0 });
   }
   function reset() {
-    S.date = null; clearSlot(); S.tier = null; S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
-    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
-    $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-submit-err').textContent = '';
+    S.date = null; clearSlot(); S.tier = null; S.pay = null; S.tax = null; S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
+    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website', 'bk-biz'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
+    $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-pay-err').textContent = ''; $('bk-tax-err').textContent = ''; $('bk-submit-err').textContent = '';
     $('bk-flow').hidden = false; $('bk-done').hidden = true;
   }
 
@@ -824,6 +845,19 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     });
     $('bk-g-minus').addEventListener('click', function () { if (S.guests > 1) { S.guests--; renderForm(); } });
     $('bk-g-plus').addEventListener('click', function () { if (S.guests < S.cfg.rental.maxGuests) { S.guests++; renderForm(); } });
+    $('bk-pay').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-pay]'); if (!b) return;
+      S.pay = b.dataset.pay; if (S.pay === 'card') S.tax = null;
+      $('bk-pay-err').textContent = ''; renderPay();
+    });
+    $('bk-tax').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tax]'); if (!b) return;
+      S.tax = b.dataset.tax === '1'; $('bk-tax-err').textContent = ''; renderPay();
+    });
+    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-biz'].forEach(function (id) {
+      $(id).addEventListener('input', function () { if ($(id).classList.contains('err')) fieldErr(id, ''); });
+    });
+    $('bk-agree').addEventListener('change', function () { if (this.checked) $('bk-agree-err').textContent = ''; });
     $('bk-submit').addEventListener('click', submit);
     $('bk-again').addEventListener('click', function () { reset(); refresh(); window.scrollTo({ top: 0 }); });
   }
