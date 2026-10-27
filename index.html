@@ -236,6 +236,8 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-chip.on small{color:rgba(255,255,255,.65);}
 .bk-chips-2{grid-template-columns:1fr 1fr;}
 .bk-chip-wide{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;text-align:left;}
+.bk-chip-desc{font-style:normal;display:block;font-size:11px;color:var(--ink-l);margin-top:2px;}
+.bk-chip.on .bk-chip-desc{color:rgba(255,255,255,.65);}
 .bk-chip-wide small{display:inline;margin:0;font-size:12px;}
 
 /* form */
@@ -615,7 +617,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       if (!(t.listPrice > t.price)) return { total: t.price, lines: [] };
       return { total: t.price, lines: [['정가', won(t.listPrice)], ['할인 ' + pct(t) + '%', '−' + won(t.listPrice - t.price)]] };
     }
-    if (S.full) return { total: R.fullDay.price, lines: [], note: S.guests > R.fullDay.baseGuests ? R.fullDay.baseGuests + '인 기준 · 초과 인원은 별도 안내' : '' };
+    if (S.full) return { total: R.fullDay.price, lines: [] };
     var extra = Math.max(0, S.guests - R.baseGuests);
     var lines = [[won(R.pricePerHour) + ' × ' + S.hours + '시간', won(R.pricePerHour * S.hours)]];
     if (extra) lines.push(['추가 ' + extra + '명 × ' + S.hours + '시간', won(extra * R.extraPerGuestPerHour * S.hours)]);
@@ -744,7 +746,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       var R = S.cfg.rental;
       if (o.full) {
         html += '<p class="bk-sublabel">하루 전체</p><div class="bk-chips">' +
-          chip(' bk-chip-wide', 'data-full="1"', '종일 대관 ' + hm(R.fullDay.start * 60) + '–' + hm(R.fullDay.end * 60), won(R.fullDay.price), S.full, !o.full.ok) + '</div>';
+          chip(' bk-chip-wide', 'data-full="1"', '<span>종일 대관 ' + hm(R.fullDay.start * 60) + '–' + hm(R.fullDay.end * 60) + '<em class="bk-chip-desc">' + esc(R.fullDay.note || '인원 무제한') + '</em></span>', won(R.fullDay.price), S.full, !o.full.ok) + '</div>';
       }
       html += '<p class="bk-sublabel">시작 시간 <span class="bk-opt">최소 ' + R.minHours + '시간</span></p><div class="bk-chips">' +
         o.starts.map(function (x) { return chip('', 'data-start="' + x.min + '"', hm(x.min), '', !S.full && S.start === x.min, !x.ok); }).join('') + '</div>';
@@ -763,19 +765,19 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 
   function renderForm() {
     var isR = S.type === 'rental', R = S.cfg.rental, t = slotTimes(), pr = price();
-    $('bk-guests-row').classList.toggle('bk-hide', !isR);
+    $('bk-guests-row').classList.toggle('bk-hide', !isR || S.full);   // 종일 대관은 인원 무제한이라 인원 칸 없음
     $('bk-car-row').classList.toggle('bk-hide', false);
     if (isR) {
       $('bk-g-val').textContent = S.guests + '명';
       $('bk-g-minus').disabled = S.guests <= 1;
       $('bk-g-plus').disabled = S.guests >= R.maxGuests;
-      $('bk-guests-note').textContent = S.full ? '종일 대관은 ' + R.fullDay.baseGuests + '인 기준이에요.' : '기본 ' + R.baseGuests + '명 · 추가 1인당 시간당 ' + won(R.extraPerGuestPerHour);
+      $('bk-guests-note').textContent = '기본 ' + R.baseGuests + '명 · 추가 1인당 시간당 ' + won(R.extraPerGuestPerHour);
     }
     var rows = [
       ['종류', isR ? (S.full ? '대관 · 종일' : '대관') : '프로필 촬영 · ' + tierById(S.tier).name],
       ['일시', dateText(S.date) + ' ' + hm(t[0]) + '–' + hm(t[1])]
     ];
-    if (isR) rows.push(['인원', S.guests + '명']);
+    if (isR) rows.push(['인원', S.full ? (R.fullDay.note || '인원 무제한') : S.guests + '명']);
     pr.lines.forEach(function (l) { rows.push(l); });
     var html = rows.map(function (r) { return '<div class="sp-price-row"><span class="sp-price-label">' + esc(r[0]) + '</span><span class="sp-price-val">' + esc(r[1]) + '</span></div>'; }).join('');
     html += '<div class="sp-price-row bk-total"><span class="sp-price-label">예상 금액</span><span class="sp-price-val">' + won(pr.total) + '</span></div>';
@@ -851,7 +853,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     var payload = { type: S.type, date: S.date, name: name, phone: phone, email: email, purpose: purpose,
       car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value, pay: S.pay };
     if (S.pay === 'transfer') { payload.taxInvoice = S.tax; if (S.tax) payload.bizFile = S.bizFile; }
-    if (S.type === 'rental') { payload.guests = S.guests; if (S.full) payload.fullDay = true; else { payload.start = S.start; payload.hours = S.hours; } }
+    if (S.type === 'rental') { if (S.full) payload.fullDay = true; else { payload.guests = S.guests; payload.start = S.start; payload.hours = S.hours; } }
     else { payload.tier = S.tier; payload.start = S.start; }
 
     S.sending = true;
