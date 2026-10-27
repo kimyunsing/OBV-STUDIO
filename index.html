@@ -198,7 +198,9 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-tier-txt{display:flex;flex-direction:column;line-height:1.5;}
 .bk-tier-name{font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--ink);}
 .bk-tier-meta{font-size:12px;color:var(--ink-m);}
-.bk-tier-price{margin-left:auto;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;}
+.bk-tier-price{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;line-height:1.5;}
+.bk-tier-price s{font-size:11px;font-weight:300;color:var(--ink-l);}
+.bk-tier-price em{font-style:normal;color:#c44;margin-right:2px;}
 .bk-note{font-size:11px;color:var(--ink-l);margin-top:12px;line-height:1.8;}
 
 /* calendar */
@@ -550,6 +552,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   function dow(d) { return new Date(ms(d)).getUTCDay(); }
   function hm(m) { if (m > 1440) return '익일 ' + hm(m - 1440); var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
   function won(n) { return '₩' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function pct(t) { return Math.round((1 - t.price / t.listPrice) * 100); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function lastOfMonth(ym) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1], 0)); }
   function shiftYm(ym, n) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1] - 1 + n, 1)).slice(0, 7); }
@@ -577,15 +580,17 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     return (S.busy[d] || []).concat(next);
   }
   function maxEnd(R, start) { return R.overnight ? start + R.maxHours * 60 : Math.min(R.close * 60, start + R.maxHours * 60); }
+  // 지금 + 최소 여유 시간 이전에 시작하는 시간은 선택 불가 (페이지를 오래 열어둬도 시간 흐름 반영)
+  function late(d, m) { return ms(d) - 9 * 3600000 + m * 60000 >= S.cutoffMs + (Date.now() - S.cutoffAt); }
   function options(d) {
     var busy = busyOf(d), starts = [], full = null;
     if (S.type === 'rental') {
       var R = S.cfg.rental, F = R.fullDay;
-      for (var m = R.open * 60; m < R.close * 60 && m + R.minHours * 60 <= maxEnd(R, m); m += 60) starts.push({ min: m, end: m + R.minHours * 60, ok: free(busy, m, m + R.minHours * 60) });
-      if (F && F.enabled) full = { ok: free(busy, F.start * 60, F.end * 60) };
+      for (var m = R.open * 60; m < R.close * 60 && m + R.minHours * 60 <= maxEnd(R, m); m += 60) starts.push({ min: m, end: m + R.minHours * 60, ok: late(d, m) && free(busy, m, m + R.minHours * 60) });
+      if (F && F.enabled) full = { ok: late(d, F.start * 60) && free(busy, F.start * 60, F.end * 60) };
     } else {
       var P = S.cfg.profile, t = tierById(S.tier) || minTier();
-      for (var p = P.open * 60; p <= P.lastStart * 60 && p + t.minutes <= P.close * 60; p += 60) starts.push({ min: p, end: p + t.minutes, ok: free(busy, p, p + t.minutes) });
+      for (var p = P.open * 60; p <= P.lastStart * 60 && p + t.minutes <= P.close * 60; p += 60) starts.push({ min: p, end: p + t.minutes, ok: late(d, p) && free(busy, p, p + t.minutes) });
     }
     return { starts: starts, full: full };
   }
@@ -605,7 +610,11 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   }
   function price() {
     var R = S.cfg.rental;
-    if (S.type === 'profile') return { total: tierById(S.tier).price, lines: [] };
+    if (S.type === 'profile') {
+      var t = tierById(S.tier);
+      if (!(t.listPrice > t.price)) return { total: t.price, lines: [] };
+      return { total: t.price, lines: [['정가', won(t.listPrice)], ['할인 ' + pct(t) + '%', '−' + won(t.listPrice - t.price)]] };
+    }
     if (S.full) return { total: R.fullDay.price, lines: [], note: S.guests > R.fullDay.baseGuests ? R.fullDay.baseGuests + '인 기준 · 초과 인원은 별도 안내' : '' };
     var extra = Math.max(0, S.guests - R.baseGuests);
     var lines = [[won(R.pricePerHour) + ' × ' + S.hours + '시간', won(R.pricePerHour * S.hours)]];
@@ -630,7 +639,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     var q = '?action=avail' + (from ? '&from=' + from : '') + (to ? '&to=' + to : '');
     return fetch(BOOKING_API + q).then(function (r) { return r.json(); }).then(function (r) {
       if (!r.ok) throw new Error(r.message || 'error');
-      S.cfg = r.config; S.today = r.today;
+      S.cfg = r.config; S.today = r.today; S.cutoffMs = r.cutoffMs || 0; S.cutoffAt = Date.now();
       S.first = addDays(r.today, r.config.minLeadDays); S.last = addDays(r.today, r.config.maxAheadDays);
       if (!from) S.busy = {};
       for (var d = r.from; d <= r.to; d = addDays(d, 1)) S.busy[d] = r.busy[d] || [];
@@ -701,7 +710,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       return '<button type="button" class="bk-tier' + (S.tier === t.id ? ' on' : '') + '" data-tier="' + t.id + '" aria-pressed="' + (S.tier === t.id) + '">' +
         '<span class="bk-radio"></span><span class="bk-tier-txt"><span class="bk-tier-name">' + esc(t.name) + '</span>' +
         '<span class="bk-tier-meta">' + t.concepts + '컨셉 · 약 ' + t.minutes + '분</span></span>' +
-        '<span class="bk-tier-price">' + won(t.price) + '</span></button>';
+        '<span class="bk-tier-price">' + (t.listPrice > t.price ? '<s>' + won(t.listPrice) + '</s><span><em>' + pct(t) + '%</em> ' + won(t.price) + '</span>' : won(t.price)) + '</span></button>';
     }).join('');
     $('bk-tier-note').textContent = P.priceNote || '';
   }
