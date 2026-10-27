@@ -933,7 +933,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     enter: function () {
       if (!BOOKING_API) { $('bk-flow').hidden = true; $('bk-off').hidden = false; return; }
       if (!bound) { bind(); bound = true; }
-      var t = new URLSearchParams(location.search).get('type');
+      var t = new URLSearchParams(location.search).get('type') || (/^\/profile\/?$/.test(location.pathname) && !location.hash.replace('#booking', '') ? 'profile' : null);
       if (t === 'profile' || t === 'rental') { if (S.type !== t) { S.type = t; S.date = null; clearSlot(); } }
       if (!$('bk-done').hidden) reset();
       refresh();
@@ -1100,6 +1100,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var pageParam = params.get('page');
   if (pageParam && PM[pageParam]) { go(pageParam, true); }
   else if (initialHash && PM[initialHash]) { go(initialHash, true); }
+  else if (/^\/(booking|profile)\/?$/.test(location.pathname)) { go('booking', true); }
   else { go('home', true); }
 
   window.addEventListener('hashchange', function() {
