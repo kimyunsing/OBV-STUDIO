@@ -169,13 +169,100 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .adm-logout-btn{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-m);cursor:pointer;}.adm-logout-btn:hover{color:var(--ink);}
 .adm-hidden{display:none;}
 @media(min-width:768px){.adm-page{padding-top:calc(var(--nav-h)+80px);}}
+
+/* BOOKING */
+.bk-page{padding:calc(var(--nav-h) + 40px) var(--gutter) 96px;}
+.bk-wrap{max-width:560px;}
+.bk-h{font-family:var(--head);font-size:clamp(24px,5vw,36px);font-weight:500;letter-spacing:-.01em;line-height:1.3;color:var(--ink);margin-bottom:12px;}
+.bk-sub{font-size:13px;color:var(--ink-m);line-height:1.9;}
+.bk-tabs{display:flex;gap:28px;border-bottom:1px solid var(--line);margin-top:40px;}
+.bk-tab{font-size:13px;font-weight:400;padding:0 0 14px;color:var(--ink-l);position:relative;transition:color .2s;}
+.bk-tab:hover{color:var(--ink);}
+.bk-tab.on{color:var(--ink);}
+.bk-tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--ink);}
+.bk-step{padding-top:44px;scroll-margin-top:calc(var(--nav-h) + 16px);}
+.bk-step[hidden],.bk-hide{display:none !important;}
+.bk-label{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
+.bk-label-n{font-size:10px;letter-spacing:.12em;color:var(--ink-l);}
+.bk-label-t{font-size:13px;font-weight:400;color:var(--ink);}
+.bk-label-d{margin-left:auto;font-size:12px;color:var(--ink-m);}
+.bk-hint{font-size:12px;color:var(--ink-l);line-height:1.8;}
+
+/* tiers */
+.bk-tiers{background:#F5F5F3;padding:4px 20px;}
+.bk-tier{display:flex;width:100%;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);text-align:left;}
+.bk-tier:last-child{border-bottom:none;}
+.bk-radio{width:14px;height:14px;border:1px solid var(--ink-l);border-radius:50%;flex-shrink:0;position:relative;transition:border-color .2s;}
+.bk-tier.on .bk-radio{border-color:var(--ink);}
+.bk-tier.on .bk-radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--ink);}
+.bk-tier-txt{display:flex;flex-direction:column;line-height:1.5;}
+.bk-tier-name{font-size:13px;font-weight:500;letter-spacing:.04em;color:var(--ink);}
+.bk-tier-meta{font-size:12px;color:var(--ink-m);}
+.bk-tier-price{margin-left:auto;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;}
+.bk-note{font-size:11px;color:var(--ink-l);margin-top:12px;line-height:1.8;}
+
+/* calendar */
+.bk-cal{transition:opacity .2s;}
+.bk-cal.loading{opacity:.35;pointer-events:none;}
+.bk-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.bk-cal-title{font-family:var(--head);font-size:16px;font-weight:500;letter-spacing:.02em;}
+.bk-cal-nav{display:flex;gap:2px;}
+.bk-cal-nav button{width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink);transition:opacity .2s;}
+.bk-cal-nav button:disabled{opacity:.2;cursor:default;}
+.bk-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.bk-dow{font-size:10px;letter-spacing:.06em;color:var(--ink-l);text-align:center;padding:4px 0 10px;}
+.bk-day{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:400;color:var(--ink);transition:background .15s,color .15s;}
+.bk-day:hover:not(:disabled){background:#F5F5F3;}
+.bk-day:disabled{color:var(--ink-l);opacity:.4;cursor:default;}
+.bk-day.full:disabled{text-decoration:line-through;}
+.bk-day.on,.bk-day.on:hover{background:var(--ink);color:#fff;}
+.bk-legend{display:flex;gap:18px;margin-top:14px;font-size:11px;color:var(--ink-l);}
+.bk-legend s{color:var(--ink-l);}
+
+/* time chips */
+.bk-sublabel{font-size:11px;color:var(--ink-m);margin:0 0 12px;}
+.bk-sublabel + .bk-chips{margin-bottom:28px;}
+.bk-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;}
+.bk-chip{border:1px solid var(--line);padding:11px 6px;font-size:13px;font-weight:400;line-height:1.4;text-align:center;transition:border-color .15s,background .15s,color .15s;}
+.bk-chip:hover:not(:disabled){border-color:var(--ink);}
+.bk-chip:disabled{color:var(--ink-l);opacity:.45;cursor:default;text-decoration:line-through;}
+.bk-chip small{display:block;font-size:10px;color:var(--ink-l);margin-top:1px;}
+.bk-chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+.bk-chip.on small{color:rgba(255,255,255,.65);}
+.bk-chip-wide{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;text-align:left;}
+.bk-chip-wide small{display:inline;margin:0;font-size:12px;}
+
+/* form */
+.bk-stepper{display:flex;align-items:center;border-bottom:1px solid var(--line);}
+.bk-stepper button{width:40px;height:40px;font-size:18px;font-weight:300;color:var(--ink);}
+.bk-stepper button:disabled{opacity:.2;cursor:default;}
+.bk-stepper output{flex:1;text-align:center;font-size:14px;}
+.bk-summary{margin:28px 0 32px;}
+.bk-summary .sp-price-val{text-align:right;}
+.bk-total .sp-price-label,.bk-total .sp-price-val{font-weight:500;}
+textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
+.bk-opt{color:var(--ink-l);text-transform:none;letter-spacing:0;margin-left:4px;}
+.bk-agree{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-m);cursor:pointer;margin-top:8px;line-height:1.7;}
+.bk-agree input{width:15px;height:15px;accent-color:var(--ink);margin-top:3px;flex-shrink:0;}
+.bk-agree-detail{font-size:11px;color:var(--ink-l);line-height:1.8;margin:6px 0 0 25px;}
+.bk-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+.bk-alert{font-size:12px;color:#c44;margin-top:16px;line-height:1.7;}
+.bk-alert:empty{display:none;}
+.bk-alert button{font-size:12px;text-decoration:underline;margin-left:6px;color:#c44;}
+
+/* done */
+.bk-done{padding-top:56px;}
+.bk-done-icon{width:48px;height:48px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:24px;}
+.bk-done h2{font-family:var(--body);font-size:22px;font-weight:400;margin-bottom:8px;}
+.bk-done p{font-size:13px;color:var(--ink-m);line-height:1.9;}
+.bk-cta{margin-top:24px;}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo" data-page="home"><img src="logo.png" alt="obvio"></div>
-  <ul class="nav-links"><li><a href="#" data-page="space">Space</a></li><li><a href="#" data-page="objects">Objects</a></li><li><a href="#" data-page="about">About</a></li></ul>
+  <ul class="nav-links"><li><a href="#" data-page="space">Space</a></li><li><a href="#" data-page="booking">Booking</a></li><li><a href="#" data-page="objects">Objects</a></li><li><a href="#" data-page="about">About</a></li></ul>
   <div class="nav-r">
     <a href="#" data-page="login" id="nav-login">Login</a>
     <a href="#" data-page="mypage" id="nav-mypage" class="nav-auth-hide">My page</a>
@@ -185,6 +272,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 
 <div class="mmenu" id="mmenu">
   <a href="#" data-page="space">Space</a>
+  <a href="#" data-page="booking">Booking</a>
   <a href="#" data-page="objects">Objects</a>
   <a href="#" data-page="about">About</a>
   <a href="#" data-page="login" id="mmenu-login">Login</a>
@@ -207,7 +295,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <p class="home-strip-p">A minimal studio space in Jamsil, Seoul.<br>Photography, exhibitions, showrooms, and meetings.</p>
     <a href="#" class="home-strip-link" data-page="space">View Space</a>
   </section>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="booking">Booking</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
 <!-- SPACE -->
@@ -215,7 +303,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   <div class="sp-page">
     <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 송파구 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">면적</span><span class="sp-info-v">119&#13217;</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
     <div class="sp-section"><p class="sp-tag">Equipment</p><p class="sp-h">구비 물품</p><p class="sp-p">• 포맥스 E600 순간광 조명 2대 (소프트박스 포함)<br>• 고독스 LE300Bi 지속광 조명 2대 300W (소프트박스 포함)<br>• 반사판 원형 (110cm)<br>• 배경지 270cm (화이트)<br>• 스팀다리미<br>• 마샬 액톤 3 블루투스 스피커<br>• 이동식 가벽 2000×2300<br>• 이동식 전신거울<br>• 이동식 촬영 카트 (3단)<br>• 이동식 행거<br>• C타입 충전기 2ea<br>• 3m 5구 멀티탭<br>• 20m 4구 리드선</p></div>
-    <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 42,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">4명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div></div>
+    <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 42,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">4명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div><a href="#" class="btn btn-dark bk-cta" data-page="booking">예약하기</a></div>
     <div class="sp-section"><p class="sp-tag">전시대관, 팝업 쇼룸</p><p class="sp-h">전시, 쇼룸 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">1일</span><span class="sp-price-val">₩ 400,000</span></div><div class="sp-price-row"><span class="sp-price-label">3일</span><span class="sp-price-val">₩ 900,000</span></div><div class="sp-price-row"><span class="sp-price-label">7일</span><span class="sp-price-val">₩ 2,000,000</span></div><div class="sp-price-row"><span class="sp-price-label">2주</span><span class="sp-price-val">₩ 3,400,000</span></div></div><p class="sp-price-note">사전 답사 가능 &middot; 전시 계획서 사전 제출 필수 &middot; 오프닝 행사 가능</p></div>
     <div class="sp-section"><p class="sp-tag">촬영 안내</p><p class="sp-p">실내 외부 신발 착용 불가 (실내 슬리퍼 구비) &middot; 바닥 오염/훼손 시 배상 &middot; 가구/소품 파손 시 실비 배상 &middot; 사용 후 원위치 정리 필수</p></div>
     <div class="sp-section"><p class="sp-tag">전시 안내</p><p class="sp-p">실외 신발 착용 가능 &middot; 바닥 훼손 시 배상 &middot; 스튜디오 내 가구 디스플레이 용도 사용 가능 &middot; 와이어 레일 설치 가능 &middot; 설치: 계약 시작일 오전 6시부터 &middot; 철수: 계약 종료일 오후 10시까지</p></div>
@@ -223,7 +311,85 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <div class="sp-section"><p class="sp-tag">주차</p><p class="sp-p">1대 가능 (차량번호 사전 전달 필수)<br><br>추가 주차:<br>새마을시장노상공영주차장 (도보 9분)<br>봉상시길노상공영주차장 (도보 8분)<br>아시아공원공영주차장 (도보 8분)</p></div>
     <div class="sp-section"><p class="sp-tag">Gallery</p><div class="sp-gallery-v"><img src="space1.jpg" alt="obvio studio" class="gal-img"><img src="space2.jpg" alt="obvio studio" class="gal-img"><img src="space3.jpg" alt="obvio studio" class="gal-img"><img src="space4.jpg" alt="obvio studio" class="gal-img"><img src="space5.jpg" alt="obvio studio" class="gal-img"><img src="space6.jpg" alt="obvio studio" class="gal-img"><img src="space7.jpg" alt="obvio studio" class="gal-img"><img src="space8.jpg" alt="obvio studio" class="gal-img"><img src="space9.jpg" alt="obvio studio" class="gal-img"><img src="space10.jpg" alt="obvio studio" class="gal-img"><img src="space11.jpg" alt="obvio studio" class="gal-img"><img src="space12.jpg" alt="obvio studio" class="gal-img"><img src="space13.jpg" alt="obvio studio" class="gal-img"></div></div>
   </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="booking">Booking</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
+</div>
+
+<!-- BOOKING -->
+<div id="page-booking" class="page">
+  <div class="bk-page"><div class="bk-wrap">
+    <p class="sp-tag">Booking</p>
+    <h1 class="bk-h">예약</h1>
+    <p class="bk-sub">날짜와 시간을 고르고 신청해주세요.<br>확인 후 연락드리며, 입금이 확인되면 예약이 확정됩니다.</p>
+
+    <div id="bk-flow">
+      <div class="bk-tabs" role="tablist">
+        <button type="button" class="bk-tab on" data-bk-type="rental" role="tab">대관</button>
+        <button type="button" class="bk-tab" data-bk-type="profile" role="tab">프로필 촬영</button>
+      </div>
+
+      <section class="bk-step" id="bk-step-tier" hidden>
+        <div class="bk-label"><span class="bk-label-n" data-bk-n></span><span class="bk-label-t">상품 선택</span></div>
+        <div class="bk-tiers" id="bk-tiers"></div>
+        <p class="bk-note" id="bk-tier-note"></p>
+      </section>
+
+      <section class="bk-step" id="bk-step-date">
+        <div class="bk-label"><span class="bk-label-n" data-bk-n></span><span class="bk-label-t">날짜 선택</span></div>
+        <div class="bk-cal loading" id="bk-cal">
+          <div class="bk-cal-head">
+            <span class="bk-cal-title" id="bk-cal-title">&nbsp;</span>
+            <div class="bk-cal-nav"><button type="button" id="bk-prev" aria-label="이전 달">&#8249;</button><button type="button" id="bk-next" aria-label="다음 달">&#8250;</button></div>
+          </div>
+          <div class="bk-cal-grid" id="bk-cal-grid"></div>
+          <div class="bk-legend"><span id="bk-legend-days"></span><span><s>날짜</s> 마감</span></div>
+        </div>
+        <p class="bk-alert" id="bk-load-err"></p>
+      </section>
+
+      <section class="bk-step" id="bk-step-time" hidden>
+        <div class="bk-label"><span class="bk-label-n" data-bk-n></span><span class="bk-label-t">시간 선택</span><span class="bk-label-d" id="bk-time-date"></span></div>
+        <div id="bk-times"></div>
+      </section>
+
+      <section class="bk-step" id="bk-step-form" hidden>
+        <div class="bk-label"><span class="bk-label-n" data-bk-n></span><span class="bk-label-t">예약 정보</span></div>
+        <div id="bk-guests-row" class="auth-row">
+          <label class="auth-label">인원</label>
+          <div class="bk-stepper"><button type="button" id="bk-g-minus" aria-label="인원 줄이기">&minus;</button><output id="bk-g-val">4명</output><button type="button" id="bk-g-plus" aria-label="인원 늘리기">+</button></div>
+          <p class="bk-note" id="bk-guests-note"></p>
+        </div>
+        <div class="sp-price-card bk-summary" id="bk-summary"></div>
+
+        <div class="auth-row"><label class="auth-label" for="bk-name">이름</label><input class="auth-input" type="text" id="bk-name" autocomplete="name" maxlength="40"><p class="auth-err-msg" id="bk-name-err"></p></div>
+        <div class="auth-row"><label class="auth-label" for="bk-phone">연락처</label><input class="auth-input" type="tel" id="bk-phone" autocomplete="tel" placeholder="010-0000-0000" maxlength="20"><p class="auth-err-msg" id="bk-phone-err"></p></div>
+        <div class="auth-row"><label class="auth-label" for="bk-email">이메일<span class="bk-opt">선택 · 접수 확인 메일 발송</span></label><input class="auth-input" type="email" id="bk-email" autocomplete="email" placeholder="your@email.com" maxlength="80"><p class="auth-err-msg" id="bk-email-err"></p></div>
+        <div class="auth-row"><label class="auth-label" for="bk-purpose" id="bk-purpose-label">촬영 내용</label><input class="auth-input" type="text" id="bk-purpose" maxlength="300"><p class="auth-err-msg" id="bk-purpose-err"></p></div>
+        <div class="auth-row" id="bk-car-row"><label class="auth-label" for="bk-car">차량번호<span class="bk-opt">선택 · 주차 1대</span></label><input class="auth-input" type="text" id="bk-car" placeholder="12가 3456" maxlength="20"><p class="auth-err-msg"></p></div>
+        <div class="auth-row"><label class="auth-label" for="bk-memo">요청사항<span class="bk-opt">선택</span></label><textarea class="auth-input" id="bk-memo" rows="3" maxlength="800"></textarea><p class="auth-err-msg"></p></div>
+        <div class="bk-hp" aria-hidden="true"><label>website<input type="text" id="bk-website" tabindex="-1" autocomplete="off"></label></div>
+
+        <label class="bk-agree"><input type="checkbox" id="bk-agree"><span>[필수] 개인정보 수집·이용에 동의합니다.</span></label>
+        <p class="bk-agree-detail">수집 항목: 이름, 연락처, 이메일, 차량번호 · 이용 목적: 예약 확인 및 안내 · 보관 기간: 이용 완료 후 1년</p>
+        <p class="auth-err-msg" id="bk-agree-err"></p>
+
+        <button type="button" class="btn btn-dark auth-submit" id="bk-submit">예약 신청하기</button>
+        <p class="bk-alert" id="bk-submit-err"></p>
+      </section>
+    </div>
+
+    <div id="bk-done" class="bk-done" hidden>
+      <div class="bk-done-icon">&#10003;</div>
+      <h2>예약 신청이 접수됐어요</h2>
+      <p>확인 후 연락드리며, 입금이 확인되면 예약이 확정됩니다.<br><span id="bk-done-contact"></span></p>
+      <div class="sp-price-card bk-summary" id="bk-done-summary"></div>
+      <button type="button" class="btn btn-dark" id="bk-again">처음으로</button>
+    </div>
+
+    <div id="bk-off" hidden>
+      <p class="bk-sub" style="margin-top:40px;">온라인 예약을 준비하고 있어요. 인스타그램 <a href="https://instagram.com/obvio.site" target="_blank" style="text-decoration:underline;">@obvio.site</a> DM 또는 <a href="tel:010-8037-1164" style="text-decoration:underline;">010-8037-1164</a>로 문의해주세요.</p>
+    </div>
+  </div></div>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="booking">Booking</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
 <!-- OBJECTS -->
@@ -280,7 +446,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     </div>
 
   </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="booking">Booking</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
 
@@ -291,7 +457,7 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
     <div class="about-section"><p class="about-tag">About</p><p class="about-h">obvio studio</p><p class="about-p">Clear. Obvious. obvio.<br>2026년 서울 잠실에서 시작된 스튜디오.</p></div>
     <div class="about-section"><p class="about-tag">Contact</p><div class="about-contact"><p>서울특별시 송파구 잠실동 224-11, 2층</p><p><a href="tel:010-8037-1164">010-8037-1164</a></p><p>Instagram: <a href="https://instagram.com/obvio.site" target="_blank">@obvio.site</a></p><p>Email: <a href="mailto:obviostudio.site@gmail.com">obviostudio.site@gmail.com</a></p></div></div>
   </div>
-  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
+  <footer><div class="ft-top"><div class="ft-logo"><img src="logo.png" alt="obvio"></div><div class="ft-links"><a href="#" data-page="space">Space</a><a href="#" data-page="booking">Booking</a><a href="#" data-page="objects">Objects</a><a href="#" data-page="about">About</a><a href="https://instagram.com/obvio.site" target="_blank">Instagram</a></div></div><div class="ft-bottom"><p class="ft-copy">&copy; 2026 obvio studio. <a href="#" data-page="admin" style="color:rgba(255,255,255,.1)">Admin</a></p></div></footer>
 </div>
 
 <!-- LOGIN -->
@@ -344,10 +510,341 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
   </div>
 </div></div>
 
+<script>
+/* ───────── OBVIO 예약 ───────── */
+(function () {
+  // ▼ 구글 앱스 스크립트 '웹 앱 URL'을 따옴표 안에 붙여넣으세요 (…/exec 로 끝나는 주소)
+  var BOOKING_API = 'https://script.google.com/macros/s/AKfycbzqJDRaHi1NXC0SPKMV_y4L9RRlbXhR0IvRTz4PvipmwchNlrKTizrLGTgJHB7zymSv/exec';
+
+  var DAY = 86400000, DN = ['일', '월', '화', '수', '목', '금', '토'];
+  var S = { type: 'rental', tier: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4,
+            cfg: null, today: null, first: null, last: null, loadedTo: null, busy: {}, fetchedAt: 0, loading: false, sending: false };
+
+  function $(id) { return document.getElementById(id); }
+  function ms(d) { var p = d.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function ds(t) { return new Date(t).toISOString().slice(0, 10); }
+  function addDays(d, n) { return ds(ms(d) + n * DAY); }
+  function dow(d) { return new Date(ms(d)).getUTCDay(); }
+  function hm(m) { if (m > 1440) return '익일 ' + hm(m - 1440); var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
+  function won(n) { return '₩' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function lastOfMonth(ym) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1], 0)); }
+  function shiftYm(ym, n) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1] - 1 + n, 1)).slice(0, 7); }
+  function dateText(d) { var p = d.split('-'); return +p[1] + '월 ' + +p[2] + '일 (' + DN[dow(d)] + ')'; }
+  function free(list, s, e) {
+    var b = S.cfg.bufferMin || 0;
+    for (var i = 0; i < (list || []).length; i++) if (s < list[i][1] + b && e > list[i][0] - b) return false;
+    return true;
+  }
+  function tierById(id) { var t = null; (S.cfg ? S.cfg.profile.tiers : []).forEach(function (x) { if (x.id === id) t = x; }); return t; }
+  function minTier() { return S.cfg.profile.tiers.reduce(function (a, b) { return a.minutes <= b.minutes ? a : b; }); }
+
+  /* ── 규칙 계산 (서버와 같은 규칙) ── */
+  function dayState(d) {
+    if (!S.cfg || d < S.first || d > S.last) return 'out';
+    var rule = S.type === 'rental' ? S.cfg.rental : S.cfg.profile;
+    if (rule.days.indexOf(dow(d)) < 0) return 'closed';
+    if (S.loadedTo && d > S.loadedTo) return 'unloaded';
+    var o = options(d);
+    return (o.full && o.full.ok) || o.starts.some(function (x) { return x.ok; }) ? 'open' : 'full';
+  }
+  // 그날 + 다음날(자정 넘는 예약용, +1440분) 바쁜 구간
+  function busyOf(d) {
+    var next = (S.busy[addDays(d, 1)] || []).map(function (iv) { return [iv[0] + 1440, iv[1] + 1440]; });
+    return (S.busy[d] || []).concat(next);
+  }
+  function maxEnd(R, start) { return R.overnight ? start + R.maxHours * 60 : Math.min(R.close * 60, start + R.maxHours * 60); }
+  function options(d) {
+    var busy = busyOf(d), starts = [], full = null;
+    if (S.type === 'rental') {
+      var R = S.cfg.rental, F = R.fullDay;
+      for (var m = R.open * 60; m < R.close * 60 && m + R.minHours * 60 <= maxEnd(R, m); m += 60) starts.push({ min: m, end: m + R.minHours * 60, ok: free(busy, m, m + R.minHours * 60) });
+      if (F && F.enabled) full = { ok: free(busy, F.start * 60, F.end * 60) };
+    } else {
+      var P = S.cfg.profile, t = tierById(S.tier) || minTier();
+      for (var p = P.open * 60; p <= P.lastStart * 60 && p + t.minutes <= P.close * 60; p += 60) starts.push({ min: p, end: p + t.minutes, ok: free(busy, p, p + t.minutes) });
+    }
+    return { starts: starts, full: full };
+  }
+  function durations(d, start) {
+    var R = S.cfg.rental, out = [], busy = busyOf(d);
+    for (var h = R.minHours; start + h * 60 <= maxEnd(R, start); h++) { if (!free(busy, start, start + h * 60)) break; out.push(h); }
+    return out;
+  }
+  function slotReady() {
+    if (!S.date) return false;
+    if (S.type === 'rental') return S.full || (S.start != null && S.hours != null);
+    return !!S.tier && S.start != null;
+  }
+  function slotTimes() {
+    if (S.type === 'rental') return S.full ? [S.cfg.rental.fullDay.start * 60, S.cfg.rental.fullDay.end * 60] : [S.start, S.start + S.hours * 60];
+    return [S.start, S.start + tierById(S.tier).minutes];
+  }
+  function price() {
+    var R = S.cfg.rental;
+    if (S.type === 'profile') return { total: tierById(S.tier).price, lines: [] };
+    if (S.full) return { total: R.fullDay.price, lines: [], note: S.guests > R.fullDay.baseGuests ? R.fullDay.baseGuests + '인 기준 · 초과 인원은 별도 안내' : '' };
+    var extra = Math.max(0, S.guests - R.baseGuests);
+    var lines = [[won(R.pricePerHour) + ' × ' + S.hours + '시간', won(R.pricePerHour * S.hours)]];
+    if (extra) lines.push(['추가 ' + extra + '명 × ' + S.hours + '시간', won(extra * R.extraPerGuestPerHour * S.hours)]);
+    return { total: R.pricePerHour * S.hours + extra * R.extraPerGuestPerHour * S.hours, lines: lines };
+  }
+  // 새로 받은 빈 시간 정보와 맞지 않는 선택은 풀기
+  function reconcile() {
+    if (!S.date) return;
+    if (dayState(S.date) !== 'open') { S.date = S.start = S.hours = null; S.full = false; return; }
+    var o = options(S.date);
+    if (S.full && !(o.full && o.full.ok)) S.full = false;
+    if (S.start != null) {
+      var st = o.starts.filter(function (x) { return x.min === S.start; })[0];
+      if (!st || !st.ok) { S.start = S.hours = null; return; }
+      if (S.type === 'rental' && S.hours != null && durations(S.date, S.start).indexOf(S.hours) < 0) S.hours = null;
+    }
+  }
+
+  /* ── 서버 통신 ── */
+  function load(from, to) {
+    var q = '?action=avail' + (from ? '&from=' + from : '') + (to ? '&to=' + to : '');
+    return fetch(BOOKING_API + q).then(function (r) { return r.json(); }).then(function (r) {
+      if (!r.ok) throw new Error(r.message || 'error');
+      S.cfg = r.config; S.today = r.today;
+      S.first = addDays(r.today, r.config.minLeadDays); S.last = addDays(r.today, r.config.maxAheadDays);
+      if (!from) S.busy = {};
+      for (var d = r.from; d <= r.to; d = addDays(d, 1)) S.busy[d] = r.busy[d] || [];
+      if (!from || !S.loadedTo || r.to > S.loadedTo) S.loadedTo = r.to;
+      if (!from) S.fetchedAt = Date.now();
+      return r;
+    });
+  }
+  function refresh() {
+    S.loading = true; $('bk-load-err').innerHTML = ''; render();
+    return load().then(function () {
+      if (!S.ym || S.ym < S.first.slice(0, 7) || S.ym > S.last.slice(0, 7)) S.ym = S.first.slice(0, 7);
+      S.loading = false; reconcile(); render();
+    }).catch(function () {
+      S.loading = false; render();
+      $('bk-load-err').innerHTML = '예약 가능한 시간을 불러오지 못했어요.<button type="button" id="bk-retry">다시 시도</button>';
+      $('bk-retry').onclick = refresh;
+    });
+  }
+  function ensureMonthLoaded() {
+    var end = lastOfMonth(S.ym);
+    if (S.loadedTo && end > S.loadedTo && S.loadedTo < S.last) {
+      S.loading = true; render();
+      load(addDays(S.loadedTo, 1), end).then(function () { S.loading = false; render(); }).catch(function () { S.loading = false; render(); });
+    }
+  }
+
+  /* ── 화면 ── */
+  function render() {
+    document.querySelectorAll('.bk-tab').forEach(function (t) { t.classList.toggle('on', t.dataset.bkType === S.type); });
+    var isP = S.type === 'profile';
+    $('bk-step-tier').hidden = !isP;
+    $('bk-step-time').hidden = !S.date;
+    $('bk-step-form').hidden = !slotReady();
+    var n = 1;
+    ['bk-step-tier', 'bk-step-date', 'bk-step-time', 'bk-step-form'].forEach(function (id) {
+      var el = $(id); if (el.hidden) return;
+      el.querySelector('[data-bk-n]').textContent = (n < 10 ? '0' : '') + n++;
+    });
+    if (!S.cfg) { $('bk-cal').classList.toggle('loading', true); return; }
+    if (isP) renderTiers();
+    renderCal();
+    if (S.date) renderTimes();
+    if (slotReady()) renderForm();
+  }
+
+  function renderTiers() {
+    var P = S.cfg.profile;
+    $('bk-tiers').innerHTML = P.tiers.map(function (t) {
+      return '<button type="button" class="bk-tier' + (S.tier === t.id ? ' on' : '') + '" data-tier="' + t.id + '" aria-pressed="' + (S.tier === t.id) + '">' +
+        '<span class="bk-radio"></span><span class="bk-tier-txt"><span class="bk-tier-name">' + esc(t.name) + '</span>' +
+        '<span class="bk-tier-meta">' + t.concepts + '컨셉 · 약 ' + t.minutes + '분</span></span>' +
+        '<span class="bk-tier-price">' + won(t.price) + '</span></button>';
+    }).join('');
+    $('bk-tier-note').textContent = P.priceNote || '';
+  }
+
+  function renderCal() {
+    $('bk-cal').classList.toggle('loading', S.loading);
+    var p = S.ym.split('-');
+    $('bk-cal-title').textContent = p[0] + '. ' + p[1];
+    $('bk-prev').disabled = S.ym <= S.first.slice(0, 7);
+    $('bk-next').disabled = S.ym >= S.last.slice(0, 7);
+    var rule = S.type === 'rental' ? S.cfg.rental : S.cfg.profile;
+    $('bk-legend-days').textContent = rule.days.length === 7 ? '매일 운영' : rule.days.map(function (d) { return DN[d]; }).join('·') + '요일만 운영';
+    var first = S.ym + '-01', html = DN.map(function (d) { return '<span class="bk-dow">' + d + '</span>'; }).join('');
+    for (var i = 0; i < dow(first); i++) html += '<span></span>';
+    for (var d = first; d.slice(0, 7) === S.ym; d = addDays(d, 1)) {
+      var st = dayState(d), ok = st === 'open';
+      html += '<button type="button" class="bk-day' + (st === 'full' ? ' full' : '') + (S.date === d ? ' on' : '') + '" data-date="' + d + '"' + (ok ? '' : ' disabled') +
+        ' aria-label="' + dateText(d) + (ok ? ' 예약 가능' : st === 'full' ? ' 마감' : ' 예약 불가') + '">' + (+d.slice(8)) + '</button>';
+    }
+    $('bk-cal-grid').innerHTML = html;
+  }
+
+  function chip(cls, attrs, main, sub, on, disabled) {
+    return '<button type="button" class="bk-chip' + cls + (on ? ' on' : '') + '" ' + attrs + (disabled ? ' disabled' : '') + ' aria-pressed="' + !!on + '">' + main + (sub ? '<small>' + sub + '</small>' : '') + '</button>';
+  }
+
+  function renderTimes() {
+    $('bk-time-date').textContent = dateText(S.date);
+    var o = options(S.date), html = '';
+    if (S.type === 'rental') {
+      var R = S.cfg.rental;
+      if (o.full) {
+        html += '<p class="bk-sublabel">하루 전체</p><div class="bk-chips">' +
+          chip(' bk-chip-wide', 'data-full="1"', '종일 대관 ' + hm(R.fullDay.start * 60) + '–' + hm(R.fullDay.end * 60), won(R.fullDay.price), S.full, !o.full.ok) + '</div>';
+      }
+      html += '<p class="bk-sublabel">시작 시간 <span class="bk-opt">최소 ' + R.minHours + '시간</span></p><div class="bk-chips">' +
+        o.starts.map(function (x) { return chip('', 'data-start="' + x.min + '"', hm(x.min), '', !S.full && S.start === x.min, !x.ok); }).join('') + '</div>';
+      if (!S.full && S.start != null) {
+        html += '<p class="bk-sublabel" id="bk-dur-label">이용 시간</p><div class="bk-chips">' +
+          durations(S.date, S.start).map(function (h) { return chip('', 'data-hours="' + h + '"', h + '시간', '~' + hm(S.start + h * 60), S.hours === h); }).join('') + '</div>';
+      }
+    } else if (!S.tier) {
+      html = '<p class="bk-hint">위에서 상품을 먼저 선택해주세요.</p>';
+    } else {
+      html = '<div class="bk-chips">' + o.starts.map(function (x) { return chip('', 'data-start="' + x.min + '"', hm(x.min), '~' + hm(x.end), S.start === x.min, !x.ok); }).join('') + '</div>';
+      if (!o.starts.some(function (x) { return x.ok; })) html += '<p class="bk-hint" style="margin-top:12px;">이 날은 선택한 상품으로 가능한 시간이 없어요. 다른 날짜를 선택해주세요.</p>';
+    }
+    $('bk-times').innerHTML = html;
+  }
+
+  function renderForm() {
+    var isR = S.type === 'rental', R = S.cfg.rental, t = slotTimes(), pr = price();
+    $('bk-guests-row').classList.toggle('bk-hide', !isR);
+    $('bk-car-row').classList.toggle('bk-hide', false);
+    if (isR) {
+      $('bk-g-val').textContent = S.guests + '명';
+      $('bk-g-minus').disabled = S.guests <= 1;
+      $('bk-g-plus').disabled = S.guests >= R.maxGuests;
+      $('bk-guests-note').textContent = S.full ? '종일 대관은 ' + R.fullDay.baseGuests + '인 기준이에요.' : '기본 ' + R.baseGuests + '명 · 추가 1인당 시간당 ' + won(R.extraPerGuestPerHour);
+    }
+    var rows = [
+      ['종류', isR ? (S.full ? '대관 · 종일' : '대관') : '프로필 촬영 · ' + tierById(S.tier).name],
+      ['일시', dateText(S.date) + ' ' + hm(t[0]) + '–' + hm(t[1])]
+    ];
+    if (isR) rows.push(['인원', S.guests + '명']);
+    pr.lines.forEach(function (l) { rows.push(l); });
+    var html = rows.map(function (r) { return '<div class="sp-price-row"><span class="sp-price-label">' + esc(r[0]) + '</span><span class="sp-price-val">' + esc(r[1]) + '</span></div>'; }).join('');
+    html += '<div class="sp-price-row bk-total"><span class="sp-price-label">예상 금액</span><span class="sp-price-val">' + won(pr.total) + '</span></div>';
+    $('bk-summary').innerHTML = html + '<p class="sp-price-note" style="margin-top:12px;">' + esc([isR ? R.priceNote : S.cfg.profile.priceNote, pr.note].filter(Boolean).join(' · ')) + '</p>';
+    $('bk-purpose-label').innerHTML = isR ? '촬영 내용' : '촬영 용도<span class="bk-opt">선택</span>';
+    $('bk-purpose').placeholder = isR ? '예: 의류 룩북, 유튜브 콘텐츠, 제품 촬영' : '예: 배우 프로필, 이력서, SNS';
+  }
+
+  function scrollTo(id) {
+    setTimeout(function () { var el = $(id); if (el && !el.hidden) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  }
+  function clearSlot() { S.start = S.hours = null; S.full = false; }
+
+  /* ── 신청 ── */
+  function fieldErr(id, msg) { var e = $(id + '-err'); if (e) e.textContent = msg || ''; var i = $(id); if (i && i.classList) i.classList.toggle('err', !!msg); return !msg; }
+  function submit() {
+    if (S.sending || !slotReady()) return;
+    var name = $('bk-name').value.trim(), phone = $('bk-phone').value.trim(), email = $('bk-email').value.trim(), purpose = $('bk-purpose').value.trim();
+    var ok = true;
+    ok = fieldErr('bk-name', name ? '' : '필수') && ok;
+    var pd = phone.replace(/\D/g, '');
+    ok = fieldErr('bk-phone', pd.length >= 9 && pd.length <= 12 ? '' : '연락처를 확인해주세요') && ok;
+    ok = fieldErr('bk-email', !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : '이메일 형식을 확인해주세요') && ok;
+    ok = fieldErr('bk-purpose', S.type === 'profile' || purpose ? '' : '필수') && ok;
+    $('bk-agree-err').textContent = $('bk-agree').checked ? '' : '동의가 필요해요';
+    ok = $('bk-agree').checked && ok;
+    $('bk-submit-err').textContent = '';
+    if (!ok) { var firstErr = document.querySelector('#bk-step-form .auth-input.err'); if (firstErr) firstErr.focus(); return; }
+
+    var payload = { type: S.type, date: S.date, name: name, phone: phone, email: email, purpose: purpose,
+      car: $('bk-car').value.trim(), memo: $('bk-memo').value.trim(), agree: true, website: $('bk-website').value };
+    if (S.type === 'rental') { payload.guests = S.guests; if (S.full) payload.fullDay = true; else { payload.start = S.start; payload.hours = S.hours; } }
+    else { payload.tier = S.tier; payload.start = S.start; }
+
+    S.sending = true;
+    var btn = $('bk-submit'); btn.disabled = true; btn.textContent = '신청 중...';
+    fetch(BOOKING_API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (r.ok) return done(r);
+        $('bk-submit-err').textContent = r.message || '신청하지 못했어요. 다시 시도해주세요.';
+        if (r.error === 'taken') { clearSlot(); refresh().then(function () { scrollTo('bk-step-time'); }); }
+      })
+      .catch(function () { $('bk-submit-err').textContent = '연결이 원활하지 않아요. 잠시 후 다시 시도해주세요.'; })
+      .then(function () { S.sending = false; btn.disabled = false; btn.textContent = '예약 신청하기'; });
+  }
+  function done(r) {
+    $('bk-flow').hidden = true; $('bk-done').hidden = false;
+    var rows = (r.summary || []).filter(function (x) { return ['이름', '연락처', '이메일'].indexOf(x[0]) < 0; });
+    $('bk-done-summary').innerHTML = rows.map(function (x) {
+      return '<div class="sp-price-row"><span class="sp-price-label">' + esc(x[0]) + '</span><span class="sp-price-val" style="font-weight:400;font-size:13px;">' + esc(x[1]).replace(/\n/g, '<br>') + '</span></div>';
+    }).join('');
+    $('bk-done-contact').textContent = '문의 ' + (S.cfg.contactPhone || '');
+    window.scrollTo({ top: 0 });
+  }
+  function reset() {
+    S.date = null; clearSlot(); S.tier = null; S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
+    ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
+    $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-submit-err').textContent = '';
+    $('bk-flow').hidden = false; $('bk-done').hidden = true;
+  }
+
+  /* ── 이벤트 ── */
+  function bind() {
+    document.querySelectorAll('.bk-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (S.type === t.dataset.bkType) return;
+        S.type = t.dataset.bkType; S.date = null; clearSlot(); render();
+      });
+    });
+    $('bk-tiers').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-tier]'); if (!b) return;
+      S.tier = b.dataset.tier; S.start = null; reconcile(); render();
+    });
+    $('bk-prev').addEventListener('click', function () { S.ym = shiftYm(S.ym, -1); render(); });
+    $('bk-next').addEventListener('click', function () { S.ym = shiftYm(S.ym, 1); render(); ensureMonthLoaded(); });
+    $('bk-cal-grid').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-date]'); if (!b || b.disabled) return;
+      if (S.date !== b.dataset.date) { S.date = b.dataset.date; clearSlot(); }
+      render(); scrollTo('bk-step-time');
+      if (Date.now() - S.fetchedAt > 60000) { // 1분 넘었으면 최신 상태로 다시 확인
+        load().then(function () { reconcile(); render(); }).catch(function () {});
+      }
+    });
+    $('bk-times').addEventListener('click', function (e) {
+      var b = e.target.closest('.bk-chip'); if (!b || b.disabled) return;
+      if (b.dataset.full) { S.full = true; S.start = S.hours = null; render(); scrollTo('bk-step-form'); return; }
+      if (b.dataset.start) {
+        S.full = false; S.start = +b.dataset.start; S.hours = null;
+        if (S.type === 'profile') { render(); scrollTo('bk-step-form'); return; }
+        render();
+        setTimeout(function () { var l = $('bk-dur-label'); if (l) l.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 60);
+        return;
+      }
+      if (b.dataset.hours) { S.hours = +b.dataset.hours; render(); scrollTo('bk-step-form'); }
+    });
+    $('bk-g-minus').addEventListener('click', function () { if (S.guests > 1) { S.guests--; renderForm(); } });
+    $('bk-g-plus').addEventListener('click', function () { if (S.guests < S.cfg.rental.maxGuests) { S.guests++; renderForm(); } });
+    $('bk-submit').addEventListener('click', submit);
+    $('bk-again').addEventListener('click', function () { reset(); refresh(); window.scrollTo({ top: 0 }); });
+  }
+
+  var bound = false;
+  window.OBVIO_BOOKING = {
+    enter: function () {
+      if (!BOOKING_API) { $('bk-flow').hidden = true; $('bk-off').hidden = false; return; }
+      if (!bound) { bind(); bound = true; }
+      var t = new URLSearchParams(location.search).get('type');
+      if (t === 'profile' || t === 'rental') { if (S.type !== t) { S.type = t; S.date = null; clearSlot(); } }
+      if (!$('bk-done').hidden) reset();
+      refresh();
+    }
+  };
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var PM = {home:'page-home',space:'page-space',objects:'page-objects',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin'};
+  var PM = {home:'page-home',space:'page-space',objects:'page-objects',about:'page-about',login:'page-login',signup:'page-signup',mypage:'page-mypage',admin:'page-admin',booking:'page-booking'};
 
   function rvCheck() {
     document.querySelectorAll('.rv').forEach(function(el) { if (el.getBoundingClientRect().top < window.innerHeight + 10) el.classList.add('in'); });
@@ -388,6 +885,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function onPageEnter(k) {
+    if (k === 'booking' && window.OBVIO_BOOKING) window.OBVIO_BOOKING.enter();
     if (k === 'login') { if (loggedIn) { go('mypage'); return; } var lf = document.getElementById('login-form'), ls = document.getElementById('login-success'); if (lf) { lf.classList.remove('hidden'); lf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); lf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ls) ls.classList.remove('show'); }
     if (k === 'signup') { if (loggedIn) { go('mypage'); return; } var sf = document.getElementById('signup-form'), ss = document.getElementById('signup-success'); if (sf) { sf.classList.remove('hidden'); sf.querySelectorAll('input').forEach(function(i){ i.value=''; i.classList.remove('err'); }); sf.querySelectorAll('.auth-err-msg').forEach(function(e){ e.textContent=''; }); } if (ss) ss.classList.remove('show'); }
     if (k === 'mypage') { if (!loggedIn || !curUser) { go('login'); return; } document.getElementById('my-greeting').textContent = curUser.last + curUser.first + '님'; document.getElementById('my-email-display').textContent = curUser.email; document.getElementById('my-name').textContent = curUser.last + curUser.first; document.getElementById('my-email').textContent = curUser.email; document.getElementById('my-phone').textContent = curUser.phone; document.getElementById('my-addr').textContent = curUser.addr; document.getElementById('my-addr2').textContent = curUser.addr2 || '-'; document.getElementById('my-date').textContent = curUser.joinDate; }
