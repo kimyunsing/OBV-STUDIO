@@ -624,7 +624,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   function price() {
     var R = S.cfg.rental;
     var base = basePrice(), vatRate = S.cfg.vatRate || 0.1;
-    if (S.cust !== 'business') return base;
+    if (S.cust !== 'business' || (S.pay === 'transfer' && S.tax === false)) return base;   // 사업자 + 계좌이체 + 계산서 미발행은 부가세 없음
     var vat = Math.round(base.total * vatRate);
     base.lines.push(['부가세 ' + Math.round(vatRate * 100) + '%', '+' + won(vat)]);
     return { total: base.total + vat, lines: base.lines };
