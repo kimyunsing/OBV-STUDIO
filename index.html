@@ -235,6 +235,8 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-chip.on{background:var(--ink);border-color:var(--ink);color:#fff;}
 .bk-chip.on small{color:rgba(255,255,255,.65);}
 .bk-chips-2{grid-template-columns:1fr 1fr;}
+.bk-chip-night small{color:#c44;}
+.bk-chip-night.on small{color:rgba(255,255,255,.75);}
 .bk-chip-wide{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;text-align:left;}
 .bk-chip-desc{font-style:normal;display:block;font-size:11px;color:var(--ink-l);margin-top:2px;}
 .bk-chip.on .bk-chip-desc{color:rgba(255,255,255,.65);}
@@ -321,7 +323,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   <div class="sp-page">
     <div class="sp-section"><p class="sp-tag">Info</p><p class="sp-h">공간 정보</p><div class="sp-info-grid"><div class="sp-info-item"><span class="sp-info-k">위치</span><span class="sp-info-v">서울특별시 송파구 잠실동 224-11, 2층</span></div><div class="sp-info-item"><span class="sp-info-k">면적</span><span class="sp-info-v">119&#13217;</span></div><div class="sp-info-item"><span class="sp-info-k">용도</span><span class="sp-info-v">촬영, 전시, 쇼룸, 미팅</span></div><div class="sp-info-item"><span class="sp-info-k">주차</span><span class="sp-info-v">1대 (차량번호 사전 전달)</span></div></div></div>
     <div class="sp-section"><p class="sp-tag">Equipment</p><p class="sp-h">구비 물품</p><p class="sp-p">• 포맥스 E600 순간광 조명 2대 (소프트박스 포함)<br>• 고독스 LE300Bi 지속광 조명 2대 300W (소프트박스 포함)<br>• 반사판 원형 (110cm)<br>• 배경지 270cm (화이트)<br>• 스팀다리미<br>• 마샬 액톤 3 블루투스 스피커<br>• 이동식 가벽 2000×2300<br>• 이동식 전신거울<br>• 이동식 촬영 카트 (3단)<br>• 이동식 행거<br>• C타입 충전기 2ea<br>• 3m 5구 멀티탭<br>• 20m 4구 리드선</p></div>
-    <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 42,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">4명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div><a href="#" class="btn btn-dark bk-cta" data-page="booking">예약하기</a></div>
+    <div class="sp-section"><p class="sp-tag">촬영 / 대관</p><p class="sp-h">이용 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">기본</span><span class="sp-price-val">₩ 42,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">야간 (20:00–06:00)</span><span class="sp-price-val">₩ 30,000 / 시간</span></div><div class="sp-price-row"><span class="sp-price-label">최소 예약</span><span class="sp-price-val">2시간</span></div><div class="sp-price-row"><span class="sp-price-label">기본 인원</span><span class="sp-price-val">4명</span></div><div class="sp-price-row"><span class="sp-price-label">추가 인원</span><span class="sp-price-val">1인당 ₩ 5,000</span></div></div><a href="#" class="btn btn-dark bk-cta" data-page="booking">예약하기</a></div>
     <div class="sp-section"><p class="sp-tag">전시대관, 팝업 쇼룸</p><p class="sp-h">전시, 쇼룸 요금</p><div class="sp-price-card"><div class="sp-price-row"><span class="sp-price-label">1일</span><span class="sp-price-val">₩ 400,000</span></div><div class="sp-price-row"><span class="sp-price-label">3일</span><span class="sp-price-val">₩ 900,000</span></div><div class="sp-price-row"><span class="sp-price-label">7일</span><span class="sp-price-val">₩ 2,000,000</span></div><div class="sp-price-row"><span class="sp-price-label">2주</span><span class="sp-price-val">₩ 3,400,000</span></div></div><p class="sp-price-note">사전 답사 가능 &middot; 전시 계획서 사전 제출 필수 &middot; 오프닝 행사 가능</p></div>
     <div class="sp-section"><p class="sp-tag">촬영 안내</p><p class="sp-p">실내 외부 신발 착용 불가 (실내 슬리퍼 구비) &middot; 바닥 오염/훼손 시 배상 &middot; 가구/소품 파손 시 실비 배상 &middot; 사용 후 원위치 정리 필수</p></div>
     <div class="sp-section"><p class="sp-tag">전시 안내</p><p class="sp-p">실외 신발 착용 가능 &middot; 바닥 훼손 시 배상 &middot; 스튜디오 내 가구 디스플레이 용도 사용 가능 &middot; 와이어 레일 설치 가능 &middot; 설치: 계약 시작일 오전 6시부터 &middot; 철수: 계약 종료일 오후 10시까지</p></div>
@@ -565,6 +567,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   function dow(d) { return new Date(ms(d)).getUTCDay(); }
   function hm(m) { if (m > 1440) return '익일 ' + hm(m - 1440); var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
   function won(n) { return '₩' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function isNight(R, h) { var n = R.night; if (!n) return false; h = h % 24; return n.from > n.to ? (h >= n.from || h < n.to) : (h >= n.from && h < n.to); }
+  function nightHours(R, startMin, hours) { var c = 0; for (var i = 0; i < hours; i++) if (isNight(R, Math.floor(startMin / 60) + i)) c++; return c; }
   function pct(t) { return Math.round((1 - t.price / t.listPrice) * 100); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function lastOfMonth(ym) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1], 0)); }
@@ -639,9 +643,11 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     }
     if (S.full) return { total: R.fullDay.price, lines: [] };
     var extra = Math.max(0, S.guests - R.baseGuests);
-    var lines = [[won(R.pricePerHour) + ' × ' + S.hours + '시간', won(R.pricePerHour * S.hours)]];
+    var nh = nightHours(R, S.start, S.hours), dh = S.hours - nh, np = R.night ? R.night.pricePerHour : R.pricePerHour, lines = [];
+    if (dh) lines.push([won(R.pricePerHour) + ' × ' + dh + '시간', won(R.pricePerHour * dh)]);
+    if (nh) lines.push([R.night.label + ' ' + won(np) + ' × ' + nh + '시간', won(np * nh)]);
     if (extra) lines.push(['추가 ' + extra + '명 × ' + S.hours + '시간', won(extra * R.extraPerGuestPerHour * S.hours)]);
-    return { total: R.pricePerHour * S.hours + extra * R.extraPerGuestPerHour * S.hours, lines: lines };
+    return { total: R.pricePerHour * dh + np * nh + extra * R.extraPerGuestPerHour * S.hours, lines: lines };
   }
   // 새로 받은 빈 시간 정보와 맞지 않는 선택은 풀기
   function reconcile() {
@@ -768,8 +774,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         html += '<p class="bk-sublabel">하루 전체</p><div class="bk-chips">' +
           chip(' bk-chip-wide', 'data-full="1"', '<span>종일 대관 ' + hm(R.fullDay.start * 60) + '–' + hm(R.fullDay.end * 60) + '<em class="bk-chip-desc">' + esc(R.fullDay.note || '인원 무제한') + '</em></span>', won(R.fullDay.price), S.full, !o.full.ok) + '</div>';
       }
-      html += '<p class="bk-sublabel">시작 시간 <span class="bk-opt">최소 ' + R.minHours + '시간</span></p><div class="bk-chips">' +
-        o.starts.map(function (x) { return chip('', 'data-start="' + x.min + '"', hm(x.min), '', !S.full && S.start === x.min, !x.ok); }).join('') + '</div>';
+      html += '<p class="bk-sublabel">시작 시간 <span class="bk-opt">최소 ' + R.minHours + '시간' + (R.night ? ' · ' + hm(R.night.from * 60) + '–' + hm(R.night.to * 60) + ' ' + R.night.label + ' 시간당 ' + won(R.night.pricePerHour) : '') + '</span></p><div class="bk-chips">' +
+        o.starts.map(function (x) { var nt = isNight(R, x.min / 60); return chip(nt ? ' bk-chip-night' : '', 'data-start="' + x.min + '"', hm(x.min), nt ? '야간' : (R.night ? '&nbsp;' : ''), !S.full && S.start === x.min, !x.ok); }).join('') + '</div>';
       if (!S.full && S.start != null) {
         html += '<p class="bk-sublabel" id="bk-dur-label">이용 시간</p><div class="bk-chips">' +
           durations(S.date, S.start).map(function (h) { return chip('', 'data-hours="' + h + '"', h + '시간', '~' + hm(S.start + h * 60), S.hours === h); }).join('') + '</div>';
