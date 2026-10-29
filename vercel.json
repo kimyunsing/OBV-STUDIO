@@ -10,6 +10,14 @@
     {
       "source": "/profile",
       "destination": "/index.html"
+    },
+    {
+      "source": "/g/:slug",
+      "destination": "/gallery.html"
+    },
+    {
+      "source": "/gallery-admin",
+      "destination": "/gallery-admin.html"
     }
   ]
 }
