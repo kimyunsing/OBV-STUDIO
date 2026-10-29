@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>OBVIO STUDIO — Profile</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #f3f2ee;
+    --paper: #fbfaf7;
+    --ink: #121212;
+    --ink-2: #4a4945;
+    --muted: #8d8a83;
+    --line: #dcd9d2;
+    --line-2: #c9c5bc;
+    --sel: #121212;
+    --ok: #2f6b3a;
+    --warn: #9a3b1e;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    --gutter: 16px;
+    --bar-h: 0px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100dvh; padding-bottom: calc(var(--bar-h) + env(safe-area-inset-bottom)); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  [hidden] { display: none !important; }
+  .mono { font-family: var(--mono); letter-spacing: .02em; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ---------- header ---------- */
+  .top { display: flex; justify-content: space-between; align-items: center; height: 56px; border-bottom: 1px solid var(--line); }
+  .mark { font-weight: 700; font-size: 13px; letter-spacing: .32em; }
+  .mark span { font-weight: 400; color: var(--muted); letter-spacing: .12em; margin-left: 8px; }
+  .top .mono { font-size: 11px; color: var(--muted); }
+
+  /* ---------- gate ---------- */
+  .gate { min-height: calc(100dvh - 56px); display: grid; place-items: center; padding-top: 40px; padding-bottom: 80px; }
+  .gate form { width: min(360px, 100%); }
+  .gate h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 8px; }
+  .gate p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0 0 28px; }
+  .field { display: flex; border: 1px solid var(--ink); background: var(--paper); }
+  .field input { flex: 1; min-width: 0; border: 0; background: transparent; padding: 16px; font: 500 18px var(--mono); letter-spacing: .3em; outline: none; }
+  .field button { border: 0; background: var(--ink); color: var(--paper); padding: 0 22px; font-size: 14px; font-weight: 600; }
+  .field button:disabled { opacity: .5; }
+  .err { color: var(--warn); font-size: 13px; min-height: 20px; margin-top: 10px; }
+
+  /* ---------- hero ---------- */
+  .hero { padding-top: 36px; padding-bottom: 24px; display: grid; gap: 18px; }
+  .hero .label { font: 11px var(--mono); color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.1; font-weight: 600; letter-spacing: -.03em; margin: 6px 0 0; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+  .meta b { font-weight: 600; color: var(--ink); }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); }
+  .step { padding: 12px 0 0; font-size: 13px; color: var(--muted); border-top: 3px solid transparent; margin-top: -2px; }
+  .step .n { font: 11px var(--mono); display: block; margin-bottom: 4px; }
+  .step.done { color: var(--ink-2); }
+  .step.now { color: var(--ink); border-top-color: var(--ink); font-weight: 600; }
+
+  .notice { background: var(--paper); border: 1px solid var(--line); padding: 16px 18px; font-size: 14px; line-height: 1.65; color: var(--ink-2); }
+  .notice strong { color: var(--ink); font-weight: 600; }
+  .notice .sub { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- toolbar ---------- */
+  .tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); margin-top: 8px; }
+  .tab { border: 0; background: none; padding: 14px 0 12px; font-size: 15px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.on { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+  .tab .c { font: 11px var(--mono); margin-left: 4px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 14px 0; }
+  .chips { display: flex; gap: 6px; }
+  .chip { border: 1px solid var(--line-2); background: transparent; padding: 7px 12px; font-size: 13px; border-radius: 999px; }
+  .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn { border: 1px solid var(--ink); background: transparent; padding: 9px 14px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+  .btn.solid { background: var(--ink); color: var(--paper); }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .hint { font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- grid ---------- */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding-bottom: 40px; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 8px; } }
+  @media (min-width: 1000px) { .grid { grid-template-columns: repeat(6, 1fr); gap: 10px; } }
+  .cell { position: relative; aspect-ratio: 4 / 5; background: #e6e3dc; overflow: hidden; border: 0; padding: 0; display: block; width: 100%; }
+  .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .3s; opacity: 0; }
+  .cell img.ld { opacity: 1; }
+  .cell .ph { position: absolute; inset: 0; display: grid; place-items: center; font: 10px var(--mono); color: var(--muted); padding: 6px; text-align: center; word-break: break-all; }
+  .cell .nm { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 6px 5px; font: 10px var(--mono); color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.45)); text-align: left; opacity: 0; transition: opacity .2s; }
+  @media (hover: hover) { .cell:hover .nm { opacity: 1; } }
+  .cell.sel::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 3px var(--sel); pointer-events: none; }
+  .pick { position: absolute; top: 0; right: 0; width: 44px; height: 44px; border: 0; background: none; padding: 0; display: grid; place-items: center; }
+  .pick i { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #fff; background: rgba(0,0,0,.18); display: grid; place-items: center; font: 600 11px var(--mono); color: #fff; font-style: normal; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+  .cell.sel .pick i { background: var(--sel); border-color: var(--sel); }
+  .empty { padding: 60px 0; text-align: center; color: var(--muted); font-size: 14px; grid-column: 1 / -1; }
+
+  /* ---------- bottom bar ---------- */
+  .dock { position: fixed; left: 0; right: 0; bottom: 0; background: var(--paper); border-top: 1px solid var(--ink); padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom)); z-index: 20; }
+  .dock .in { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+  .count { font: 600 20px var(--mono); }
+  .count small { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .meter { flex: 1; height: 2px; background: var(--line); position: relative; min-width: 40px; }
+  .meter span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); transition: width .25s; }
+  .dock .btn { padding: 12px 18px; font-size: 14px; }
+
+  /* ---------- lightbox ---------- */
+  .lb { position: fixed; inset: 0; background: #0d0d0d; color: #eee; z-index: 50; display: grid; grid-template-rows: auto 1fr auto; }
+  .lb-top, .lb-bot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px var(--gutter); padding-top: calc(10px + env(safe-area-inset-top)); }
+  .lb-bot { padding-bottom: calc(14px + env(safe-area-inset-bottom)); padding-top: 10px; }
+  .lb-top .mono { font-size: 12px; color: #aaa; }
+  .lb-x { border: 0; background: none; color: #eee; font-size: 26px; width: 44px; height: 44px; line-height: 1; }
+  .lb-stage { position: relative; display: grid; place-items: center; overflow: hidden; touch-action: pan-y; }
+  .lb-stage img { max-width: 100%; max-height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 72px; border: 0; background: rgba(255,255,255,.06); color: #ddd; font-size: 22px; }
+  .lb-nav.p { left: 8px; } .lb-nav.n { right: 8px; }
+  @media (hover: none) { .lb-nav { display: none; } }
+  .lb .btn { border-color: #eee; color: #eee; }
+  .lb .btn.solid { background: #eee; color: #111; }
+  .lb .btn.picked { background: #eee; color: #111; }
+  .lb-load { position: absolute; font: 11px var(--mono); color: #777; }
+
+  /* ---------- modal / toast ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(18,18,18,.45); z-index: 60; display: grid; place-items: end center; }
+  @media (min-width: 640px) { .modal { place-items: center; } }
+  .sheet { background: var(--paper); width: min(560px, 100%); max-height: 86dvh; overflow: auto; padding: 24px var(--gutter) calc(20px + env(safe-area-inset-bottom)); }
+  @media (min-width: 640px) { .sheet { padding: 28px; } }
+  .sheet h2 { font-size: 20px; margin: 0 0 6px; letter-spacing: -.02em; }
+  .sheet p { font-size: 14px; color: var(--ink-2); line-height: 1.6; margin: 0 0 16px; }
+  .mini { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
+  .mini figure { margin: 0; }
+  .mini img, .mini .ph2 { width: 100%; aspect-ratio: 4/5; object-fit: cover; background: #e6e3dc; display: block; }
+  .mini figcaption { font: 9.5px var(--mono); color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .actions .btn { padding: 12px 18px; font-size: 14px; }
+  .prog { height: 2px; background: var(--line); margin: 14px 0 8px; position: relative; }
+  .prog span { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0; transition: width .2s; }
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--bar-h) + 20px + env(safe-area-inset-bottom)); background: var(--ink); color: var(--paper); font-size: 13.5px; padding: 11px 16px; z-index: 70; max-width: calc(100% - 32px); }
+  .foot { border-top: 1px solid var(--line); padding-top: 22px; padding-bottom: 40px; font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+  .loading { padding: 80px 0; text-align: center; font: 12px var(--mono); color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <div class="mark">OBVIO STUDIO<span>Profile</span></div>
+  <div class="mono" id="topRight"></div>
+</header>
+
+<!-- 비밀번호 -->
+<section class="wrap gate" id="gate" hidden>
+  <form id="gateForm" autocomplete="off">
+    <h1>촬영 사진 보기</h1>
+    <p>안내받은 비밀번호를 입력해 주세요.<br>사진 확인, 보정할 사진 선택, 다운로드를 이 페이지에서 할 수 있어요.</p>
+    <div class="field">
+      <input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="••••" aria-label="비밀번호" required>
+      <button id="gateBtn">입장</button>
+    </div>
+    <div class="err" id="gateErr"></div>
+  </form>
+</section>
+
+<div class="loading" id="loading">불러오는 중…</div>
+
+<!-- 본문 -->
+<main id="main" hidden>
+  <section class="wrap hero">
+    <div>
+      <div class="label" id="heroLabel">Profile session</div>
+      <h1 id="heroName"></h1>
+    </div>
+    <div class="meta" id="heroMeta"></div>
+    <div class="steps" id="steps">
+      <div class="step" data-s="1"><span class="n">01</span>사진 선택</div>
+      <div class="step" data-s="2"><span class="n">02</span>보정 중</div>
+      <div class="step" data-s="3"><span class="n">03</span>보정본 전달</div>
+    </div>
+    <div class="notice" id="notice"></div>
+  </section>
+
+  <section class="wrap">
+    <nav class="tabs" id="tabs" hidden>
+      <button class="tab" data-tab="retouched">보정본<span class="c" id="cRet"></span></button>
+      <button class="tab" data-tab="originals">원본<span class="c" id="cOrig"></span></button>
+    </nav>
+    <div class="bar">
+      <div class="chips" id="chips">
+        <button class="chip on" data-f="all">전체 <span class="mono" id="nAll"></span></button>
+        <button class="chip" data-f="sel">선택한 사진 <span class="mono" id="nSel"></span></button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <span class="hint" id="dlHint"></span>
+        <button class="btn" id="saveAll">전체 저장</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer class="wrap foot">
+    문의는 카카오톡 채널 <b style="color:var(--ink-2)">오비오 스튜디오</b>로 말씀해 주세요.<br>
+    <span class="mono">OBVIO STUDIO · Jamsil, Seoul</span>
+  </footer>
+</main>
+
+<!-- 하단 선택 바 -->
+<div class="dock" id="dock" hidden>
+  <div class="in">
+    <div class="count" id="dockCount">0<small> / 0</small></div>
+    <div class="meter"><span id="meter"></span></div>
+    <button class="btn solid" id="submitBtn" disabled>선택 완료</button>
+  </div>
+</div>
+
+<!-- 크게 보기 -->
+<div class="lb" id="lb" hidden>
+  <div class="lb-top">
+    <div class="mono" id="lbInfo"></div>
+    <button class="lb-x" id="lbClose" aria-label="닫기">×</button>
+  </div>
+  <div class="lb-stage" id="lbStage">
+    <span class="lb-load" id="lbLoad">loading</span>
+    <img id="lbImg" alt="">
+    <button class="lb-nav p" id="lbPrev" aria-label="이전">‹</button>
+    <button class="lb-nav n" id="lbNext" aria-label="다음">›</button>
+  </div>
+  <div class="lb-bot">
+    <a class="btn" id="lbDl" href="#" rel="noopener">원본 저장</a>
+    <button class="btn" id="lbPick">선택하기</button>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  const API = '/api/gallery-client';
+  const $ = (id) => document.getElementById(id);
+  const slug = (location.pathname.match(/\/g\/([a-z0-9]+)/) || [])[1] || new URLSearchParams(location.search).get('g') || '';
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} },
+  };
+  const TK = `obvio-g-token-${slug}`, SK = `obvio-g-sel-${slug}`;
+
+  const S = { token: store.get(TK), g: null, originals: [], retouched: [], sel: new Set(), tab: 'originals', filter: 'all', lbList: [], lbIdx: 0 };
+
+  async function call(action, data = {}) {
+    const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, slug, token: S.token, ...data }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error(j.error || '연결이 원활하지 않아요.'); e.status = r.status; throw e; }
+    return j;
+  }
+
+  let toastT;
+  function toast(msg, ms = 2600) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), ms); }
+
+  const fmtDate = (s) => { if (!s) return ''; const d = new Date(s.length === 10 ? s + 'T00:00:00' : s); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`; };
+  const fmtMD = (s) => { const d = new Date(s); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
+  const fmtSize = (b) => (b > 1e9 ? (b / 1e9).toFixed(1) + 'GB' : Math.round(b / 1e6) + 'MB');
+  const isMobile = matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  // ---------- 입장 ----------
+  function showGate(msg) {
+    $('loading').hidden = true; $('main').hidden = true; $('dock').hidden = true; $('gate').hidden = false;
+    $('gateErr').textContent = msg || '';
+    setTimeout(() => $('pin').focus(), 50);
+  }
+  $('gateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('gateBtn'); btn.disabled = true; $('gateErr').textContent = '';
+    try {
+      const { token } = await call('login', { pin: $('pin').value });
+      S.token = token; store.set(TK, token);
+      $('gate').hidden = true; $('loading').hidden = false;
+      await load();
+    } catch (err) { $('gateErr').textContent = err.message; $('pin').select(); }
+    finally { btn.disabled = false; }
+  });
+
+  async function load() {
+    try {
+      const d = await call('get');
+      S.g = d.gallery; S.originals = d.originals; S.retouched = d.retouched;
+      const valid = new Set(S.originals.map((p) => p.id));
+      if (S.g.status === 'selecting') {
+        let saved = []; try { saved = JSON.parse(store.get(SK) || '[]'); } catch {}
+        S.sel = new Set(saved.filter((id) => valid.has(id)));
+      } else S.sel = new Set(S.g.selected || []);
+      S.tab = S.g.status === 'delivered' && S.retouched.length ? 'retouched' : 'originals';
+      render();
+    } catch (err) {
+      if (err.status === 401 || err.status === 404) { S.token = null; store.set(TK, null); showGate(err.status === 404 ? err.message : ''); }
+      else { $('loading').textContent = err.message; }
+    }
+  }
+
+  // ---------- 화면 ----------
+  function render() {
+    const g = S.g;
+    $('loading').hidden = true; $('gate').hidden = true; $('main').hidden = false;
+    $('topRight').textContent = fmtDate(g.shoot_date);
+    $('heroName').textContent = `${g.client_name}님`;
+    $('heroMeta').innerHTML = '';
+    [['촬영일', fmtDate(g.shoot_date)], ['패키지', g.package_label], ['보정', `${g.select_limit}장`]].forEach(([k, v]) => {
+      const s = document.createElement('span'); s.innerHTML = `${k} <b></b>`; s.querySelector('b').textContent = v; $('heroMeta').append(s);
+    });
+
+    const stage = { uploading: 0, selecting: 1, selected: 2, delivered: 3 }[g.status] || 0;
+    document.querySelectorAll('.step').forEach((el) => {
+      const n = +el.dataset.s; el.classList.toggle('now', n === stage || (stage === 0 && n === 1)); el.classList.toggle('done', n < stage);
+    });
+
+    const origOpen = S.originals.some((p) => p.download);
+    const origLine = g.originals_expire_at
+      ? (origOpen ? `원본은 <strong>${fmtMD(g.originals_expire_at)}</strong>까지 저장할 수 있어요.` : '원본 저장 기간이 지났어요.')
+      : '';
+    const n = $('notice');
+    if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
+    else if (g.status === 'selecting') n.innerHTML = `<strong>보정받을 사진 ${g.select_limit}장을 골라주세요.</strong> 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">${origLine} 선택은 이 기기에 임시 저장되니 나눠서 골라도 괜찮아요.</span>`;
+    else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.sel.size}장. ${origLine}</span>`;
+    else n.innerHTML = `<strong>보정본이 도착했어요.</strong> ${g.retouched_expire_at ? `<strong>${fmtMD(g.retouched_expire_at)}</strong>까지 저장할 수 있어요.` : ''}<span class="sub">${origLine}</span>`;
+
+    $('tabs').hidden = !(g.status === 'delivered' && S.retouched.length);
+    $('cRet').textContent = S.retouched.length; $('cOrig').textContent = S.originals.length;
+    document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.tab === S.tab));
+
+    const selecting = g.status === 'selecting';
+    $('dock').hidden = !selecting;
+    document.documentElement.style.setProperty('--bar-h', selecting ? $('dock').offsetHeight + 'px' : '0px');
+    renderGrid();
+  }
+
+  function currentList() {
+    if (S.tab === 'retouched') return S.retouched;
+    return S.filter === 'sel' ? S.originals.filter((p) => S.sel.has(p.id)) : S.originals;
+  }
+
+  function renderGrid() {
+    const g = S.g, onOrig = S.tab === 'originals';
+    $('chips').hidden = !(onOrig && S.originals.length);
+    $('nAll').textContent = S.originals.length; $('nSel').textContent = S.sel.size;
+    document.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.f === S.filter));
+
+    const list = currentList();
+    const dl = list.filter((p) => p.download);
+    const total = dl.reduce((a, p) => a + (p.size || 0), 0);
+    $('saveAll').hidden = !dl.length || isMobile;
+    $('saveAll').textContent = `${S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택 사진' : '원본'} 전체 저장${total ? ' · ' + fmtSize(total) : ''}`;
+    $('dlHint').textContent = dl.length && isMobile ? '사진을 열어 한 장씩 저장할 수 있어요' : '';
+
+    const grid = $('grid'); grid.innerHTML = '';
+    if (!list.length) {
+      const e = document.createElement('div'); e.className = 'empty';
+      e.textContent = g.status === 'uploading' ? '곧 사진이 올라와요.' : S.filter === 'sel' ? '아직 선택한 사진이 없어요.' : '사진이 없어요.';
+      grid.append(e);
+    }
+    const frag = document.createDocumentFragment();
+    const canPick = g.status === 'selecting' && onOrig;
+    list.forEach((p, i) => {
+      const c = document.createElement('div'); c.className = 'cell'; c.dataset.id = p.id; c.dataset.i = i;
+      c.setAttribute('role', 'button'); c.tabIndex = 0;
+      if (onOrig && S.sel.has(p.id)) c.classList.add('sel');
+      if (p.thumb) {
+        const img = new Image(); img.loading = 'lazy'; img.decoding = 'async'; img.alt = p.filename; img.src = p.thumb;
+        img.onload = () => img.classList.add('ld'); c.append(img);
+      } else { const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = p.filename; c.append(ph); }
+      const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = p.filename; c.append(nm);
+      if (canPick || (onOrig && S.sel.has(p.id))) {
+        const b = document.createElement('button'); b.className = 'pick'; b.setAttribute('aria-label', '선택');
+        b.innerHTML = '<i></i>'; c.append(b);
+      }
+      frag.append(c);
+    });
+    grid.append(frag);
+    updateMarks();
+  }
+
+  function updateMarks() {
+    const order = [...S.sel];
+    document.querySelectorAll('#grid .cell').forEach((c) => {
+      const on = S.tab === 'originals' && S.sel.has(c.dataset.id);
+      c.classList.toggle('sel', on);
+      const i = c.querySelector('.pick i'); if (i) i.textContent = on ? order.indexOf(c.dataset.id) + 1 : '';
+    });
+    const lim = S.g.select_limit, n = S.sel.size;
+    $('dockCount').innerHTML = `${n}<small> / ${lim}</small>`;
+    $('meter').style.width = Math.min(100, (n / lim) * 100) + '%';
+    $('submitBtn').disabled = n === 0;
+    $('submitBtn').textContent = n >= lim ? '선택 완료' : `선택 완료 (${lim - n}장 남음)`;
+    $('nSel').textContent = n;
+  }
+
+  function toggle(id) {
+    if (S.g.status !== 'selecting') return false;
+    if (S.sel.has(id)) S.sel.delete(id);
+    else {
+      if (S.sel.size >= S.g.select_limit) { toast(`${S.g.select_limit}장까지 고를 수 있어요. 다른 사진을 빼고 골라주세요.`); return false; }
+      S.sel.add(id);
+    }
+    store.set(SK, JSON.stringify([...S.sel]));
+    if (S.filter === 'sel') renderGrid(); else updateMarks();
+    return true;
+  }
+
+  $('grid').addEventListener('click', (e) => {
+    const c = e.target.closest('.cell'); if (!c) return;
+    if (e.target.closest('.pick')) { e.stopPropagation(); toggle(c.dataset.id); return; }
+    openLB(+c.dataset.i);
+  });
+  $('grid').addEventListener('keydown', (e) => { if (e.key === 'Enter') { const c = e.target.closest('.cell'); if (c) openLB(+c.dataset.i); } });
+  $('chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) { S.filter = b.dataset.f; renderGrid(); } });
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) { S.tab = b.dataset.tab; S.filter = 'all'; render(); } });
+
+  // ---------- 크게 보기 ----------
+  function openLB(i) { S.lbList = currentList(); S.lbIdx = i; $('lb').hidden = false; document.body.style.overflow = 'hidden'; showLB(); }
+  function closeLB() { $('lb').hidden = true; document.body.style.overflow = ''; $('lbImg').removeAttribute('src'); }
+  function showLB() {
+    const p = S.lbList[S.lbIdx]; if (!p) return closeLB();
+    const img = $('lbImg'); img.style.opacity = 0; $('lbLoad').hidden = false;
+    img.onload = () => { img.style.opacity = 1; $('lbLoad').hidden = true; };
+    img.src = p.preview || p.thumb || ''; img.alt = p.filename;
+    $('lbInfo').textContent = `${p.filename}   ${S.lbIdx + 1} / ${S.lbList.length}`;
+    const dl = $('lbDl'); dl.hidden = !p.download; if (p.download) dl.href = p.download;
+    dl.textContent = S.tab === 'retouched' ? '보정본 저장' : '원본 저장';
+    const canPick = S.g.status === 'selecting' && S.tab === 'originals';
+    const pk = $('lbPick'); pk.hidden = !canPick && !(S.tab === 'originals' && S.sel.has(p.id));
+    pk.disabled = !canPick;
+    const on = S.sel.has(p.id);
+    pk.classList.toggle('picked', on); pk.textContent = on ? `✓ 선택됨 ${[...S.sel].indexOf(p.id) + 1}` : '선택하기';
+    [S.lbList[S.lbIdx + 1], S.lbList[S.lbIdx - 1]].forEach((q) => { if (q && q.preview) new Image().src = q.preview; });
+  }
+  const step = (d) => { const n = S.lbIdx + d; if (n >= 0 && n < S.lbList.length) { S.lbIdx = n; showLB(); } };
+  $('lbClose').onclick = closeLB;
+  $('lbPrev').onclick = () => step(-1);
+  $('lbNext').onclick = () => step(1);
+  $('lbPick').onclick = () => { const p = S.lbList[S.lbIdx]; if (toggle(p.id)) showLB(); if (S.filter === 'sel') { S.lbList = currentList(); S.lbIdx = Math.min(S.lbIdx, S.lbList.length - 1); showLB(); } };
+  document.addEventListener('keydown', (e) => {
+    if ($('lb').hidden) return;
+    if (e.key === 'Escape') closeLB(); else if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
+    else if (e.key === ' ' && !$('lbPick').disabled) { e.preventDefault(); $('lbPick').click(); }
+  });
+  let tx = null, ty = null;
+  $('lbStage').addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  $('lbStage').addEventListener('touchend', (e) => {
+    if (tx == null) return; const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) closeLB();
+  });
+
+  // ---------- 선택 완료 ----------
+  function openModal(html) { $('toast').hidden = true; $('sheet').innerHTML = html; $('modal').hidden = false; }
+  function closeModal() { $('modal').hidden = true; }
+  $('modal').addEventListener('click', (e) => { if (e.target.id === 'modal' || e.target.dataset.close != null) closeModal(); });
+
+  $('submitBtn').onclick = () => {
+    const lim = S.g.select_limit, picked = S.originals.filter((p) => S.sel.has(p.id));
+    const order = [...S.sel]; picked.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+    const short = lim - picked.length;
+    openModal(`
+      <h2>이 ${picked.length}장으로 보정을 맡길까요?</h2>
+      <p>${short > 0 ? `<b style="color:var(--warn)">${short}장을 덜 골랐어요.</b> 이대로 완료하면 ${picked.length}장만 보정돼요.<br>` : ''}완료한 뒤에는 이 페이지에서 바꿀 수 없어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.</p>
+      <div class="mini" id="miniList"></div>
+      <div class="actions"><button class="btn" data-close>더 볼게요</button><button class="btn solid" id="confirmBtn">선택 완료</button></div>`);
+    const ml = $('miniList');
+    picked.forEach((p) => {
+      const f = document.createElement('figure');
+      if (p.thumb) { const im = new Image(); im.src = p.thumb; im.alt = ''; f.append(im); } else { const d = document.createElement('div'); d.className = 'ph2'; f.append(d); }
+      const cap = document.createElement('figcaption'); cap.textContent = p.filename; f.append(cap); ml.append(f);
+    });
+    $('confirmBtn').onclick = async (e) => {
+      e.target.disabled = true; e.target.textContent = '보내는 중…';
+      try {
+        await call('select', { photoIds: order });
+        store.set(SK, null); closeModal(); toast('선택이 완료됐어요. 감사합니다.');
+        await load(); window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) { e.target.disabled = false; e.target.textContent = '선택 완료'; toast(err.message, 4000); if (err.status === 409) { closeModal(); load(); } }
+    };
+  };
+
+  // ---------- 전체 저장 ----------
+  $('saveAll').onclick = async () => {
+    const list = currentList().filter((p) => p.download);
+    if (!list.length) return;
+    let cancelled = false;
+    openModal(`<h2>${list.length}장 저장</h2>
+      <p id="dlMsg">${window.showDirectoryPicker ? '저장할 폴더를 고르면 사진이 그 폴더에 차례로 저장돼요.' : '사진이 한 장씩 다운로드돼요. 브라우저가 "여러 파일 다운로드"를 물으면 허용을 눌러주세요.'}</p>
+      <div class="prog"><span id="dlBar"></span></div><div class="hint mono" id="dlTxt">0 / ${list.length}</div>
+      <div class="actions"><button class="btn" id="dlCancel">닫기</button><button class="btn solid" id="dlGo">${window.showDirectoryPicker ? '폴더 고르기' : '저장 시작'}</button></div>`);
+    const prog = (i) => { $('dlBar').style.width = (i / list.length) * 100 + '%'; $('dlTxt').textContent = `${i} / ${list.length}`; };
+    $('dlCancel').onclick = () => { cancelled = true; closeModal(); };
+    $('dlGo').onclick = async (e) => {
+      e.target.disabled = true;
+      try {
+        if (window.showDirectoryPicker) {
+          const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
+          $('dlMsg').textContent = '저장하는 중이에요. 창을 닫지 말아 주세요.';
+          for (let i = 0; i < list.length && !cancelled; i++) {
+            const p = list[i];
+            for (let tryN = 0; tryN < 3; tryN++) {
+              try {
+                const r = await fetch(p.download); if (!r.ok) throw new Error(r.status);
+                const fh = await dir.getFileHandle(p.filename.replace(/[\\/:*?"<>|]/g, '_'), { create: true });
+                await r.body.pipeTo(await fh.createWritable()); break;
+              } catch (err) { if (tryN === 2) throw err; await new Promise((res) => setTimeout(res, 1500)); }
+            }
+            prog(i + 1);
+          }
+        } else {
+          for (let i = 0; i < list.length && !cancelled; i++) {
+            const a = document.createElement('a'); a.href = list[i].download; a.rel = 'noopener'; document.body.append(a); a.click(); a.remove();
+            prog(i + 1); await new Promise((res) => setTimeout(res, 900));
+          }
+        }
+        if (!cancelled) { $('dlMsg').textContent = '저장이 끝났어요.'; $('dlGo').hidden = true; $('dlCancel').textContent = '확인'; }
+      } catch (err) {
+        if (err.name === 'AbortError') { e.target.disabled = false; return; }
+        $('dlMsg').textContent = '저장 중 문제가 생겼어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.'; e.target.disabled = false;
+      }
+    };
+  };
+
+  window.addEventListener('resize', () => { if (!$('dock').hidden) document.documentElement.style.setProperty('--bar-h', $('dock').offsetHeight + 'px'); });
+
+  if (!slug) { $('loading').textContent = '링크가 올바르지 않아요. 안내받은 링크로 다시 들어와 주세요.'; return; }
+  if (S.token) load(); else showGate();
+})();
+</script>
+</body>
+</html>

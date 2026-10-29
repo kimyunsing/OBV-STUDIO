@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>OBVIO Gallery — Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #f3f2ee; --paper: #fbfaf7; --ink: #121212; --ink-2: #4a4945; --muted: #8d8a83;
+    --line: #dcd9d2; --line-2: #c9c5bc; --ok: #2f6b3a; --warn: #9a3b1e; --hl: #efe9d8;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+  .mono { font-family: var(--mono); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  .top { display: flex; justify-content: space-between; align-items: center; height: 56px; border-bottom: 1px solid var(--line); }
+  .mark { font-weight: 700; font-size: 13px; letter-spacing: .32em; text-decoration: none; color: inherit; }
+  .mark span { font-weight: 400; color: var(--muted); letter-spacing: .12em; margin-left: 8px; }
+  .btn { border: 1px solid var(--ink); background: transparent; padding: 9px 14px; font-size: 13px; font-weight: 500; display: inline-flex; gap: 6px; align-items: center; text-decoration: none; white-space: nowrap; }
+  a.btn { color: var(--ink); }
+  .btn.solid { background: var(--ink); color: var(--paper); }
+  .btn.ghost { border-color: var(--line-2); }
+  .btn.danger { border-color: var(--warn); color: var(--warn); }
+  .btn:disabled { opacity: .35; cursor: default; }
+  h1 { font-size: 26px; letter-spacing: -.02em; margin: 0; font-weight: 600; }
+  h2 { font-size: 15px; margin: 0 0 12px; font-weight: 600; }
+  .label { font: 11px var(--mono); color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 12px; padding: 28px 0 18px; flex-wrap: wrap; }
+
+  input[type=text], input[type=password], input[type=date], input[type=number], select, textarea {
+    width: 100%; border: 1px solid var(--line-2); background: var(--paper); padding: 10px 12px; outline: none; border-radius: 0;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--ink); }
+  .form { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .form label { display: grid; gap: 6px; font-size: 12px; color: var(--ink-2); }
+  .form .wide { grid-column: 1 / -1; }
+
+  .card { background: var(--paper); border: 1px solid var(--line); padding: 18px; margin-bottom: 14px; }
+  .row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  /* list */
+  table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  th { font: 11px var(--mono); color: var(--muted); letter-spacing: .08em; font-weight: 400; }
+  tr.click { cursor: pointer; } tr.click:hover td { background: #f6f4ef; }
+  .chip { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line-2); color: var(--ink-2); }
+  .chip.selecting { border-color: var(--ink); color: var(--ink); }
+  .chip.selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .chip.delivered { color: var(--ok); border-color: var(--ok); }
+  @media (max-width: 720px) { .hide-m { display: none; } }
+
+  /* detail */
+  .cols { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 900px) { .cols { grid-template-columns: 1.15fr 1fr; } }
+  .kv { display: grid; grid-template-columns: 90px 1fr; gap: 8px 12px; font-size: 13.5px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; word-break: break-all; }
+  .linkbox { display: flex; gap: 8px; align-items: stretch; margin: 12px 0 0; }
+  .linkbox input { font-family: var(--mono); font-size: 12.5px; }
+  .drop { border: 1.5px dashed var(--line-2); padding: 26px 16px; text-align: center; color: var(--ink-2); line-height: 1.7; transition: background .15s; }
+  .drop.over { background: var(--hl); border-color: var(--ink); }
+  .drop small { color: var(--muted); display: block; }
+  .prog { height: 3px; background: var(--line); margin: 14px 0 6px; position: relative; }
+  .prog span { position: absolute; inset: 0 auto 0 0; background: var(--ink); width: 0; transition: width .2s; }
+  .ptext { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--ink-2); gap: 10px; flex-wrap: wrap; }
+  .fails { margin-top: 8px; font: 12px var(--mono); color: var(--warn); white-space: pre-wrap; }
+  .sel-list { font: 12.5px/1.75 var(--mono); background: #f4f2ec; padding: 12px 14px; max-height: 260px; overflow: auto; white-space: pre; margin: 0 0 10px; }
+
+  .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin: 6px 0 12px; }
+  .tab { border: 0; background: none; padding: 10px 0; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.on { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+  .th { position: relative; background: #e6e3dc; aspect-ratio: 4/5; overflow: hidden; }
+  .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .th .nm { position: absolute; left: 0; right: 0; bottom: 0; font: 10px var(--mono); color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.55)); padding: 12px 5px 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .th.sel { outline: 3px solid var(--ink); outline-offset: -3px; }
+  .th .badge { position: absolute; top: 5px; left: 5px; background: var(--ink); color: var(--paper); font: 600 10px var(--mono); padding: 2px 6px; }
+  .th .x { position: absolute; top: 3px; right: 3px; width: 24px; height: 24px; border: 0; background: rgba(0,0,0,.5); color: #fff; font-size: 14px; line-height: 1; opacity: 0; }
+  .th:hover .x { opacity: 1; }
+  .ph { position: absolute; inset: 0; display: grid; place-items: center; font: 10px var(--mono); color: var(--muted); padding: 6px; text-align: center; word-break: break-all; }
+
+  .login { min-height: calc(100vh - 56px); display: grid; place-items: center; }
+  .login form { width: min(340px, 100%); display: grid; gap: 10px; }
+  .err { color: var(--warn); font-size: 13px; min-height: 18px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 11px 16px; font-size: 13.5px; z-index: 99; max-width: calc(100% - 32px); }
+  .muted { color: var(--muted); }
+  .empty { padding: 40px; text-align: center; color: var(--muted); background: var(--paper); border: 1px solid var(--line); }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="mark" href="#/">OBVIO STUDIO<span>Gallery admin</span></a>
+  <button class="btn ghost" id="logout" hidden>로그아웃</button>
+</header>
+
+<section class="wrap login" id="login" hidden>
+  <form id="loginForm">
+    <div class="label">Admin</div>
+    <h1>관리자 로그인</h1>
+    <input type="password" id="adminPw" placeholder="관리자 비밀번호" autocomplete="current-password" required>
+    <button class="btn solid" style="justify-content:center;padding:12px">로그인</button>
+    <div class="err" id="loginErr"></div>
+  </form>
+</section>
+
+<main class="wrap" id="view" hidden></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  const API = '/api/gallery-admin';
+  const $ = (id) => document.getElementById(id);
+  const store = { get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
+  let token = store.get('obvio-admin');
+  let PACKAGES = { BASIC: { label: 'BASIC · 1컨셉', limit: 4 }, STANDARD: { label: 'STANDARD · 2컨셉', limit: 8 }, PREMIUM: { label: 'PREMIUM · 3컨셉', limit: 12 } };
+  let uploading = false;
+
+  const STATUS = { uploading: '업로드 전', selecting: '셀렉 대기', selected: '셀렉 완료 · 보정 필요', delivered: '전달 완료' };
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmtDate = (s) => { if (!s) return '—'; const d = new Date(s.length === 10 ? s + 'T00:00:00' : s); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`; };
+  const fmtMD = (s) => { const d = new Date(s); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
+  const fmtSize = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + 'GB' : (b / 1e6).toFixed(0) + 'MB');
+  const natural = (a, b) => a.localeCompare(b, 'en', { numeric: true });
+  const clientUrl = (g) => `${location.origin}/g/${g.slug}`;
+
+  let toastT;
+  function toast(m, ms = 2600) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), ms); }
+  async function copy(text, msg = '복사했어요.') {
+    try { await navigator.clipboard.writeText(text); } catch { const ta = document.createElement('textarea'); ta.value = text; document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+    toast(msg);
+  }
+
+  async function call(action, data = {}) {
+    const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ action, ...data }) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 401 && action !== 'login') { token = null; store.set('obvio-admin', null); showLogin('로그인이 만료됐어요.'); throw new Error('login'); }
+    if (!r.ok) throw new Error(j.error || `오류 (${r.status})`);
+    return j;
+  }
+
+  // ---------- 로그인 ----------
+  function showLogin(msg) { $('view').hidden = true; $('logout').hidden = true; $('login').hidden = false; $('loginErr').textContent = msg || ''; $('adminPw').focus(); }
+  $('loginForm').onsubmit = async (e) => {
+    e.preventDefault(); $('loginErr').textContent = '';
+    try { const { token: t } = await call('login', { password: $('adminPw').value }); token = t; store.set('obvio-admin', t); $('adminPw').value = ''; route(); }
+    catch (err) { $('loginErr').textContent = err.message; }
+  };
+  $('logout').onclick = () => { token = null; store.set('obvio-admin', null); showLogin(); };
+
+  // ---------- 라우팅 ----------
+  window.addEventListener('hashchange', () => route());
+  window.addEventListener('beforeunload', (e) => { if (uploading) { e.preventDefault(); e.returnValue = ''; } });
+  function route() {
+    if (!token) return showLogin();
+    $('login').hidden = true; $('view').hidden = false; $('logout').hidden = false;
+    const h = location.hash.replace(/^#/, '') || '/';
+    const m = h.match(/^\/g\/([0-9a-f-]{36})/);
+    if (m) return renderDetail(m[1]);
+    if (h === '/new') return renderNew();
+    renderList();
+  }
+
+  // ---------- 목록 ----------
+  async function renderList() {
+    const v = $('view');
+    v.innerHTML = `<div class="head"><div><div class="label">Profile galleries</div><h1>갤러리</h1></div><a class="btn solid" href="#/new">+ 새 갤러리</a></div><div id="listBody" class="muted">불러오는 중…</div>`;
+    try {
+      const { galleries, packages } = await call('list');
+      if (packages) PACKAGES = packages;
+      const body = $('listBody'); body.className = '';
+      if (!galleries.length) { body.innerHTML = '<div class="empty">아직 갤러리가 없어요. 촬영이 끝나면 새 갤러리를 만들어 원본을 올려주세요.</div>'; return; }
+      body.innerHTML = `<table><thead><tr><th>촬영일</th><th>고객</th><th class="hide-m">패키지</th><th>상태</th><th class="hide-m">원본</th><th class="hide-m">보정본</th></tr></thead><tbody>${galleries.map((g) => `
+        <tr class="click" data-id="${g.id}">
+          <td class="mono">${fmtDate(g.shoot_date)}</td>
+          <td><b>${esc(g.client_name)}</b></td>
+          <td class="hide-m">${esc((PACKAGES[g.package] || {}).label || g.package)}</td>
+          <td><span class="chip ${g.status}">${STATUS[g.status] || g.status}</span></td>
+          <td class="hide-m mono">${g.original_count}${g.originals_expire_at && new Date(g.originals_expire_at) < new Date() ? ' <span class="muted">(만료)</span>' : ''}</td>
+          <td class="hide-m mono">${g.retouched_count}</td>
+        </tr>`).join('')}</tbody></table>`;
+      body.querySelectorAll('tr.click').forEach((tr) => (tr.onclick = () => (location.hash = `#/g/${tr.dataset.id}`)));
+    } catch (err) { if (err.message !== 'login') $('listBody').textContent = err.message; }
+  }
+
+  // ---------- 새 갤러리 ----------
+  function pkgOptions(sel) { return Object.entries(PACKAGES).map(([k, p]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(p.label)} — ${p.limit}장</option>`).join(''); }
+  function renderNew() {
+    const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    $('view').innerHTML = `
+      <div class="head"><div><div class="label">New gallery</div><h1>새 갤러리</h1></div><a class="btn ghost" href="#/">목록</a></div>
+      <form class="card form" id="newForm">
+        <label>고객 이름<input type="text" name="client_name" required maxlength="60" placeholder="홍길동"></label>
+        <label>촬영 날짜<input type="date" name="shoot_date" required value="${today}"></label>
+        <label>패키지<select name="package" id="pkgSel">${pkgOptions('BASIC')}</select></label>
+        <label>보정 장수<input type="number" name="select_limit" id="limitIn" min="1" max="200" value="4"></label>
+        <label>고객 비밀번호 (숫자 4~8자리)<input type="text" name="pin" inputmode="numeric" pattern="\\d{4,8}" required placeholder="전화번호 뒷자리 등"></label>
+        <label class="wide">메모 (관리자만 보임)<textarea name="memo" rows="2"></textarea></label>
+        <div class="wide row-actions"><button class="btn solid">만들기</button><span class="err" id="newErr"></span></div>
+      </form>`;
+    $('pkgSel').onchange = () => ($('limitIn').value = PACKAGES[$('pkgSel').value].limit);
+    $('newForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const f = Object.fromEntries(new FormData(e.target));
+      try { const { gallery } = await call('create', f); location.hash = `#/g/${gallery.id}`; toast('갤러리를 만들었어요. 이제 원본을 올려주세요.'); }
+      catch (err) { $('newErr').textContent = err.message; }
+    };
+  }
+
+  // ---------- 상세 ----------
+  let D = { g: null, photos: [], tab: 'original' };
+
+  async function renderDetail(id, keepTab) {
+    if (!keepTab) D.tab = 'original';
+    const v = $('view');
+    if (!D.g || D.g.id !== id) v.innerHTML = '<div class="head muted">불러오는 중…</div>';
+    try {
+      const d = await call('detail', { id });
+      D.g = d.gallery; D.photos = d.photos;
+    } catch (err) { if (err.message !== 'login') v.innerHTML = `<div class="head">${esc(err.message)}</div>`; return; }
+    if (!keepTab && D.g.status === 'delivered') D.tab = 'retouched';
+    paintDetail();
+  }
+
+  function message(g) {
+    const pkg = (PACKAGES[g.package] || {}).label || g.package;
+    if (g.status === 'delivered') {
+      return `[OBVIO STUDIO] ${g.client_name}님, 보정본이 도착했어요.\n\n사진 보기 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${g.retouched_expire_at ? fmtMD(g.retouched_expire_at) + '까지 ' : ''}저장할 수 있어요. 촬영해 주셔서 감사합니다.\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
+    }
+    const exp = g.originals_expire_at ? fmtMD(g.originals_expire_at) : '업로드일로부터 7일';
+    return `[OBVIO STUDIO] ${g.client_name}님, 촬영 사진이 올라왔어요.\n\n사진 보기·선택 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${pkg} 패키지로 보정받을 사진 ${g.select_limit}장을 골라 '선택 완료'를 눌러주세요. 폰에서도 고를 수 있어요.\n원본은 ${exp}까지 저장할 수 있어요.\n보정본은 촬영일 기준 7일 후 같은 링크에 올라와요.\n\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
+  }
+
+  function paintDetail() {
+    const g = D.g, v = $('view');
+    const originals = D.photos.filter((p) => p.kind === 'original');
+    const retouched = D.photos.filter((p) => p.kind === 'retouched');
+    const selSet = new Set(g.selected || []);
+    const selNames = (g.selected || []).map((id) => originals.find((p) => p.id === id)).filter(Boolean).map((p) => p.filename).sort(natural);
+    const origSize = originals.reduce((a, p) => a + (p.size || 0), 0);
+    const expired = g.originals_expire_at && new Date(g.originals_expire_at) < new Date();
+
+    v.innerHTML = `
+      <div class="head">
+        <div><div class="label">${fmtDate(g.shoot_date)} · ${esc((PACKAGES[g.package] || {}).label || g.package)}</div><h1>${esc(g.client_name)}</h1></div>
+        <div class="row-actions"><span class="chip ${g.status}">${STATUS[g.status]}</span><a class="btn ghost" href="#/">목록</a></div>
+      </div>
+      <div class="cols">
+        <div>
+          <div class="card">
+            <h2>고객 안내</h2>
+            <dl class="kv">
+              <dt>링크</dt><dd class="mono">${esc(clientUrl(g))}</dd>
+              <dt>비밀번호</dt><dd class="mono">${esc(g.pin)}</dd>
+              <dt>보정 장수</dt><dd>${g.select_limit}장</dd>
+              <dt>원본 기한</dt><dd>${g.originals_expire_at ? fmtDate(g.originals_expire_at) + (expired ? ' <span class="muted">(만료)</span>' : '') : '<span class="muted">업로드 완료 후 7일</span>'}</dd>
+              ${g.delivered_at ? `<dt>보정본 기한</dt><dd>${fmtDate(g.retouched_expire_at)}</dd>` : ''}
+              ${g.memo ? `<dt>메모</dt><dd>${esc(g.memo)}</dd>` : ''}
+            </dl>
+            <div class="row-actions" style="margin-top:14px">
+              <button class="btn solid" id="copyMsg" ${g.status === 'uploading' ? 'disabled title="원본을 먼저 올려주세요"' : ''}>${g.status === 'delivered' ? '보정본 안내 메시지 복사' : '카톡 안내 메시지 복사'}</button>
+              <button class="btn ghost" id="copyLink">링크만 복사</button>
+              <a class="btn ghost" href="${esc(clientUrl(g))}" target="_blank" rel="noopener">고객 화면 열기</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>${g.status === 'delivered' || g.status === 'selected' ? '보정본 올리기' : '원본 올리기'}</h2>
+            <div class="row-actions" style="margin-bottom:10px">
+              <label class="muted" style="display:flex;gap:6px;align-items:center"><input type="radio" name="ukind" value="original" ${g.status === 'uploading' || g.status === 'selecting' ? 'checked' : ''}> 원본</label>
+              <label class="muted" style="display:flex;gap:6px;align-items:center"><input type="radio" name="ukind" value="retouched" ${g.status === 'selected' || g.status === 'delivered' ? 'checked' : ''}> 보정본</label>
+            </div>
+            <div class="drop" id="drop">
+              폴더나 사진을 여기로 끌어다 놓으세요
+              <small>JPG · PNG · HEIC — 같은 파일명은 건너뛰므로 중간에 끊겨도 다시 올리면 이어집니다</small>
+              <div class="row-actions" style="justify-content:center;margin-top:12px">
+                <button class="btn" id="pickFiles">파일 선택</button><button class="btn" id="pickDir">폴더 선택</button>
+              </div>
+              <input type="file" id="fileIn" multiple accept="image/*,.heic,.heif" hidden>
+              <input type="file" id="dirIn" webkitdirectory multiple hidden>
+            </div>
+            <div id="upUI" hidden>
+              <div class="prog"><span id="upBar"></span></div>
+              <div class="ptext"><span id="upCount"></span><span id="upBytes"></span><span id="upEta"></span></div>
+              <div class="fails" id="upFails"></div>
+              <div class="row-actions" id="upAfter" style="margin-top:10px" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <h2>고객 셀렉 ${g.selected_at ? `<span class="muted mono" style="font-weight:400;font-size:12px">· ${fmtDate(g.selected_at)} · ${selNames.length}/${g.select_limit}장</span>` : ''}</h2>
+            ${selNames.length
+              ? `<pre class="sel-list">${selNames.map(esc).join('\n')}</pre>
+                 <div class="row-actions"><button class="btn solid" id="copySel">파일명 복사</button><button class="btn ghost" id="resetSel">셀렉 다시 받기</button></div>`
+              : `<p class="muted" style="margin:0">${g.status === 'uploading' ? '원본을 올리면 고객이 고를 수 있어요.' : '고객이 아직 고르지 않았어요.'}</p>`}
+          </div>
+
+          <details class="card">
+            <summary style="cursor:pointer;font-weight:600">정보 수정 · 삭제</summary>
+            <form class="form" id="editForm" style="margin-top:14px">
+              <label>고객 이름<input type="text" name="client_name" value="${esc(g.client_name)}"></label>
+              <label>촬영 날짜<input type="date" name="shoot_date" value="${g.shoot_date}"></label>
+              <label>패키지<select name="package" id="ePkg">${pkgOptions(g.package)}</select></label>
+              <label>보정 장수<input type="number" name="select_limit" id="eLim" min="1" max="200" value="${g.select_limit}"></label>
+              <label>고객 비밀번호<input type="text" name="pin" inputmode="numeric" value="${esc(g.pin)}"></label>
+              <label class="wide">메모<textarea name="memo" rows="2">${esc(g.memo || '')}</textarea></label>
+              <div class="wide row-actions"><button class="btn solid">저장</button><span style="flex:1"></span><button type="button" class="btn danger" id="delG">갤러리 삭제</button></div>
+            </form>
+          </details>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tabs">
+          <button class="tab ${D.tab === 'original' ? 'on' : ''}" data-t="original">원본 <span class="mono">${originals.length}</span>${origSize ? ` <span class="muted mono" style="font-size:11px">${fmtSize(origSize)}</span>` : ''}</button>
+          <button class="tab ${D.tab === 'retouched' ? 'on' : ''}" data-t="retouched">보정본 <span class="mono">${retouched.length}</span></button>
+        </div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>`;
+
+    // 썸네일
+    const list = (D.tab === 'original' ? originals : retouched).slice().sort((a, b) => natural(a.filename, b.filename));
+    const order = g.selected || [];
+    const th = $('thumbs');
+    if (!list.length) th.innerHTML = '<p class="muted" style="grid-column:1/-1;margin:0">아직 없어요.</p>';
+    list.forEach((p) => {
+      const d = document.createElement('div'); d.className = 'th' + (D.tab === 'original' && selSet.has(p.id) ? ' sel' : '');
+      d.innerHTML = (p.thumb ? `<img loading="lazy" src="${esc(p.thumb)}" alt="">` : `<div class="ph">${esc(p.filename)}</div>`)
+        + (D.tab === 'original' && selSet.has(p.id) ? `<span class="badge">${order.indexOf(p.id) + 1}</span>` : '')
+        + `<div class="nm">${esc(p.filename)}</div><button class="x" title="삭제">×</button>`;
+      d.querySelector('img')?.addEventListener('click', () => window.open(p.preview || p.thumb, '_blank', 'noopener'));
+      d.querySelector('.x').onclick = async () => {
+        if (!confirm(`${p.filename} 을(를) 삭제할까요?`)) return;
+        try { await call('delete-photos', { id: g.id, photoIds: [p.id] }); renderDetail(g.id, true); } catch (err) { toast(err.message); }
+      };
+      th.append(d);
+    });
+
+    // 이벤트
+    document.querySelectorAll('.tab').forEach((t) => (t.onclick = () => { D.tab = t.dataset.t; paintDetail(); }));
+    $('copyMsg').onclick = () => copy(message(g), '안내 메시지를 복사했어요. 카톡에 붙여넣으세요.');
+    $('copyLink').onclick = () => copy(clientUrl(g), '링크를 복사했어요.');
+    if ($('copySel')) $('copySel').onclick = () => copy(selNames.join('\n'), `파일명 ${selNames.length}개를 복사했어요.`);
+    if ($('resetSel')) $('resetSel').onclick = async () => {
+      if (!confirm('고객의 선택을 지우고 다시 고를 수 있게 할까요?')) return;
+      try { await call('reset-selection', { id: g.id }); renderDetail(g.id, true); toast('고객이 다시 고를 수 있어요.'); } catch (err) { toast(err.message); }
+    };
+    $('ePkg').onchange = () => ($('eLim').value = PACKAGES[$('ePkg').value].limit);
+    $('editForm').onsubmit = async (e) => {
+      e.preventDefault();
+      try { await call('update', { id: g.id, fields: Object.fromEntries(new FormData(e.target)) }); toast('저장했어요.'); renderDetail(g.id, true); } catch (err) { toast(err.message, 4000); }
+    };
+    $('delG').onclick = async () => {
+      const name = prompt(`삭제하면 사진 파일까지 모두 지워지고 되돌릴 수 없어요.\n계속하려면 고객 이름 "${g.client_name}"을 입력하세요.`);
+      if (name !== g.client_name) return;
+      try { await call('delete', { id: g.id }); toast('삭제했어요.'); location.hash = '#/'; } catch (err) { toast(err.message, 4000); }
+    };
+
+    // 업로드
+    const drop = $('drop');
+    $('pickFiles').onclick = () => $('fileIn').click();
+    $('pickDir').onclick = () => $('dirIn').click();
+    $('fileIn').onchange = (e) => startUpload([...e.target.files]);
+    $('dirIn').onchange = (e) => startUpload([...e.target.files]);
+    ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+    ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('over')));
+    drop.addEventListener('drop', async (e) => { e.preventDefault(); startUpload(await filesFromDrop(e.dataTransfer)); });
+  }
+
+  // ---------- 드롭된 폴더 펼치기 ----------
+  async function filesFromDrop(dt) {
+    const out = [];
+    const entries = [...dt.items].map((it) => it.webkitGetAsEntry && it.webkitGetAsEntry()).filter(Boolean);
+    if (!entries.length) return [...dt.files];
+    async function walk(entry) {
+      if (entry.isFile) { out.push(await new Promise((res, rej) => entry.file(res, rej))); return; }
+      const reader = entry.createReader();
+      let batch;
+      do { batch = await new Promise((res, rej) => reader.readEntries(res, rej)); for (const en of batch) await walk(en); } while (batch.length);
+    }
+    for (const en of entries) await walk(en);
+    return out;
+  }
+
+  // ---------- 미리보기 만들기 (브라우저에서) ----------
+  async function makeVariants(file) {
+    let bmp;
+    try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { return null; }
+    const W = bmp.width, H = bmp.height;
+    const scale = async (max, q) => {
+      const s = Math.min(1, max / Math.max(W, H)), w = Math.round(W * s), h = Math.round(H * s);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(bmp, 0, 0, w, h);
+      return new Promise((res) => c.toBlob(res, 'image/jpeg', q));
+    };
+    const preview = await scale(1800, 0.84), thumb = await scale(600, 0.8);
+    bmp.close && bmp.close();
+    return { preview, thumb, width: W, height: H };
+  }
+
+  function put(url, blob, type, onProgress) {
+    return new Promise((res, rej) => {
+      const x = new XMLHttpRequest();
+      x.open('PUT', url);
+      x.setRequestHeader('Content-Type', type || 'application/octet-stream');
+      if (onProgress) x.upload.onprogress = (e) => onProgress(e.loaded);
+      x.onload = () => (x.status < 300 ? res() : rej(new Error(`R2 ${x.status}`)));
+      x.onerror = () => rej(new Error('네트워크 오류 (R2 CORS 설정 확인)'));
+      x.send(blob);
+    });
+  }
+
+  // ---------- 업로드 ----------
+  async function startUpload(files) {
+    if (uploading) return toast('업로드가 진행 중이에요.');
+    const g = D.g;
+    const kind = document.querySelector('input[name=ukind]:checked')?.value || 'original';
+    const exists = new Set(D.photos.filter((p) => p.kind === kind).map((p) => p.filename.normalize('NFC')));
+    const all = files.filter((f) => !f.name.startsWith('.') && /\.(jpe?g|png|heic|heif|webp|tiff?)$/i.test(f.name));
+    const todo = all.filter((f) => !exists.has(f.name.normalize('NFC'))).sort((a, b) => natural(a.name, b.name));
+    const skipped = all.length - todo.length;
+    if (!todo.length) return toast(all.length ? '이미 모두 올라가 있어요.' : '사진 파일이 없어요.');
+    if (kind === 'retouched' && g.status === 'selecting' && !confirm('아직 고객 셀렉 전이에요. 보정본으로 올릴까요?')) return;
+
+    uploading = true;
+    $('upUI').hidden = false; $('upAfter').hidden = true; $('upFails').textContent = '';
+    $('drop').style.opacity = .5; $('drop').style.pointerEvents = 'none';
+    const total = todo.reduce((a, f) => a + f.size, 0);
+    const loaded = new Map(); let done = 0; const fails = []; const t0 = Date.now();
+    const tick = () => {
+      const sent = [...loaded.values()].reduce((a, b) => a + b, 0);
+      $('upBar').style.width = (sent / total) * 100 + '%';
+      $('upCount').textContent = `${done} / ${todo.length}장${skipped ? ` (중복 ${skipped}장 건너뜀)` : ''}`;
+      $('upBytes').textContent = `${fmtSize(sent)} / ${fmtSize(total)}`;
+      const sec = (Date.now() - t0) / 1000, rate = sent / Math.max(sec, 1);
+      $('upEta').textContent = sent > 0 && sent < total ? `약 ${Math.ceil((total - sent) / rate / 60)}분 남음 · ${(rate / 1e6).toFixed(1)}MB/s` : '';
+    };
+    tick();
+
+    // 서명 주소는 20장씩 받아온다
+    const queue = [];
+    for (let i = 0; i < todo.length; i += 20) queue.push(todo.slice(i, i + 20));
+    let pending = [];
+    const flush = async (force) => {
+      if (!pending.length || (!force && pending.length < 8)) return;
+      const items = pending; pending = [];
+      await call('register', { id: g.id, kind, items });
+    };
+
+    try {
+      for (const chunk of queue) {
+        const { uploads } = await call('presign', { id: g.id, kind, files: chunk.map((f) => ({ name: f.name, size: f.size })) });
+        let idx = 0;
+        const worker = async () => {
+          while (idx < chunk.length) {
+            const i = idx++, f = chunk[i], u = uploads[i];
+            for (let attempt = 1; attempt <= 3; attempt++) {
+              try {
+                const v = await makeVariants(f);
+                if (v) await Promise.all([put(u.put.preview, v.preview, 'image/jpeg'), put(u.put.thumb, v.thumb, 'image/jpeg')]);
+                await put(u.put.object, f, f.type, (n) => { loaded.set(f, n); tick(); });
+                loaded.set(f, f.size); done++; tick();
+                pending.push({ filename: f.name.normalize('NFC'), object_key: u.object_key, preview_key: v ? u.preview_key : null, thumb_key: v ? u.thumb_key : null, size: f.size, width: v?.width, height: v?.height });
+                await flush(false);
+                break;
+              } catch (err) {
+                loaded.set(f, 0);
+                if (attempt === 3) { fails.push(`${f.name} — ${err.message}`); $('upFails').textContent = '실패: \n' + fails.join('\n'); }
+                else await new Promise((r) => setTimeout(r, 1500 * attempt));
+              }
+            }
+          }
+        };
+        await Promise.all([worker(), worker(), worker()]);
+      }
+      await flush(true);
+    } catch (err) {
+      fails.push(err.message); $('upFails').textContent = '실패: \n' + fails.join('\n');
+      try { await flush(true); } catch {}
+    }
+
+    uploading = false;
+    $('drop').style.opacity = ''; $('drop').style.pointerEvents = '';
+    const finish = kind === 'original' ? 'finish-originals' : 'finish-retouched';
+    const after = $('upAfter'); after.hidden = false;
+    if (!fails.length) {
+      const { gallery } = await call(finish, { id: g.id });
+      D.g = gallery;
+      toast(kind === 'original' ? '원본 업로드 완료 — 고객이 고를 수 있어요.' : '보정본 업로드 완료 — 고객에게 공개됐어요.', 4000);
+      await renderDetail(g.id, true);
+      return;
+    }
+    after.innerHTML = `<span class="muted">${done}장 성공 · ${fails.length}장 실패. 같은 폴더를 다시 올리면 실패한 것만 올라가요.</span>
+      <button class="btn ghost" id="pubAnyway">이대로 공개</button>`;
+    $('pubAnyway').onclick = async () => { try { await call(finish, { id: g.id }); renderDetail(g.id, true); } catch (err) { toast(err.message); } };
+    // 성공한 사진은 목록에 반영
+    const d = await call('detail', { id: g.id }); D.photos = d.photos; D.g = d.gallery;
+  }
+
+  route();
+})();
+</script>
+</body>
+</html>
