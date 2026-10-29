@@ -158,6 +158,14 @@ const actions = {
     return { gallery: row };
   },
 
+  // 보정 작가에게 보낼 링크: 고객이 고른 원본만 받을 수 있는 읽기 전용 링크 (14일)
+  async 'retoucher-link'({ id }, req) {
+    requireAdmin(req);
+    const g = await getGallery(id);
+    if (!g.selected || !g.selected.length) throw L.fail(409, '고객이 아직 고르지 않았어요.');
+    return { path: `/g/${g.slug}#r=${L.signToken({ role: 'retoucher', gid: g.id, slug: g.slug }, 14 * L.DAY)}` };
+  },
+
   async 'reset-selection'({ id }, req) {
     requireAdmin(req);
     const g = await getGallery(id);

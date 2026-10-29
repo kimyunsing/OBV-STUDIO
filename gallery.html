@@ -242,7 +242,9 @@
   };
   const TK = `obvio-g-token-${slug}`, SK = `obvio-g-sel-${slug}`;
 
-  const S = { token: store.get(TK), g: null, originals: [], retouched: [], sel: new Set(), tab: 'originals', filter: 'all', lbList: [], lbIdx: 0 };
+  // 보정 작가용 링크 (#r=토큰): 비밀번호 없이 고객이 고른 원본만 보기·받기
+  const RT = (location.hash.match(/[#&]r=([^&]+)/) || [])[1] || null;
+  const S = { token: RT || store.get(TK), role: RT ? 'retoucher' : 'client', g: null, originals: [], retouched: [], sel: new Set(), tab: 'originals', filter: 'all', lbList: [], lbIdx: 0 };
 
   async function call(action, data = {}) {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, slug, token: S.token, ...data }) });
@@ -280,15 +282,17 @@
   async function load() {
     try {
       const d = await call('get');
-      S.g = d.gallery; S.originals = d.originals; S.retouched = d.retouched;
+      S.g = d.gallery; S.originals = d.originals; S.retouched = d.retouched; S.role = d.role || S.role;
       const valid = new Set(S.originals.map((p) => p.id));
       if (S.g.status === 'selecting') {
         let saved = []; try { saved = JSON.parse(store.get(SK) || '[]'); } catch {}
         S.sel = new Set(saved.filter((id) => valid.has(id)));
       } else S.sel = new Set(S.g.selected || []);
       S.tab = S.g.status === 'delivered' && S.retouched.length ? 'retouched' : 'originals';
+      if (S.role === 'retoucher') { S.tab = 'originals'; S.filter = 'all'; }
       render();
     } catch (err) {
+      if (RT) { $('loading').textContent = err.status === 401 ? '링크가 만료됐어요. 새 링크를 요청해 주세요.' : err.message; return; }
       if (err.status === 401 || err.status === 404) { S.token = null; store.set(TK, null); showGate(err.status === 404 ? err.message : ''); }
       else { $('loading').textContent = err.message; }
     }
@@ -315,7 +319,14 @@
       ? (origOpen ? `원본은 <strong>${fmtMD(g.originals_expire_at)}</strong>까지 저장할 수 있어요.` : '원본 저장 기간이 지났어요.')
       : '';
     const n = $('notice');
-    if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
+    const rt = S.role === 'retoucher';
+    $('heroLabel').textContent = rt ? 'Retouch request' : 'Profile session';
+    $('steps').hidden = rt;
+    if (rt) {
+      $('heroName').textContent = `${g.client_name}님 보정용 원본`;
+      $('heroMeta').lastChild.querySelector('b').textContent = `${S.originals.length}장`;
+      n.innerHTML = `<strong>고객이 고른 원본 ${S.originals.length}장이에요.</strong> ${isMobile ? '사진을 열어 한 장씩 저장할 수 있어요.' : "'선택 원본 전체 저장'을 누르면 폴더로 한 번에 받을 수 있어요."}<span class="sub">${origLine} 사진의 번호는 고객이 고른 순서예요.</span>`;
+    } else if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
     else if (g.status === 'selecting') n.innerHTML = `<strong>보정받을 사진 ${g.select_limit}장을 골라주세요.</strong> 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">${origLine} 선택은 이 기기에 임시 저장되니 나눠서 골라도 괜찮아요.</span>`;
     else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.sel.size}장. ${origLine}</span>`;
     else n.innerHTML = `<strong>보정본이 도착했어요.</strong> ${g.retouched_expire_at ? `<strong>${fmtMD(g.retouched_expire_at)}</strong>까지 저장할 수 있어요.` : ''}<span class="sub">${origLine}</span>`;
@@ -324,7 +335,7 @@
     $('cRet').textContent = S.retouched.length; $('cOrig').textContent = S.originals.length;
     document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.tab === S.tab));
 
-    const selecting = g.status === 'selecting';
+    const selecting = g.status === 'selecting' && S.role !== 'retoucher';
     $('dock').hidden = !selecting;
     document.documentElement.style.setProperty('--bar-h', selecting ? $('dock').offsetHeight + 'px' : '0px');
     renderGrid();
@@ -337,7 +348,7 @@
 
   function renderGrid() {
     const g = S.g, onOrig = S.tab === 'originals';
-    $('chips').hidden = !(onOrig && S.originals.length);
+    $('chips').hidden = !(onOrig && S.originals.length) || S.role === 'retoucher';
     $('nAll').textContent = S.originals.length; $('nSel').textContent = S.sel.size;
     document.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.f === S.filter));
 
@@ -345,7 +356,7 @@
     const dl = list.filter((p) => p.download);
     const total = dl.reduce((a, p) => a + (p.size || 0), 0);
     $('saveAll').hidden = !dl.length || isMobile;
-    $('saveAll').textContent = `${S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택 사진' : '원본'} 전체 저장${total ? ' · ' + fmtSize(total) : ''}`;
+    $('saveAll').textContent = `${S.role === 'retoucher' ? '선택 원본' : S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택 사진' : '원본'} 전체 저장${total ? ' · ' + fmtSize(total) : ''}`;
     $('dlHint').textContent = dl.length && isMobile ? '사진을 열어 한 장씩 저장할 수 있어요' : '';
 
     const grid = $('grid'); grid.innerHTML = '';

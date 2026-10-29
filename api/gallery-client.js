@@ -13,9 +13,10 @@ async function bySlug(slug) {
 
 async function fromToken(token) {
   const p = L.verifyToken(token);
-  if (!p || p.role !== 'client') throw L.fail(401, '다시 입장해 주세요.');
+  if (!p || (p.role !== 'client' && p.role !== 'retoucher')) throw L.fail(401, p ? '다시 입장해 주세요.' : '링크가 만료됐거나 올바르지 않아요.');
   const g = await bySlug(p.slug);
   if (g.id !== p.gid) throw L.fail(401, '다시 입장해 주세요.');
+  g._role = p.role;
   return g;
 }
 
@@ -74,7 +75,19 @@ const actions = {
     });
     const byName = (a, b) => a.filename.localeCompare(b.filename, 'en', { numeric: true });
 
+    // 보정 작가용 링크: 고객이 고른 원본만, 다운로드 가능하게
+    if (g._role === 'retoucher') {
+      const sel = new Set(g.selected || []);
+      return {
+        role: 'retoucher',
+        gallery: publicGallery(g),
+        originals: photos.filter((p) => p.kind === 'original' && sel.has(p.id)).map((p) => view(p, origOpen)).sort(byName),
+        retouched: [],
+      };
+    }
+
     return {
+      role: 'client',
       gallery: publicGallery(g),
       originals: photos.filter((p) => p.kind === 'original').map((p) => view(p, origOpen)).sort(byName),
       retouched: retOpen ? photos.filter((p) => p.kind === 'retouched').map((p) => view(p, true)).sort(byName) : [],
@@ -83,6 +96,7 @@ const actions = {
 
   async select({ token, photoIds }) {
     const g = await fromToken(token);
+    if (g._role !== 'client') throw L.fail(403, '이 링크로는 선택할 수 없어요.');
     if (g.status !== 'selecting') throw L.fail(409, '이미 선택이 완료됐어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.');
     const ids = [...new Set((photoIds || []).filter((x) => /^[0-9a-f-]{36}$/i.test(x)))];
     if (!ids.length) throw L.fail(400, '사진을 선택해 주세요.');
