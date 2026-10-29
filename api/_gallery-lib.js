@@ -142,20 +142,39 @@ async function deleteObjects(keys) {
   }
 }
 
-// ---------- 메일 (선택 사항: Resend) ----------
+// ---------- 메일 알림 (선택 사항) ----------
+// 1) GOOGLE_SCRIPT_URL 이 있으면: 구글 Apps Script로 ys Gmail에서 발송 (가입 불필요)
+// 2) 아니면 RESEND_API_KEY + NOTIFY_EMAIL 이 있으면 Resend로 발송
+// 둘 다 없으면 조용히 건너뜀 (관리자 화면에서 확인)
+function notifyKey() {
+  // 구글 스크립트와 맞추는 키: GALLERY_SECRET에서 파생 (코드에 비밀값을 직접 쓰지 않기 위함)
+  return crypto.createHmac('sha256', env('GALLERY_SECRET')).update('obvio-notify').digest('hex').slice(0, 32);
+}
+
 async function notify(subject, html) {
+  const to = (process.env.NOTIFY_EMAIL || '').split(',').map((s) => s.trim()).filter(Boolean);
+
+  const gs = process.env.GOOGLE_SCRIPT_URL;
+  if (gs) {
+    const r = await fetch(gs, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: notifyKey(), to: to.join(','), subject, html }),
+      redirect: 'follow',
+    });
+    const text = await r.text();
+    let ok = r.ok;
+    try { ok = ok && JSON.parse(text).ok === true; } catch { ok = false; }
+    if (!ok) console.error('구글 메일 전송 실패', r.status, text.slice(0, 300));
+    return ok;
+  }
+
   const key = process.env.RESEND_API_KEY;
-  const to = process.env.NOTIFY_EMAIL;
-  if (!key || !to) return false;
+  if (!key || !to.length) return false;
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: process.env.NOTIFY_FROM || 'OBVIO Gallery <onboarding@resend.dev>',
-      to: to.split(',').map((s) => s.trim()).filter(Boolean),
-      subject,
-      html,
-    }),
+    body: JSON.stringify({ from: process.env.NOTIFY_FROM || 'OBVIO Gallery <onboarding@resend.dev>', to, subject, html }),
   });
   if (!r.ok) console.error('메일 전송 실패', r.status, await r.text());
   return r.ok;
@@ -184,5 +203,5 @@ function route(actions, { exposeErrors = false } = {}) {
 module.exports = {
   PACKAGES, ORIGINAL_DAYS, RETOUCHED_DAYS, DAY,
   env, fail, signToken, verifyToken, safeEqual, bearer, randomSlug, randomHex,
-  db, presign, viewUrl, downloadUrl, deleteObjects, notify, esc, route,
+  db, presign, viewUrl, downloadUrl, deleteObjects, notify, notifyKey, esc, route,
 };

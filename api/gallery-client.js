@@ -2,6 +2,13 @@
 const L = require('./_gallery-lib');
 
 const MAX_ATTEMPTS = 5;
+
+function siteOrigin(req) {
+  if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/$/, '');
+  const host = req.headers['x-forwarded-host'] || req.headers.host;
+  const proto = req.headers['x-forwarded-proto'] || 'https';
+  return `${proto}://${host}`;
+}
 const LOCK_MINUTES = 15;
 
 async function bySlug(slug) {
@@ -94,7 +101,7 @@ const actions = {
     };
   },
 
-  async select({ token, photoIds }) {
+  async select({ token, photoIds }, req) {
     const g = await fromToken(token);
     if (g._role !== 'client') throw L.fail(403, '이 링크로는 선택할 수 없어요.');
     if (g.status !== 'selecting') throw L.fail(409, '이미 선택이 완료됐어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.');
@@ -114,13 +121,21 @@ const actions = {
     if (!updated.length) throw L.fail(409, '이미 선택이 완료됐어요.');
 
     const names = rows.map((r) => r.filename).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+    const site = siteOrigin(req);
+    const adminUrl = `${site}/gallery-admin#/g/${g.id}`;
+    const retUrl = `${site}/g/${g.slug}#r=${L.signToken({ role: 'retoucher', gid: g.id, slug: g.slug }, 14 * L.DAY)}`;
+    const count = g.select_limit > 0 ? `${names.length}/${g.select_limit}장` : `${names.length}장 (무제한)`;
+    const btn = (href, label, dark) => `<a href="${L.esc(href)}" style="display:inline-block;padding:11px 16px;margin:0 6px 8px 0;text-decoration:none;font-size:14px;${dark ? 'background:#121212;color:#fff' : 'border:1px solid #121212;color:#121212'}">${label}</a>`;
     await L.notify(
-      `[OBVIO 셀렉] ${g.shoot_date} ${g.client_name} — ${names.length}장`,
-      `<div style="font-family:sans-serif;font-size:14px;line-height:1.6">
-        <p><b>${L.esc(g.client_name)}</b>님이 보정할 사진을 골랐어요.</p>
-        <p>촬영일 ${L.esc(g.shoot_date)} · ${L.esc((L.PACKAGES[g.package] || {}).label || g.package)} · ${g.select_limit > 0 ? `${names.length}/${g.select_limit}장` : `${names.length}장 (무제한)`}</p>
-        <pre style="background:#f4f4f2;padding:12px;font-size:13px">${names.map(L.esc).join('\n')}</pre>
-        <p style="color:#888">관리자 페이지에서 파일명 목록을 복사할 수 있어요.</p>
+      `[OBVIO 셀렉 완료] ${g.client_name} · ${count}`,
+      `<div style="font-family:-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:14px;line-height:1.65;color:#121212;max-width:520px">
+        <p style="font-size:17px;margin:0 0 4px"><b>${L.esc(g.client_name)}</b>님이 사진을 골랐어요.</p>
+        <p style="color:#666;margin:0 0 18px">촬영일 ${L.esc(g.shoot_date)} · ${L.esc((L.PACKAGES[g.package] || {}).label || g.package)} · ${count}</p>
+        <div style="margin:0 0 14px">${btn(retUrl, '형님용 원본 링크 열기', true)}${btn(adminUrl, '관리자 화면')}</div>
+        <p style="font-size:12.5px;color:#666;margin:0 0 6px">형님께 그대로 전달할 링크 (14일 유효):</p>
+        <p style="font-size:12px;background:#f4f4f2;padding:10px;word-break:break-all;margin:0 0 18px">${L.esc(retUrl)}</p>
+        <p style="font-size:12.5px;color:#666;margin:0 0 6px">고른 파일</p>
+        <pre style="background:#f4f4f2;padding:12px;font-size:13px;margin:0">${names.map(L.esc).join('\n')}</pre>
       </div>`,
     ).catch((e) => console.error(e));
     return { ok: true, selected: ids };

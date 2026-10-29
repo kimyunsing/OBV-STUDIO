@@ -51,6 +51,8 @@
   th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 13.5px; }
   th { font: 11px var(--mono); color: var(--muted); letter-spacing: .08em; font-weight: 400; }
   tr.click { cursor: pointer; } tr.click:hover td { background: #f6f4ef; }
+  .rowdel { border: 0; background: none; color: var(--muted); font-size: 12.5px; padding: 6px 4px; white-space: nowrap; word-break: keep-all; }
+  .rowdel:hover { color: var(--warn); text-decoration: underline; }
   .chip { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line-2); color: var(--ink-2); }
   .chip.selecting { border-color: var(--ink); color: var(--ink); }
   .chip.selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
@@ -184,7 +186,7 @@
       if (packages) PACKAGES = packages;
       const body = $('listBody'); body.className = '';
       if (!galleries.length) { body.innerHTML = '<div class="empty">아직 갤러리가 없어요. 촬영이 끝나면 새 갤러리를 만들어 원본을 올려주세요.</div>'; return; }
-      body.innerHTML = `<table><thead><tr><th>촬영일</th><th>고객</th><th class="hide-m">패키지</th><th>상태</th><th class="hide-m">원본</th><th class="hide-m">보정본</th></tr></thead><tbody>${galleries.map((g) => `
+      body.innerHTML = `<table><thead><tr><th>촬영일</th><th>고객</th><th class="hide-m">패키지</th><th>상태</th><th class="hide-m">원본</th><th class="hide-m">보정본</th><th></th></tr></thead><tbody>${galleries.map((g) => `
         <tr class="click" data-id="${g.id}">
           <td class="mono">${fmtDate(g.shoot_date)}</td>
           <td><b>${esc(g.client_name)}</b></td>
@@ -192,8 +194,21 @@
           <td><span class="chip ${g.status}">${STATUS[g.status] || g.status}</span></td>
           <td class="hide-m mono">${g.original_count}${g.originals_expire_at && new Date(g.originals_expire_at) < new Date() ? ' <span class="muted">(만료)</span>' : ''}</td>
           <td class="hide-m mono">${g.retouched_count}</td>
+          <td style="text-align:right;width:1%"><button class="rowdel" data-del="${g.id}" title="삭제">삭제</button></td>
         </tr>`).join('')}</tbody></table>`;
       body.querySelectorAll('tr.click').forEach((tr) => (tr.onclick = () => (location.hash = `#/g/${tr.dataset.id}`)));
+      body.querySelectorAll('[data-del]').forEach((b) => (b.onclick = async (e) => {
+        e.stopPropagation();
+        const g = galleries.find((x) => x.id === b.dataset.del);
+        const photos = g.original_count + g.retouched_count;
+        const ok = photos
+          ? prompt(`"${g.client_name}" 갤러리와 올린 사진 ${photos}장을 모두 삭제해요. 되돌릴 수 없어요.\n계속하려면 고객 이름을 입력하세요.`) === g.client_name
+          : confirm(`"${g.client_name}" (${fmtDate(g.shoot_date)}) 갤러리를 삭제할까요?`);
+        if (!ok) return;
+        b.disabled = true; b.textContent = '삭제 중…';
+        try { await call('delete', { id: g.id }); toast('삭제했어요.'); renderList(); }
+        catch (err) { b.disabled = false; b.textContent = '삭제'; toast(err.message, 4000); }
+      }));
     } catch (err) { if (err.message !== 'login') $('listBody').textContent = err.message; }
   }
 
