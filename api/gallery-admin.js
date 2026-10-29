@@ -23,7 +23,8 @@ function cleanPin(pin) {
 
 function cleanPackage(pkg, limit) {
   const p = L.PACKAGES[pkg] ? pkg : 'BASIC';
-  const n = Number(limit) > 0 ? Math.min(200, Math.floor(Number(limit))) : L.PACKAGES[p].limit;
+  // 무제한 패키지는 항상 0(제한 없음), 그 외에는 입력값이 없으면 패키지 기본 장수
+  const n = p === 'FREE' ? 0 : Number(limit) > 0 ? Math.min(200, Math.floor(Number(limit))) : L.PACKAGES[p].limit;
   return { package: p, select_limit: n };
 }
 

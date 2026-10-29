@@ -323,7 +323,7 @@
     $('topRight').textContent = fmtDate(g.shoot_date);
     $('heroName').textContent = `${g.client_name}님`;
     $('heroMeta').innerHTML = '';
-    [['촬영일', fmtDate(g.shoot_date)], ['패키지', g.package_label], ['보정', `${g.select_limit}장`]].forEach(([k, v]) => {
+    [['촬영일', fmtDate(g.shoot_date)], ['패키지', g.package_label], ['보정', g.select_limit > 0 ? `${g.select_limit}장` : '장수 제한 없음']].forEach(([k, v]) => {
       const s = document.createElement('span'); s.innerHTML = `${k} <b></b>`; s.querySelector('b').textContent = v; $('heroMeta').append(s);
     });
 
@@ -345,7 +345,7 @@
       $('heroMeta').lastChild.querySelector('b').textContent = `${S.originals.length}장`;
       n.innerHTML = `<strong>고객이 고른 원본 ${S.originals.length}장이에요.</strong> ${isMobile ? '사진을 열어 한 장씩 저장할 수 있어요.' : "'선택 원본 전체 저장'을 누르면 폴더로 한 번에 받을 수 있어요."}<span class="sub">${origLine} 사진의 번호는 고객이 고른 순서예요.</span>`;
     } else if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
-    else if (g.status === 'selecting') n.innerHTML = `<strong>보정받을 사진 ${g.select_limit}장을 골라주세요.</strong> 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">${origLine} 선택은 이 기기에 임시 저장되니 나눠서 골라도 괜찮아요.</span>`;
+    else if (g.status === 'selecting') n.innerHTML = `<strong>${g.select_limit > 0 ? `보정받을 사진 ${g.select_limit}장을 골라주세요.` : '마음에 드는 사진을 원하는 만큼 골라주세요.'}</strong> 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">${origLine} 선택은 이 기기에 임시 저장되니 나눠서 골라도 괜찮아요.</span>`;
     else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.sel.size}장. ${origLine}</span>`;
     else n.innerHTML = `<strong>보정본이 도착했어요.</strong> ${g.retouched_expire_at ? `<strong>${fmtMD(g.retouched_expire_at)}</strong>까지 저장할 수 있어요.` : ''}<span class="sub">${origLine}</span>`;
 
@@ -412,10 +412,12 @@
       const i = c.querySelector('.pick i'); if (i) i.textContent = on ? order.indexOf(c.dataset.id) + 1 : '';
     });
     const lim = S.g.select_limit, n = S.sel.size;
-    $('dockCount').innerHTML = `${n}<small> / ${lim}</small>`;
-    $('meter').style.width = Math.min(100, (n / lim) * 100) + '%';
+    const unlimited = !(lim > 0);
+    $('dockCount').innerHTML = unlimited ? `${n}<small> 장 선택</small>` : `${n}<small> / ${lim}</small>`;
+    $('meter').parentElement.style.visibility = unlimited ? 'hidden' : '';
+    if (!unlimited) $('meter').style.width = Math.min(100, (n / lim) * 100) + '%';
     $('submitBtn').disabled = n === 0;
-    $('submitBtn').textContent = n >= lim ? '선택 완료' : `선택 완료 (${lim - n}장 남음)`;
+    $('submitBtn').textContent = unlimited || n >= lim ? '선택 완료' : `선택 완료 (${lim - n}장 남음)`;
     $('nSel').textContent = n;
   }
 
@@ -423,7 +425,7 @@
     if (S.g.status !== 'selecting') return false;
     if (S.sel.has(id)) S.sel.delete(id);
     else {
-      if (S.sel.size >= S.g.select_limit) { toast(`${S.g.select_limit}장까지 고를 수 있어요. 다른 사진을 빼고 골라주세요.`); return false; }
+      if (S.g.select_limit > 0 && S.sel.size >= S.g.select_limit) { toast(`${S.g.select_limit}장까지 고를 수 있어요. 다른 사진을 빼고 골라주세요.`); return false; }
       S.sel.add(id);
     }
     store.set(SK, JSON.stringify([...S.sel]));
@@ -484,9 +486,9 @@
   $('submitBtn').onclick = () => {
     const lim = S.g.select_limit, picked = S.originals.filter((p) => S.sel.has(p.id));
     const order = [...S.sel]; picked.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-    const short = lim - picked.length;
+    const short = lim > 0 ? lim - picked.length : 0;
     openModal(`
-      <h2>이 ${picked.length}장으로 보정을 맡길까요?</h2>
+      <h2>${lim > 0 ? `이 ${picked.length}장으로 보정을 맡길까요?` : `${picked.length}장 선택을 완료할까요?`}</h2>
       <p>${short > 0 ? `<b style="color:var(--warn)">${short}장을 덜 골랐어요.</b> 이대로 완료하면 ${picked.length}장만 보정돼요.<br>` : ''}완료한 뒤에는 이 페이지에서 바꿀 수 없어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.</p>
       <div class="mini" id="miniList"></div>
       <div class="actions"><button class="btn" data-close>더 볼게요</button><button class="btn solid" id="confirmBtn">선택 완료</button></div>`);

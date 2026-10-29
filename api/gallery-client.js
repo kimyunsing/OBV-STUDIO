@@ -100,7 +100,7 @@ const actions = {
     if (g.status !== 'selecting') throw L.fail(409, '이미 선택이 완료됐어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.');
     const ids = [...new Set((photoIds || []).filter((x) => /^[0-9a-f-]{36}$/i.test(x)))];
     if (!ids.length) throw L.fail(400, '사진을 선택해 주세요.');
-    if (ids.length > g.select_limit) throw L.fail(400, `최대 ${g.select_limit}장까지 고를 수 있어요.`);
+    if (g.select_limit > 0 && ids.length > g.select_limit) throw L.fail(400, `최대 ${g.select_limit}장까지 고를 수 있어요.`);
 
     const rows = await L.db(`gallery_photos?gallery_id=eq.${g.id}&kind=eq.original&id=in.(${ids.join(',')})&select=id,filename`);
     if (rows.length !== ids.length) throw L.fail(400, '선택한 사진 중 확인되지 않는 사진이 있어요. 새로고침 후 다시 시도해 주세요.');
@@ -118,7 +118,7 @@ const actions = {
       `[OBVIO 셀렉] ${g.shoot_date} ${g.client_name} — ${names.length}장`,
       `<div style="font-family:sans-serif;font-size:14px;line-height:1.6">
         <p><b>${L.esc(g.client_name)}</b>님이 보정할 사진을 골랐어요.</p>
-        <p>촬영일 ${L.esc(g.shoot_date)} · ${L.esc((L.PACKAGES[g.package] || {}).label || g.package)} · ${names.length}/${g.select_limit}장</p>
+        <p>촬영일 ${L.esc(g.shoot_date)} · ${L.esc((L.PACKAGES[g.package] || {}).label || g.package)} · ${g.select_limit > 0 ? `${names.length}/${g.select_limit}장` : `${names.length}장 (무제한)`}</p>
         <pre style="background:#f4f4f2;padding:12px;font-size:13px">${names.map(L.esc).join('\n')}</pre>
         <p style="color:#888">관리자 페이지에서 파일명 목록을 복사할 수 있어요.</p>
       </div>`,

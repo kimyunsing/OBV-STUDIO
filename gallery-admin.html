@@ -119,7 +119,15 @@
   const $ = (id) => document.getElementById(id);
   const store = { get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
   let token = store.get('obvio-admin');
-  let PACKAGES = { BASIC: { label: 'BASIC · 1컨셉', limit: 4 }, STANDARD: { label: 'STANDARD · 2컨셉', limit: 8 }, PREMIUM: { label: 'PREMIUM · 3컨셉', limit: 12 } };
+  let PACKAGES = { BASIC: { label: 'BASIC · 1컨셉', limit: 4 }, STANDARD: { label: 'STANDARD · 2컨셉', limit: 8 }, PREMIUM: { label: 'PREMIUM · 3컨셉', limit: 12 }, FREE: { label: 'FREE · 무제한 선택', limit: 0 } };
+  const limitText = (n) => (n > 0 ? `${n}장` : '제한 없음');
+  // 무제한 패키지를 고르면 장수 칸을 잠그고 '제한 없음'으로
+  function syncLimit(sel, input, keep) {
+    const lim = PACKAGES[sel.value].limit;
+    input.disabled = !(lim > 0);
+    if (!(lim > 0)) { input.value = ''; input.placeholder = '제한 없음'; }
+    else if (!keep || !input.value) input.value = lim;
+  }
   let uploading = false;
 
   const STATUS = { uploading: '업로드 전', selecting: '셀렉 대기', selected: '셀렉 완료 · 보정 필요', delivered: '전달 완료' };
@@ -190,7 +198,7 @@
   }
 
   // ---------- 새 갤러리 ----------
-  function pkgOptions(sel) { return Object.entries(PACKAGES).map(([k, p]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(p.label)} — ${p.limit}장</option>`).join(''); }
+  function pkgOptions(sel) { return Object.entries(PACKAGES).map(([k, p]) => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(p.label)} — ${limitText(p.limit)}</option>`).join(''); }
   function renderNew() {
     const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     $('view').innerHTML = `
@@ -204,7 +212,7 @@
         <label class="wide">메모 (관리자만 보임)<textarea name="memo" rows="2"></textarea></label>
         <div class="wide row-actions"><button class="btn solid">만들기</button><span class="err" id="newErr"></span></div>
       </form>`;
-    $('pkgSel').onchange = () => ($('limitIn').value = PACKAGES[$('pkgSel').value].limit);
+    $('pkgSel').onchange = () => syncLimit($('pkgSel'), $('limitIn'));
     $('newForm').onsubmit = async (e) => {
       e.preventDefault();
       const f = Object.fromEntries(new FormData(e.target));
@@ -234,7 +242,7 @@
       return `[OBVIO STUDIO] ${g.client_name}님, 보정본이 도착했어요.\n\n사진 보기 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${g.retouched_expire_at ? fmtMD(g.retouched_expire_at) + '까지 ' : ''}저장할 수 있어요. 촬영해 주셔서 감사합니다.\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
     }
     const exp = g.originals_expire_at ? fmtMD(g.originals_expire_at) : '업로드일로부터 7일';
-    return `[OBVIO STUDIO] ${g.client_name}님, 촬영 사진이 올라왔어요.\n\n사진 보기·선택 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${pkg} 패키지로 보정받을 사진 ${g.select_limit}장을 골라 '선택 완료'를 눌러주세요. 폰에서도 고를 수 있어요.\n원본은 ${exp}까지 저장할 수 있어요.\n보정본은 촬영일 기준 7일 후 같은 링크에 올라와요.\n\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
+    return `[OBVIO STUDIO] ${g.client_name}님, 촬영 사진이 올라왔어요.\n\n사진 보기·선택 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${g.select_limit > 0 ? `${pkg} 패키지로 보정받을 사진 ${g.select_limit}장을 골라` : '마음에 드는 사진을 장수 제한 없이 원하는 만큼 골라'} '선택 완료'를 눌러주세요. 폰에서도 고를 수 있어요.\n원본은 ${exp}까지 저장할 수 있어요.\n보정본은 촬영일 기준 7일 후 같은 링크에 올라와요.\n\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
   }
 
   function paintDetail() {
@@ -258,7 +266,7 @@
             <dl class="kv">
               <dt>링크</dt><dd class="mono">${esc(clientUrl(g))}</dd>
               <dt>비밀번호</dt><dd class="mono">${esc(g.pin)}</dd>
-              <dt>보정 장수</dt><dd>${g.select_limit}장</dd>
+              <dt>보정 장수</dt><dd>${limitText(g.select_limit)}</dd>
               <dt>원본 기한</dt><dd>${g.originals_expire_at ? fmtDate(g.originals_expire_at) + (expired ? ' <span class="muted">(만료)</span>' : '') : '<span class="muted">업로드 완료 후 7일</span>'}</dd>
               ${g.delivered_at ? `<dt>보정본 기한</dt><dd>${fmtDate(g.retouched_expire_at)}</dd>` : ''}
               ${g.memo ? `<dt>메모</dt><dd>${esc(g.memo)}</dd>` : ''}
@@ -296,7 +304,7 @@
 
         <div>
           <div class="card">
-            <h2>고객 셀렉 ${g.selected_at ? `<span class="muted mono" style="font-weight:400;font-size:12px">· ${fmtDate(g.selected_at)} · ${selNames.length}/${g.select_limit}장</span>` : ''}</h2>
+            <h2>고객 셀렉 ${g.selected_at ? `<span class="muted mono" style="font-weight:400;font-size:12px">· ${fmtDate(g.selected_at)} · ${g.select_limit > 0 ? `${selNames.length}/${g.select_limit}장` : `${selNames.length}장`}</span>` : ''}</h2>
             ${selNames.length
               ? `<pre class="sel-list">${selNames.map(esc).join('\n')}</pre>
                  <div class="row-actions">
@@ -376,7 +384,8 @@
       if (!confirm('고객의 선택을 지우고 다시 고를 수 있게 할까요?')) return;
       try { await call('reset-selection', { id: g.id }); renderDetail(g.id, true); toast('고객이 다시 고를 수 있어요.'); } catch (err) { toast(err.message); }
     };
-    $('ePkg').onchange = () => ($('eLim').value = PACKAGES[$('ePkg').value].limit);
+    $('ePkg').onchange = () => syncLimit($('ePkg'), $('eLim'));
+    syncLimit($('ePkg'), $('eLim'), true);
     $('editForm').onsubmit = async (e) => {
       e.preventDefault();
       try { await call('update', { id: g.id, fields: Object.fromEntries(new FormData(e.target)) }); toast('저장했어요.'); renderDetail(g.id, true); } catch (err) { toast(err.message, 4000); }

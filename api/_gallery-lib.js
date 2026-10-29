@@ -6,6 +6,7 @@ const PACKAGES = {
   BASIC:    { label: 'BASIC · 1컨셉',    limit: 4 },
   STANDARD: { label: 'STANDARD · 2컨셉', limit: 8 },
   PREMIUM:  { label: 'PREMIUM · 3컨셉',  limit: 12 },
+  FREE:     { label: 'FREE · 무제한 선택', limit: 0 }, // 0 = 장수 제한 없음
 };
 const ORIGINAL_DAYS = 7;   // 원본 다운로드 기간
 const RETOUCHED_DAYS = 30; // 보정본 다운로드 기간
