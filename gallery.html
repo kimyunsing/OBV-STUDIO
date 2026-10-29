@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>OBVIO STUDIO — Profile</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -38,15 +38,23 @@
   .top .mono { font-size: 11px; color: var(--muted); }
 
   /* ---------- gate ---------- */
-  .gate { min-height: calc(100dvh - 56px); display: grid; place-items: center; padding-top: 40px; padding-bottom: 80px; }
-  .gate form { width: min(360px, 100%); }
-  .gate h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 8px; }
-  .gate p { color: var(--ink-2); font-size: 14px; line-height: 1.6; margin: 0 0 28px; }
-  .field { display: flex; border: 1px solid var(--ink); background: var(--paper); }
-  .field input { flex: 1; min-width: 0; border: 0; background: transparent; padding: 16px; font: 500 18px var(--mono); letter-spacing: .3em; outline: none; }
-  .field button { border: 0; background: var(--ink); color: var(--paper); padding: 0 22px; font-size: 14px; font-weight: 600; }
-  .field button:disabled { opacity: .5; }
-  .err { color: var(--warn); font-size: 13px; min-height: 20px; margin-top: 10px; }
+  .gate { min-height: calc(100dvh - 56px); display: flex; flex-direction: column; padding-top: clamp(40px, 12vh, 120px); padding-bottom: 60px; }
+  .gate form { width: 100%; max-width: 400px; margin: 0 auto; }
+  .gate .label { font: 11px var(--mono); color: var(--muted); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 14px; }
+  .gate h1 { font-size: 28px; line-height: 1.25; font-weight: 600; letter-spacing: -.03em; margin: 0 0 10px; word-break: keep-all; }
+  .gate p { color: var(--ink-2); font-size: 14.5px; line-height: 1.6; margin: 0 0 32px; word-break: keep-all; }
+  .pin { display: block; width: 100%; height: 64px; border: 0; border-bottom: 2px solid var(--ink); background: transparent; border-radius: 0;
+         padding: 0 2px; font: 500 28px var(--mono); letter-spacing: .5em; color: var(--ink); outline: none; -webkit-appearance: none; appearance: none;
+         -webkit-text-security: disc; text-security: disc; caret-color: var(--ink); }
+  .pin:focus { border-bottom-color: var(--ink); }
+  .gate .go { display: block; width: 100%; height: 54px; margin-top: 28px; border: 0; background: var(--ink); color: var(--paper); font-size: 16px; font-weight: 600; letter-spacing: .02em; }
+  .gate .go:disabled { background: var(--line-2); color: var(--paper); }
+  .gate .help { margin-top: 22px; font-size: 12.5px; color: var(--muted); line-height: 1.6; word-break: keep-all; }
+  .shake { animation: shake .35s; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  /* 아이폰·카카오톡 브라우저에서 입력칸을 누를 때 화면이 확대되지 않도록 16px 이상 유지 */
+  input, select, textarea { font-size: max(16px, 1em); }
+  .err { color: var(--warn); font-size: 13.5px; min-height: 20px; margin-top: 12px; }
 
   /* ---------- hero ---------- */
   .hero { padding-top: 36px; padding-bottom: 24px; display: grid; gap: 18px; }
@@ -148,14 +156,15 @@
 
 <!-- 비밀번호 -->
 <section class="wrap gate" id="gate" hidden>
-  <form id="gateForm" autocomplete="off">
+  <form id="gateForm" autocomplete="off" novalidate>
+    <div class="label">Profile photos</div>
     <h1>촬영 사진 보기</h1>
-    <p>안내받은 비밀번호를 입력해 주세요.<br>사진 확인, 보정할 사진 선택, 다운로드를 이 페이지에서 할 수 있어요.</p>
-    <div class="field">
-      <input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="••••" aria-label="비밀번호" required>
-      <button id="gateBtn">입장</button>
-    </div>
-    <div class="err" id="gateErr"></div>
+    <p>카카오톡으로 받은 숫자 비밀번호를 입력해 주세요.</p>
+    <input id="pin" class="pin" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8"
+           autocomplete="off" autocorrect="off" spellcheck="false" aria-label="비밀번호">
+    <div class="err" id="gateErr" role="alert"></div>
+    <button class="go" id="gateBtn" disabled>입장하기</button>
+    <div class="help">사진 확인, 보정할 사진 선택, 저장까지<br>모두 이 페이지에서 할 수 있어요.</div>
   </form>
 </section>
 
@@ -265,18 +274,27 @@
   function showGate(msg) {
     $('loading').hidden = true; $('main').hidden = true; $('dock').hidden = true; $('gate').hidden = false;
     $('gateErr').textContent = msg || '';
-    setTimeout(() => $('pin').focus(), 50);
+    if (!isMobile) setTimeout(() => $('pin').focus(), 50);
   }
+  $('pin').addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 8);
+    $('gateBtn').disabled = e.target.value.length < 4; $('gateErr').textContent = '';
+  });
   $('gateForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if ($('pin').value.length < 4) return;
     const btn = $('gateBtn'); btn.disabled = true; $('gateErr').textContent = '';
     try {
       const { token } = await call('login', { pin: $('pin').value });
       S.token = token; store.set(TK, token);
       $('gate').hidden = true; $('loading').hidden = false;
       await load();
-    } catch (err) { $('gateErr').textContent = err.message; $('pin').select(); }
-    finally { btn.disabled = false; }
+    } catch (err) {
+      $('gateErr').textContent = err.message; $('pin').value = ''; $('pin').focus();
+      $('pin').classList.remove('shake'); void $('pin').offsetWidth; $('pin').classList.add('shake');
+      btn.disabled = true; return;
+    }
+    btn.disabled = false;
   });
 
   async function load() {
