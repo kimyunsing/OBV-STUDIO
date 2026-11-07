@@ -80,6 +80,17 @@
   .tab .c { font: 11px var(--mono); margin-left: 4px; }
   .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 14px 0; }
   .chips { display: flex; gap: 6px; }
+  /* 1차·2차·3차 */
+  .rounds { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--ink); margin-top: 16px; }
+  .round { border: 0; border-left: 1px solid var(--ink); background: transparent; padding: 10px 8px 9px; text-align: left; display: grid; gap: 2px; }
+  .round:first-child { border-left: 0; }
+  .round .t { font-size: 14px; font-weight: 600; }
+  .round .d { font-size: 11.5px; color: var(--muted); }
+  .round .k { font: 600 12px var(--mono); }
+  .round.on { background: var(--ink); color: var(--paper); }
+  .round.on .d { color: #bdbab3; }
+  .round:disabled { opacity: .35; cursor: default; }
+  .rhint { font-size: 13px; color: var(--ink-2); margin: 10px 0 0; line-height: 1.55; word-break: keep-all; }
   .chip { border: 1px solid var(--line-2); background: transparent; padding: 7px 12px; font-size: 13px; border-radius: 999px; }
   .chip.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .btn { border: 1px solid var(--ink); background: transparent; padding: 9px 14px; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
@@ -91,8 +102,9 @@
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding-bottom: 40px; }
   @media (min-width: 640px) { .grid { grid-template-columns: repeat(4, 1fr); gap: 8px; } }
   @media (min-width: 1000px) { .grid { grid-template-columns: repeat(6, 1fr); gap: 10px; } }
-  .cell { position: relative; aspect-ratio: 4 / 5; background: #e6e3dc; overflow: hidden; border: 0; padding: 0; display: block; width: 100%; }
-  .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .3s; opacity: 0; }
+  /* 사진이 잘리지 않도록 전체를 보여줌 (세로 2:3 기준 칸, 가로 사진은 위아래 여백) */
+  .cell { position: relative; aspect-ratio: 2 / 3; background: #e6e3dc; overflow: hidden; border: 0; padding: 0; display: block; width: 100%; }
+  .cell img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .3s; opacity: 0; }
   .cell img.ld { opacity: 1; }
   .cell .ph { position: absolute; inset: 0; display: grid; place-items: center; font: 10px var(--mono); color: var(--muted); padding: 6px; text-align: center; word-break: break-all; }
   .cell .nm { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 6px 5px; font: 10px var(--mono); color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.45)); text-align: left; opacity: 0; transition: opacity .2s; }
@@ -137,7 +149,7 @@
   .sheet p { font-size: 14px; color: var(--ink-2); line-height: 1.6; margin: 0 0 16px; }
   .mini { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
   .mini figure { margin: 0; }
-  .mini img, .mini .ph2 { width: 100%; aspect-ratio: 4/5; object-fit: cover; background: #e6e3dc; display: block; }
+  .mini img, .mini .ph2 { width: 100%; aspect-ratio: 2/3; object-fit: contain; background: #e6e3dc; display: block; }
   .mini figcaption { font: 9.5px var(--mono); color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
   .actions .btn { padding: 12px 18px; font-size: 14px; }
@@ -191,6 +203,14 @@
       <button class="tab" data-tab="retouched">보정본<span class="c" id="cRet"></span></button>
       <button class="tab" data-tab="originals">원본<span class="c" id="cOrig"></span></button>
     </nav>
+    <div id="roundBox" hidden>
+      <div class="rounds" id="rounds">
+        <button class="round" data-r="0"><span class="t">1차</span><span class="d">전체에서</span><span class="k" id="rk0"></span></button>
+        <button class="round" data-r="1"><span class="t">2차</span><span class="d">1차 중에서</span><span class="k" id="rk1"></span></button>
+        <button class="round" data-r="2"><span class="t">3차 · 최종</span><span class="d" id="rd2"></span><span class="k" id="rk2"></span></button>
+      </div>
+      <p class="rhint" id="rhint"></p>
+    </div>
     <div class="bar">
       <div class="chips" id="chips">
         <button class="chip on" data-f="all">전체 <span class="mono" id="nAll"></span></button>
@@ -240,6 +260,7 @@
 <div class="modal" id="modal" hidden><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="/gallery-zip.js"></script>
 <script>
 (() => {
   const API = '/api/gallery-client';
@@ -253,7 +274,30 @@
 
   // 보정 작가용 링크 (#r=토큰): 비밀번호 없이 고객이 고른 원본만 보기·받기
   const RT = (location.hash.match(/[#&]r=([^&]+)/) || [])[1] || null;
-  const S = { token: RT || store.get(TK), role: RT ? 'retoucher' : 'client', g: null, originals: [], retouched: [], sel: new Set(), tab: 'originals', filter: 'all', lbList: [], lbIdx: 0 };
+  // rounds: 1차·2차·3차 선택 (2차는 1차의 일부, 3차는 2차의 일부). final: 완료된 최종 선택
+  const S = { token: RT || store.get(TK), role: RT ? 'retoucher' : 'client', g: null, originals: [], retouched: [], rounds: [new Set(), new Set(), new Set()], round: 0, final: new Set(), tab: 'originals', filter: 'all', lbList: [], lbIdx: 0 };
+  const ROUND_NAME = ['1차', '2차', '3차'];
+  const selecting = () => S.g && S.g.status === 'selecting' && S.role !== 'retoucher';
+  const cur = () => (selecting() ? S.rounds[S.round] : S.final);          // 지금 보고 있는 선택
+  const roundLimit = (r) => (r === 2 && S.g.select_limit > 0 ? S.g.select_limit : 0); // 1·2차는 무제한
+  function pool(r = S.round) {                                             // 이 차수에서 고를 수 있는 사진
+    if (!selecting() || r === 0) return S.originals;
+    return S.originals.filter((p) => S.rounds[r - 1].has(p.id));
+  }
+  function saveDraft() { store.set(SK, JSON.stringify({ v: 2, round: S.round, r: S.rounds.map((x) => [...x]) })); }
+  function loadDraft(valid) {
+    let d = null; try { d = JSON.parse(store.get(SK) || 'null'); } catch {}
+    let r = [[], [], []], round = 0;
+    if (Array.isArray(d)) r = [d, [], []];                                  // 예전 방식(한 번에 고르기)으로 고르던 것
+    else if (d && Array.isArray(d.r)) { r = d.r; round = Math.min(2, Math.max(0, d.round | 0)); }
+    const a = new Set((r[0] || []).filter((id) => valid.has(id)));
+    const b = new Set((r[1] || []).filter((id) => a.has(id)));
+    let c = (r[2] || []).filter((id) => b.has(id));
+    const lim = S.g.select_limit; if (lim > 0) c = c.slice(0, lim);
+    S.rounds = [a, b, new Set(c)];
+    while (round > 0 && !S.rounds[round - 1].size) round--;
+    S.round = round;
+  }
 
   async function call(action, data = {}) {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, slug, token: S.token, ...data }) });
@@ -267,7 +311,7 @@
 
   const fmtDate = (s) => { if (!s) return ''; const d = new Date(s.length === 10 ? s + 'T00:00:00' : s); return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`; };
   const fmtMD = (s) => { const d = new Date(s); return `${d.getMonth() + 1}월 ${d.getDate()}일`; };
-  const fmtSize = (b) => (b > 1e9 ? (b / 1e9).toFixed(1) + 'GB' : Math.round(b / 1e6) + 'MB');
+  const fmtSize = (b) => (b > 1e9 ? (b / 1e9).toFixed(1) + 'GB' : Math.max(1, Math.round(b / 1e6)) + 'MB');
   const isMobile = matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   // ---------- 입장 ----------
@@ -302,10 +346,8 @@
       const d = await call('get');
       S.g = d.gallery; S.originals = d.originals; S.retouched = d.retouched; S.role = d.role || S.role;
       const valid = new Set(S.originals.map((p) => p.id));
-      if (S.g.status === 'selecting') {
-        let saved = []; try { saved = JSON.parse(store.get(SK) || '[]'); } catch {}
-        S.sel = new Set(saved.filter((id) => valid.has(id)));
-      } else S.sel = new Set(S.g.selected || []);
+      S.final = new Set(S.g.selected || []);
+      if (selecting()) loadDraft(valid);
       S.tab = S.g.status === 'delivered' && S.retouched.length ? 'retouched' : 'originals';
       if (S.role === 'retoucher') { S.tab = 'originals'; S.filter = 'all'; }
       render();
@@ -343,39 +385,70 @@
     if (rt) {
       $('heroName').textContent = `${g.client_name}님 보정용 원본`;
       $('heroMeta').lastChild.querySelector('b').textContent = `${S.originals.length}장`;
-      n.innerHTML = `<strong>고객이 고른 원본 ${S.originals.length}장이에요.</strong> ${isMobile ? '사진을 열어 한 장씩 저장할 수 있어요.' : "'선택 원본 전체 저장'을 누르면 폴더로 한 번에 받을 수 있어요."}<span class="sub">${origLine} 사진의 번호는 고객이 고른 순서예요.</span>`;
+      n.innerHTML = `<strong>고객이 고른 원본 ${S.originals.length}장이에요.</strong> "'선택 원본 전체 zip 받기'를 누르면 한 번에 받을 수 있어요."<span class="sub">${origLine} 사진의 번호는 고객이 고른 순서예요.</span>`;
     } else if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
-    else if (g.status === 'selecting') n.innerHTML = `<strong>${g.select_limit > 0 ? `보정받을 사진 ${g.select_limit}장을 골라주세요.` : '마음에 드는 사진을 원하는 만큼 골라주세요.'}</strong> 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">${origLine} 선택은 이 기기에 임시 저장되니 나눠서 골라도 괜찮아요.</span>`;
-    else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.sel.size}장. ${origLine}</span>`;
+    else if (g.status === 'selecting') n.innerHTML = `<strong>세 번에 나눠 골라요.</strong> 1차·2차는 마음에 드는 사진을 장수 제한 없이 추리고, 3차에서 ${g.select_limit > 0 ? `보정받을 <strong>${g.select_limit}장</strong>을` : '최종 사진을'} 골라주세요. 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">완료 전에는 위의 1차·2차·3차를 눌러 언제든 돌아가 고칠 수 있어요. 선택은 이 기기에 임시 저장돼요. ${origLine}</span>`;
+    else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.final.size}장. ${origLine}</span>`;
     else n.innerHTML = `<strong>보정본이 도착했어요.</strong> ${g.retouched_expire_at ? `<strong>${fmtMD(g.retouched_expire_at)}</strong>까지 저장할 수 있어요.` : ''}<span class="sub">${origLine}</span>`;
 
     $('tabs').hidden = !(g.status === 'delivered' && S.retouched.length);
     $('cRet').textContent = S.retouched.length; $('cOrig').textContent = S.originals.length;
     document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.tab === S.tab));
 
-    const selecting = g.status === 'selecting' && S.role !== 'retoucher';
-    $('dock').hidden = !selecting;
-    document.documentElement.style.setProperty('--bar-h', selecting ? $('dock').offsetHeight + 'px' : '0px');
+    const sel = selecting();
+    $('dock').hidden = !sel;
+    $('roundBox').hidden = !sel;
+    document.documentElement.style.setProperty('--bar-h', sel ? $('dock').offsetHeight + 'px' : '0px');
     renderGrid();
   }
 
+  function renderRounds() {
+    if (!selecting()) return;
+    const lim = S.g.select_limit;
+    $('rd2').textContent = lim > 0 ? `${lim}장 고르기` : '2차 중에서';
+    [0, 1, 2].forEach((r) => {
+      const b = document.querySelector(`.round[data-r="${r}"]`);
+      b.classList.toggle('on', r === S.round);
+      b.disabled = r > 0 && !S.rounds[r - 1].size;
+      $(`rk${r}`).textContent = r === 2 && lim > 0 ? `${S.rounds[2].size} / ${lim}` : `${S.rounds[r].size}장`;
+    });
+    const n = pool().length;
+    $('rhint').textContent = [
+      `전체 ${n}장 중 마음에 드는 사진을 장수 제한 없이 모두 골라주세요.`,
+      `1차에서 고른 ${n}장 중 다시 추려주세요. 장수 제한은 없어요.`,
+      lim > 0 ? `2차에서 고른 ${n}장 중 보정받을 ${lim}장을 골라주세요.` : `2차에서 고른 ${n}장 중 최종 사진을 골라주세요.`,
+    ][S.round];
+  }
+
+  function goRound(r) {
+    if (r === S.round || (r > 0 && !S.rounds[r - 1].size)) return;
+    S.round = r; S.filter = 'all'; saveDraft();
+    renderGrid();
+    const top = $('roundBox').getBoundingClientRect().top + scrollY - 70;
+    if (scrollY > top) window.scrollTo({ top, behavior: 'smooth' });
+  }
+  $('rounds').addEventListener('click', (e) => { const b = e.target.closest('.round'); if (b && !b.disabled) goRound(+b.dataset.r); });
+
   function currentList() {
     if (S.tab === 'retouched') return S.retouched;
-    return S.filter === 'sel' ? S.originals.filter((p) => S.sel.has(p.id)) : S.originals;
+    const base = pool();
+    return S.filter === 'sel' ? base.filter((p) => cur().has(p.id)) : base;
   }
 
   function renderGrid() {
     const g = S.g, onOrig = S.tab === 'originals';
     $('chips').hidden = !(onOrig && S.originals.length) || S.role === 'retoucher';
-    $('nAll').textContent = S.originals.length; $('nSel').textContent = S.sel.size;
+    $('nAll').textContent = pool().length; $('nSel').textContent = cur().size;
     document.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c.dataset.f === S.filter));
 
     const list = currentList();
-    const dl = list.filter((p) => p.download);
+    const dl = saveList();
     const total = dl.reduce((a, p) => a + (p.size || 0), 0);
-    $('saveAll').hidden = !dl.length || isMobile;
-    $('saveAll').textContent = `${S.role === 'retoucher' ? '선택 원본' : S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택 사진' : '원본'} 전체 저장${total ? ' · ' + fmtSize(total) : ''}`;
-    $('dlHint').textContent = dl.length && isMobile ? '사진을 열어 한 장씩 저장할 수 있어요' : '';
+    const rt = S.role === 'retoucher';
+    $('saveAll').hidden = !dl.length || (isMobile && !rt);
+    $('saveAll').textContent = `${rt ? '선택 원본' : S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택 사진' : '원본'} 전체 zip 받기${total ? ' · ' + fmtSize(total) : ''}`;
+    $('dlHint').textContent = dl.length && isMobile && !rt ? '사진을 열어 한 장씩 저장할 수 있어요' : '';
+    renderRounds();
 
     const grid = $('grid'); grid.innerHTML = '';
     if (!list.length) {
@@ -384,17 +457,18 @@
       grid.append(e);
     }
     const frag = document.createDocumentFragment();
-    const canPick = g.status === 'selecting' && onOrig;
+    const canPick = selecting() && onOrig;
+    const cs = cur();
     list.forEach((p, i) => {
       const c = document.createElement('div'); c.className = 'cell'; c.dataset.id = p.id; c.dataset.i = i;
       c.setAttribute('role', 'button'); c.tabIndex = 0;
-      if (onOrig && S.sel.has(p.id)) c.classList.add('sel');
+      if (onOrig && cs.has(p.id)) c.classList.add('sel');
       if (p.thumb) {
         const img = new Image(); img.loading = 'lazy'; img.decoding = 'async'; img.alt = p.filename; img.src = p.thumb;
         img.onload = () => img.classList.add('ld'); c.append(img);
       } else { const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = p.filename; c.append(ph); }
       const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = p.filename; c.append(nm);
-      if (canPick || (onOrig && S.sel.has(p.id))) {
+      if (canPick || (onOrig && cs.has(p.id))) {
         const b = document.createElement('button'); b.className = 'pick'; b.setAttribute('aria-label', '선택');
         b.innerHTML = '<i></i>'; c.append(b);
       }
@@ -404,31 +478,44 @@
     updateMarks();
   }
 
+  // 1·2차는 체크 표시, 3차(최종)와 완료 후에는 고른 순서 번호
+  const numbered = () => !selecting() || S.round === 2;
   function updateMarks() {
-    const order = [...S.sel];
+    const cs = cur(), order = [...cs];
     document.querySelectorAll('#grid .cell').forEach((c) => {
-      const on = S.tab === 'originals' && S.sel.has(c.dataset.id);
+      const on = S.tab === 'originals' && cs.has(c.dataset.id);
       c.classList.toggle('sel', on);
-      const i = c.querySelector('.pick i'); if (i) i.textContent = on ? order.indexOf(c.dataset.id) + 1 : '';
+      const i = c.querySelector('.pick i'); if (i) i.textContent = on ? (numbered() ? order.indexOf(c.dataset.id) + 1 : '✓') : '';
     });
-    const lim = S.g.select_limit, n = S.sel.size;
+    $('nSel').textContent = cs.size;
+    if (!selecting()) return;
+    const lim = roundLimit(S.round), n = cs.size;
     const unlimited = !(lim > 0);
-    $('dockCount').innerHTML = unlimited ? `${n}<small> 장 선택</small>` : `${n}<small> / ${lim}</small>`;
+    $('dockCount').innerHTML = unlimited ? `${n}<small> 장 · ${ROUND_NAME[S.round]}</small>` : `${n}<small> / ${lim}</small>`;
     $('meter').parentElement.style.visibility = unlimited ? 'hidden' : '';
     if (!unlimited) $('meter').style.width = Math.min(100, (n / lim) * 100) + '%';
-    $('submitBtn').disabled = n === 0;
-    $('submitBtn').textContent = unlimited || n >= lim ? '선택 완료' : `선택 완료 (${lim - n}장 남음)`;
-    $('nSel').textContent = n;
+    const btn = $('submitBtn');
+    btn.disabled = n === 0;
+    if (S.round < 2) btn.textContent = `${ROUND_NAME[S.round + 1]} 고르기 →`;
+    else btn.textContent = unlimited || n >= lim ? '선택 완료' : `선택 완료 (${lim - n}장 남음)`;
+    renderRounds();
   }
 
   function toggle(id) {
-    if (S.g.status !== 'selecting') return false;
-    if (S.sel.has(id)) S.sel.delete(id);
-    else {
-      if (S.g.select_limit > 0 && S.sel.size >= S.g.select_limit) { toast(`${S.g.select_limit}장까지 고를 수 있어요. 다른 사진을 빼고 골라주세요.`); return false; }
-      S.sel.add(id);
+    if (!selecting()) return false;
+    const set = S.rounds[S.round];
+    if (set.has(id)) {
+      set.delete(id);
+      // 앞 차수에서 빼면 뒤 차수에서도 함께 빠짐
+      let dropped = 0;
+      for (let r = S.round + 1; r < 3; r++) if (S.rounds[r].delete(id)) dropped = r;
+      if (dropped) toast(`${ROUND_NAME.slice(S.round + 1, dropped + 1).join('·')} 선택에서도 함께 뺐어요.`);
+    } else {
+      const lim = roundLimit(S.round);
+      if (lim > 0 && set.size >= lim) { toast(`${lim}장까지 고를 수 있어요. 다른 사진을 빼고 골라주세요.`); return false; }
+      set.add(id);
     }
-    store.set(SK, JSON.stringify([...S.sel]));
+    saveDraft();
     if (S.filter === 'sel') renderGrid(); else updateMarks();
     return true;
   }
@@ -450,14 +537,15 @@
     const img = $('lbImg'); img.style.opacity = 0; $('lbLoad').hidden = false;
     img.onload = () => { img.style.opacity = 1; $('lbLoad').hidden = true; };
     img.src = p.preview || p.thumb || ''; img.alt = p.filename;
-    $('lbInfo').textContent = `${p.filename}   ${S.lbIdx + 1} / ${S.lbList.length}`;
+    $('lbInfo').textContent = `${selecting() && S.tab === 'originals' ? ROUND_NAME[S.round] + ' · ' : ''}${p.filename}   ${S.lbIdx + 1} / ${S.lbList.length}`;
     const dl = $('lbDl'); dl.hidden = !p.download; if (p.download) dl.href = p.download;
     dl.textContent = S.tab === 'retouched' ? '보정본 저장' : '원본 저장';
-    const canPick = S.g.status === 'selecting' && S.tab === 'originals';
-    const pk = $('lbPick'); pk.hidden = !canPick && !(S.tab === 'originals' && S.sel.has(p.id));
+    const canPick = selecting() && S.tab === 'originals';
+    const cs = cur();
+    const pk = $('lbPick'); pk.hidden = !canPick && !(S.tab === 'originals' && cs.has(p.id));
     pk.disabled = !canPick;
-    const on = S.sel.has(p.id);
-    pk.classList.toggle('picked', on); pk.textContent = on ? `✓ 선택됨 ${[...S.sel].indexOf(p.id) + 1}` : '선택하기';
+    const on = cs.has(p.id);
+    pk.classList.toggle('picked', on); pk.textContent = on ? (numbered() ? `✓ 선택됨 ${[...cs].indexOf(p.id) + 1}` : '✓ 선택됨') : '선택하기';
     [S.lbList[S.lbIdx + 1], S.lbList[S.lbIdx - 1]].forEach((q) => { if (q && q.preview) new Image().src = q.preview; });
   }
   const step = (d) => { const n = S.lbIdx + d; if (n >= 0 && n < S.lbList.length) { S.lbIdx = n; showLB(); } };
@@ -484,12 +572,14 @@
   $('modal').addEventListener('click', (e) => { if (e.target.id === 'modal' || e.target.dataset.close != null) closeModal(); });
 
   $('submitBtn').onclick = () => {
-    const lim = S.g.select_limit, picked = S.originals.filter((p) => S.sel.has(p.id));
-    const order = [...S.sel]; picked.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+    if (S.round < 2) { goRound(S.round + 1); return; }
+    const fin = S.rounds[2];
+    const lim = S.g.select_limit, picked = S.originals.filter((p) => fin.has(p.id));
+    const order = [...fin]; picked.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
     const short = lim > 0 ? lim - picked.length : 0;
     openModal(`
       <h2>${lim > 0 ? `이 ${picked.length}장으로 보정을 맡길까요?` : `${picked.length}장 선택을 완료할까요?`}</h2>
-      <p>${short > 0 ? `<b style="color:var(--warn)">${short}장을 덜 골랐어요.</b> 이대로 완료하면 ${picked.length}장만 보정돼요.<br>` : ''}완료한 뒤에는 이 페이지에서 바꿀 수 없어요. 변경이 필요하면 카카오톡 채널로 말씀해 주세요.</p>
+      <p>${short > 0 ? `<b style="color:var(--warn)">${short}장을 덜 골랐어요.</b> 이대로 완료하면 ${picked.length}장만 보정돼요.<br>` : ''}완료한 뒤에는 이 페이지에서 바꿀 수 없어요. 더 고치고 싶으면 '더 볼게요'를 누르고 1차·2차로 돌아가 보세요.</p>
       <div class="mini" id="miniList"></div>
       <div class="actions"><button class="btn" data-close>더 볼게요</button><button class="btn solid" id="confirmBtn">선택 완료</button></div>`);
     const ml = $('miniList');
@@ -502,49 +592,48 @@
       e.target.disabled = true; e.target.textContent = '보내는 중…';
       try {
         await call('select', { photoIds: order });
-        store.set(SK, null); closeModal(); toast('선택이 완료됐어요. 감사합니다.');
+        closeModal(); toast('선택이 완료됐어요. 감사합니다.');
         await load(); window.scrollTo({ top: 0, behavior: 'smooth' });
       } catch (err) { e.target.disabled = false; e.target.textContent = '선택 완료'; toast(err.message, 4000); if (err.status === 409) { closeModal(); load(); } }
     };
   };
 
-  // ---------- 전체 저장 ----------
+  // ---------- 전체 저장 (zip) ----------
+  function saveList() {
+    if (S.tab === 'retouched') return S.retouched.filter((p) => p.download);
+    const base = S.filter === 'sel' ? S.originals.filter((p) => cur().has(p.id)) : S.originals;
+    return base.filter((p) => p.download);
+  }
   $('saveAll').onclick = async () => {
-    const list = currentList().filter((p) => p.download);
+    const list = saveList();
     if (!list.length) return;
+    const total = list.reduce((a, p) => a + (p.size || 0), 0);
+    const parts = ObvioZip.plan(list, 1e9).length;
+    const kind = S.role === 'retoucher' ? '보정용원본' : S.tab === 'retouched' ? '보정본' : S.filter === 'sel' ? '선택' : '원본';
+    const name = `${fmtDate(S.g.shoot_date).replace(/\./g, '')}_${S.g.client_name}_${kind}`;
     let cancelled = false;
-    openModal(`<h2>${list.length}장 저장</h2>
-      <p id="dlMsg">${window.showDirectoryPicker ? '저장할 폴더를 고르면 사진이 그 폴더에 차례로 저장돼요.' : '사진이 한 장씩 다운로드돼요. 브라우저가 "여러 파일 다운로드"를 물으면 허용을 눌러주세요.'}</p>
+    openModal(`<h2>${list.length}장 zip으로 받기</h2>
+      <p id="dlMsg">사진을 zip 파일로 묶어서 다운로드 폴더에 저장해요${total ? ` (${fmtSize(total)})` : ''}.${parts > 1 ? ` 용량이 커서 zip 파일 ${parts}개로 나눠서 받아요.` : ''} 받는 동안 이 창을 닫지 말아 주세요.</p>
       <div class="prog"><span id="dlBar"></span></div><div class="hint mono" id="dlTxt">0 / ${list.length}</div>
-      <div class="actions"><button class="btn" id="dlCancel">닫기</button><button class="btn solid" id="dlGo">${window.showDirectoryPicker ? '폴더 고르기' : '저장 시작'}</button></div>`);
-    const prog = (i) => { $('dlBar').style.width = (i / list.length) * 100 + '%'; $('dlTxt').textContent = `${i} / ${list.length}`; };
+      <div class="actions"><button class="btn" id="dlCancel">닫기</button><button class="btn solid" id="dlGo">받기 시작</button></div>`);
     $('dlCancel').onclick = () => { cancelled = true; closeModal(); };
     $('dlGo').onclick = async (e) => {
       e.target.disabled = true;
+      $('dlMsg').textContent = 'zip 파일을 만드는 중이에요. 창을 닫지 말아 주세요.';
       try {
-        if (window.showDirectoryPicker) {
-          const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
-          $('dlMsg').textContent = '저장하는 중이에요. 창을 닫지 말아 주세요.';
-          for (let i = 0; i < list.length && !cancelled; i++) {
-            const p = list[i];
-            for (let tryN = 0; tryN < 3; tryN++) {
-              try {
-                const r = await fetch(p.download); if (!r.ok) throw new Error(r.status);
-                const fh = await dir.getFileHandle(p.filename.replace(/[\\/:*?"<>|]/g, '_'), { create: true });
-                await r.body.pipeTo(await fh.createWritable()); break;
-              } catch (err) { if (tryN === 2) throw err; await new Promise((res) => setTimeout(res, 1500)); }
-            }
-            prog(i + 1);
-          }
-        } else {
-          for (let i = 0; i < list.length && !cancelled; i++) {
-            const a = document.createElement('a'); a.href = list[i].download; a.rel = 'noopener'; document.body.append(a); a.click(); a.remove();
-            prog(i + 1); await new Promise((res) => setTimeout(res, 900));
-          }
-        }
-        if (!cancelled) { $('dlMsg').textContent = '저장이 끝났어요.'; $('dlGo').hidden = true; $('dlCancel').textContent = '확인'; }
+        const r = await ObvioZip.saveZip(list, {
+          name, isCancelled: () => cancelled,
+          onProgress: (p) => {
+            const ratio = p.fallback || !p.totalBytes ? p.done / p.total : Math.min(1, p.bytes / p.totalBytes);
+            $('dlBar').style.width = ratio * 100 + '%';
+            $('dlTxt').textContent = `${p.done} / ${p.total}${p.parts > 1 ? ` · 파일 ${p.part}/${p.parts}` : ''}`;
+            if (p.fallback) $('dlMsg').textContent = '사진을 한 장씩 받고 있어요. 브라우저가 "여러 파일 다운로드"를 물으면 허용을 눌러주세요.';
+          },
+        });
+        if (r.cancelled || cancelled) return;
+        $('dlMsg').textContent = r.fallback ? '다운로드를 시작했어요.' : `저장이 끝났어요. 다운로드 폴더에서 zip 파일${r.parts > 1 ? ` ${r.parts}개` : ''}을 확인해 주세요.`;
+        $('dlGo').hidden = true; $('dlCancel').textContent = '확인';
       } catch (err) {
-        if (err.name === 'AbortError') { e.target.disabled = false; return; }
         $('dlMsg').textContent = '저장 중 문제가 생겼어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.'; e.target.disabled = false;
       }
     };

@@ -79,8 +79,8 @@
   .tab { border: 0; background: none; padding: 10px 0; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
   .tab.on { color: var(--ink); border-color: var(--ink); font-weight: 600; }
   .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
-  .th { position: relative; background: #e6e3dc; aspect-ratio: 4/5; overflow: hidden; }
-  .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .th { position: relative; background: #e6e3dc; aspect-ratio: 2/3; overflow: hidden; }
+  .th img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .th .nm { position: absolute; left: 0; right: 0; bottom: 0; font: 10px var(--mono); color: #fff; background: linear-gradient(transparent, rgba(0,0,0,.55)); padding: 12px 5px 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .th.sel { outline: 3px solid var(--ink); outline-offset: -3px; }
   .th .badge { position: absolute; top: 5px; left: 5px; background: var(--ink); color: var(--paper); font: 600 10px var(--mono); padding: 2px 6px; }
@@ -115,6 +115,7 @@
 <main class="wrap" id="view" hidden></main>
 <div class="toast" id="toast" hidden></div>
 
+<script src="/gallery-zip.js"></script>
 <script>
 (() => {
   const API = '/api/gallery-admin';
@@ -257,7 +258,7 @@
       return `[OBVIO STUDIO] ${g.client_name}님, 보정본이 도착했어요.\n\n사진 보기 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${g.retouched_expire_at ? fmtMD(g.retouched_expire_at) + '까지 ' : ''}저장할 수 있어요. 촬영해 주셔서 감사합니다.\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
     }
     const exp = g.originals_expire_at ? fmtMD(g.originals_expire_at) : '업로드일로부터 7일';
-    return `[OBVIO STUDIO] ${g.client_name}님, 촬영 사진이 올라왔어요.\n\n사진 보기·선택 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n${g.select_limit > 0 ? `${pkg} 패키지로 보정받을 사진 ${g.select_limit}장을 골라` : '마음에 드는 사진을 장수 제한 없이 원하는 만큼 골라'} '선택 완료'를 눌러주세요. 폰에서도 고를 수 있어요.\n원본은 ${exp}까지 저장할 수 있어요.\n보정본은 촬영일 기준 7일 후 같은 링크에 올라와요.\n\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
+    return `[OBVIO STUDIO] ${g.client_name}님, 촬영 사진이 올라왔어요.\n\n사진 보기·선택 ▶ ${clientUrl(g)}\n비밀번호 ▶ ${g.pin}\n\n1차·2차에서 마음에 드는 사진을 장수 제한 없이 추려가며 고르고, 3차에서 ${g.select_limit > 0 ? `${pkg} 패키지로 보정받을 ${g.select_limit}장을` : '최종 사진을'} 골라 '선택 완료'를 눌러주세요. 완료 전에는 언제든 1차로 돌아가 고칠 수 있고, 폰에서도 고를 수 있어요.\n원본은 ${exp}까지 저장할 수 있어요.\n보정본은 촬영일 기준 7일 후 같은 링크에 올라와요.\n\n문의는 카카오톡 채널 '오비오 스튜디오'로 말씀해 주세요.`;
   }
 
   function paintDetail() {
@@ -323,7 +324,7 @@
             ${selNames.length
               ? `<pre class="sel-list">${selNames.map(esc).join('\n')}</pre>
                  <div class="row-actions">
-                   <button class="btn solid" id="saveSel">선택 원본 저장 · ${selNames.length}장</button>
+                   <button class="btn solid" id="saveSel">선택 원본 zip 받기 · ${selNames.length}장</button>
                    <button class="btn" id="retLink">작가 전달 링크 복사</button>
                  </div>
                  <div class="row-actions" style="margin-top:8px">
@@ -391,7 +392,7 @@
         const { path } = await call('retoucher-link', { id: g.id });
         const url = location.origin + path;
         const until = new Date(Date.now() + 14 * 864e5);
-        copy(`[OBVIO] ${g.client_name}님 (${fmtDate(g.shoot_date)}) 보정 요청 ${selNames.length}장\n\n원본 받기 ▶ ${url}\n\n링크는 ${until.getMonth() + 1}월 ${until.getDate()}일까지 열려요. PC에서 '선택 원본 전체 저장'을 누르면 폴더로 한 번에 받을 수 있어요.\n보정본은 ${fmtMD(new Date(new Date(g.shoot_date + 'T00:00:00').getTime() + 7 * 864e5))}까지 부탁드려요.`,
+        copy(`[OBVIO] ${g.client_name}님 (${fmtDate(g.shoot_date)}) 보정 요청 ${selNames.length}장\n\n원본 받기 ▶ ${url}\n\n링크는 ${until.getMonth() + 1}월 ${until.getDate()}일까지 열려요. '선택 원본 zip 받기'를 누르면 한 번에 받을 수 있어요.\n보정본은 ${fmtMD(new Date(new Date(g.shoot_date + 'T00:00:00').getTime() + 7 * 864e5))}까지 부탁드려요.`,
           '작가 전달 메시지를 복사했어요. 형님께 카톡으로 보내주세요.');
       } catch (err) { toast(err.message); }
     };
@@ -438,52 +439,55 @@
   }
 
   // ---------- 미리보기 만들기 (브라우저에서) ----------
+  // 사파리(맥)에서 createImageBitmap이 사진 회전·크기를 다르게 읽어 미리보기가 잘리는 경우가 있어
+  // 모든 브라우저에서 똑같이 동작하는 <img> 디코딩을 먼저 쓰고, 안 되면 createImageBitmap으로
+  async function decodeImage(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = new Image(); img.decoding = 'async'; img.src = url;
+      await img.decode();
+      if (img.naturalWidth && img.naturalHeight) return { src: img, W: img.naturalWidth, H: img.naturalHeight, done: () => URL.revokeObjectURL(url) };
+    } catch {}
+    URL.revokeObjectURL(url);
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      return { src: bmp, W: bmp.width, H: bmp.height, done: () => bmp.close && bmp.close() };
+    } catch { return null; }
+  }
   async function makeVariants(file) {
-    let bmp;
-    try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { return null; }
-    const W = bmp.width, H = bmp.height;
+    const d = await decodeImage(file);
+    if (!d) return null;
+    const { W, H } = d;
     const scale = async (max, q) => {
       const s = Math.min(1, max / Math.max(W, H)), w = Math.round(W * s), h = Math.round(H * s);
       const c = document.createElement('canvas'); c.width = w; c.height = h;
-      const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(bmp, 0, 0, w, h);
-      return new Promise((res) => c.toBlob(res, 'image/jpeg', q));
+      const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(d.src, 0, 0, w, h);
+      const blob = await new Promise((res) => c.toBlob(res, 'image/jpeg', q));
+      c.width = c.height = 0; // 사파리 캔버스 메모리 즉시 반환
+      return blob;
     };
-    const preview = await scale(1800, 0.84), thumb = await scale(600, 0.8);
-    bmp.close && bmp.close();
-    return { preview, thumb, width: W, height: H };
+    try {
+      const preview = await scale(1800, 0.84), thumb = await scale(600, 0.8);
+      if (!preview || !thumb) return null;
+      return { preview, thumb, width: W, height: H };
+    } finally { d.done(); }
   }
 
-  // 사진 여러 장 저장: 크롬·엣지는 폴더를 골라 그 안에 새 폴더로, 그 외 브라우저는 한 장씩 다운로드
-  async function saveFiles(list, out, folderName) {
+  // 사진 여러 장 저장: zip 하나로 묶어서 받기 (맥 사파리·크롬·윈도우 모두)
+  async function saveFiles(list, out, zipName) {
     const files = list.filter((p) => p.download);
     if (!files.length) return toast('저장할 수 있는 사진이 없어요. 원본 기한이 지났을 수 있어요.');
     out.hidden = false;
     const show = (t) => (out.textContent = t);
+    show('zip 만드는 중…');
     try {
-      if (window.showDirectoryPicker) {
-        let dir = await window.showDirectoryPicker({ mode: 'readwrite' });
-        if (folderName) dir = await dir.getDirectoryHandle(folderName.replace(/[\\/:*?"<>|]/g, '_'), { create: true });
-        for (let i = 0; i < files.length; i++) {
-          show(`저장 중 ${i + 1} / ${files.length} — ${files[i].filename}`);
-          for (let t = 0; t < 3; t++) {
-            try {
-              const r = await fetch(files[i].download); if (!r.ok) throw new Error(r.status);
-              const fh = await dir.getFileHandle(files[i].filename.replace(/[\\/:*?"<>|]/g, '_'), { create: true });
-              await r.body.pipeTo(await fh.createWritable()); break;
-            } catch (err) { if (t === 2) throw err; await new Promise((res) => setTimeout(res, 1500)); }
-          }
-        }
-        show(`${files.length}장 저장 완료${folderName ? ` — "${folderName}" 폴더` : ''}`);
-      } else {
-        for (let i = 0; i < files.length; i++) {
-          show(`다운로드 ${i + 1} / ${files.length}`);
-          const a = document.createElement('a'); a.href = files[i].download; a.rel = 'noopener'; document.body.append(a); a.click(); a.remove();
-          await new Promise((res) => setTimeout(res, 900));
-        }
-        show(`${files.length}장 다운로드를 시작했어요. 브라우저가 여러 파일 다운로드를 물으면 허용해 주세요.`);
-      }
+      const r = await ObvioZip.saveZip(files, {
+        name: (zipName || 'OBVIO').replace(/[\\/:*?"<>|]/g, '_'),
+        onProgress: (p) => show(p.fallback ? `한 장씩 다운로드 ${p.done} / ${p.total}` : `zip 만드는 중 ${p.done} / ${p.total}장 · ${fmtSize(p.bytes)}${p.totalBytes ? ' / ' + fmtSize(p.totalBytes) : ''}${p.parts > 1 ? ` · 파일 ${p.part}/${p.parts}` : ''}`),
+      });
+      if (r.fallback) show(`${files.length}장 다운로드를 시작했어요. 브라우저가 여러 파일 다운로드를 물으면 허용해 주세요.`);
+      else show(`${files.length}장 zip 저장 완료${r.parts > 1 ? ` (파일 ${r.parts}개로 나눠짐)` : ''} — 다운로드 폴더를 확인하세요.`);
     } catch (err) {
-      if (err.name === 'AbortError') { out.hidden = true; return; }
       show('저장 중 문제가 생겼어요: ' + err.message);
     }
   }
