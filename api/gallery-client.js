@@ -93,12 +93,37 @@ const actions = {
       };
     }
 
+    // 1·2·3차 임시 선택 (다른 기기에서 고르던 것 이어서). 읽기 실패해도 사진은 보여줌
+    let draft = null;
+    try { draft = await L.getDraft(g.id); } catch (e) { console.error(e); }
+
     return {
       role: 'client',
+      draft,
       gallery: publicGallery(g),
       originals: photos.filter((p) => p.kind === 'original').map((p) => view(p, origOpen)).sort(byName),
       retouched: retOpen ? photos.filter((p) => p.kind === 'retouched').map((p) => view(p, true)).sort(byName) : [],
     };
+  },
+
+  // 고르는 중간 상태 저장: { r: [1차, 2차, 3차], round, t }
+  async 'save-draft'({ token, draft }) {
+    const g = await fromToken(token);
+    if (g._role !== 'client') throw L.fail(403, '이 링크로는 선택할 수 없어요.');
+    if (g.status !== 'selecting') throw L.fail(409, '이미 선택이 완료됐어요.');
+    const rows = await L.db(`gallery_photos?gallery_id=eq.${g.id}&kind=eq.original&select=id`);
+    const valid = new Set(rows.map((r) => r.id));
+    const r = Array.isArray(draft && draft.r) ? draft.r : [];
+    const uniq = (arr, ok) => [...new Set((Array.isArray(arr) ? arr : []).filter((id) => typeof id === 'string' && ok(id)))];
+    const a = uniq(r[0], (id) => valid.has(id));
+    const aSet = new Set(a);
+    const b = uniq(r[1], (id) => aSet.has(id));
+    const bSet = new Set(b);
+    let c = uniq(r[2], (id) => bSet.has(id));
+    if (g.select_limit > 0) c = c.slice(0, g.select_limit);
+    const clean = { v: 2, r: [a, b, c], round: Math.min(2, Math.max(0, Number(draft && draft.round) | 0)), t: Date.now() };
+    await L.putDraft(g.id, clean);
+    return { ok: true, t: clean.t };
   },
 
   async select({ token, photoIds }, req) {

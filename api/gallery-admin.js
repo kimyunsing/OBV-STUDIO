@@ -191,7 +191,7 @@ const actions = {
     requireAdmin(req);
     const g = await getGallery(id);
     const rows = await L.db(`gallery_photos?gallery_id=eq.${g.id}&select=object_key,preview_key,thumb_key`);
-    await L.deleteObjects(rows.flatMap((r) => [r.object_key, r.preview_key, r.thumb_key]));
+    await L.deleteObjects([...rows.flatMap((r) => [r.object_key, r.preview_key, r.thumb_key]), L.draftKey(g.id)]);
     await L.db(`galleries?id=eq.${g.id}`, { method: 'DELETE' });
     return { ok: true };
   },

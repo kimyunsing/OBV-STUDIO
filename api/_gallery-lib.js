@@ -142,6 +142,21 @@ async function deleteObjects(keys) {
   }
 }
 
+// ---------- 고객의 1·2·3차 임시 선택 (R2에 작은 JSON 파일로 저장 → 폰·PC 어디서든 이어서) ----------
+const draftKey = (gid) => `draft/${gid}.json`;
+async function getDraft(gid) {
+  const r = await fetch(presign('GET', draftKey(gid), { expires: 120 }));
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`R2 임시선택 읽기 실패 ${r.status}`);
+  try { return JSON.parse(await r.text()); } catch { return null; }
+}
+async function putDraft(gid, draft) {
+  const r = await fetch(presign('PUT', draftKey(gid), { expires: 120 }), {
+    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft),
+  });
+  if (!r.ok) throw new Error(`R2 임시선택 저장 실패 ${r.status}`);
+}
+
 // ---------- 메일 알림 (선택 사항) ----------
 // 1) GOOGLE_SCRIPT_URL 이 있으면: 구글 Apps Script로 ys Gmail에서 발송 (가입 불필요)
 // 2) 아니면 RESEND_API_KEY + NOTIFY_EMAIL 이 있으면 Resend로 발송
@@ -203,5 +218,5 @@ function route(actions, { exposeErrors = false } = {}) {
 module.exports = {
   PACKAGES, ORIGINAL_DAYS, RETOUCHED_DAYS, DAY,
   env, fail, signToken, verifyToken, safeEqual, bearer, randomSlug, randomHex,
-  db, presign, viewUrl, downloadUrl, deleteObjects, notify, notifyKey, esc, route,
+  db, presign, viewUrl, downloadUrl, deleteObjects, draftKey, getDraft, putDraft, notify, notifyKey, esc, route,
 };

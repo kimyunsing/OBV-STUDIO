@@ -284,9 +284,28 @@
     if (!selecting() || r === 0) return S.originals;
     return S.originals.filter((p) => S.rounds[r - 1].has(p.id));
   }
-  function saveDraft() { store.set(SK, JSON.stringify({ v: 2, round: S.round, r: S.rounds.map((x) => [...x]) })); }
-  function loadDraft(valid) {
+  // 선택은 이 기기(즉시)와 서버(잠깐 뒤 자동)에 함께 저장 → 폰에서 고르다 PC에서 이어서
+  const draftNow = () => ({ v: 2, round: S.round, r: S.rounds.map((x) => [...x]), t: Date.now() });
+  let draftTimer = null, draftDirty = false;
+  function pushDraft(keepalive) {
+    clearTimeout(draftTimer); draftTimer = null;
+    if (!draftDirty || !selecting()) return;
+    draftDirty = false;
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: !!keepalive,
+      body: JSON.stringify({ action: 'save-draft', slug, token: S.token, draft: draftNow() }) })
+      .then((r) => { if (!r.ok && r.status !== 409) draftDirty = true; })
+      .catch(() => { draftDirty = true; });
+  }
+  function saveDraft() {
+    store.set(SK, JSON.stringify(draftNow()));
+    draftDirty = true; clearTimeout(draftTimer); draftTimer = setTimeout(pushDraft, 700);
+  }
+  addEventListener('pagehide', () => pushDraft(true));
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') pushDraft(true); });
+  function loadDraft(valid, server) {
     let d = null; try { d = JSON.parse(store.get(SK) || 'null'); } catch {}
+    // 이 기기 기록과 서버 기록 중 더 최근 것을 사용
+    if (server && Array.isArray(server.r) && (!d || Array.isArray(d) || !(d.t > server.t))) d = server;
     let r = [[], [], []], round = 0;
     if (Array.isArray(d)) r = [d, [], []];                                  // 예전 방식(한 번에 고르기)으로 고르던 것
     else if (d && Array.isArray(d.r)) { r = d.r; round = Math.min(2, Math.max(0, d.round | 0)); }
@@ -347,7 +366,11 @@
       S.g = d.gallery; S.originals = d.originals; S.retouched = d.retouched; S.role = d.role || S.role;
       const valid = new Set(S.originals.map((p) => p.id));
       S.final = new Set(S.g.selected || []);
-      if (selecting()) loadDraft(valid);
+      if (selecting()) {
+        loadDraft(valid, d.draft);
+        store.set(SK, JSON.stringify(draftNow()));
+        if (!d.draft && S.rounds[0].size) { draftDirty = true; pushDraft(); } // 이 기기에만 있던 기록을 서버로
+      }
       S.tab = S.g.status === 'delivered' && S.retouched.length ? 'retouched' : 'originals';
       if (S.role === 'retoucher') { S.tab = 'originals'; S.filter = 'all'; }
       render();
@@ -387,7 +410,7 @@
       $('heroMeta').lastChild.querySelector('b').textContent = `${S.originals.length}장`;
       n.innerHTML = `<strong>고객이 고른 원본 ${S.originals.length}장이에요.</strong> "'선택 원본 전체 zip 받기'를 누르면 한 번에 받을 수 있어요."<span class="sub">${origLine} 사진의 번호는 고객이 고른 순서예요.</span>`;
     } else if (g.status === 'uploading') n.innerHTML = '<strong>사진을 준비하고 있어요.</strong> 업로드가 끝나면 다시 안내드릴게요.';
-    else if (g.status === 'selecting') n.innerHTML = `<strong>세 번에 나눠 골라요.</strong> 1차·2차는 마음에 드는 사진을 장수 제한 없이 추리고, 3차에서 ${g.select_limit > 0 ? `보정받을 <strong>${g.select_limit}장</strong>을` : '최종 사진을'} 골라주세요. 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">완료 전에는 위의 1차·2차·3차를 눌러 언제든 돌아가 고칠 수 있어요. 선택은 이 기기에 임시 저장돼요. ${origLine}</span>`;
+    else if (g.status === 'selecting') n.innerHTML = `<strong>세 번에 나눠 골라요.</strong> 1차·2차는 마음에 드는 사진을 장수 제한 없이 추리고, 3차에서 ${g.select_limit > 0 ? `보정받을 <strong>${g.select_limit}장</strong>을` : '최종 사진을'} 골라주세요. 사진을 누르면 크게 볼 수 있고, 오른쪽 위 동그라미를 누르면 선택돼요.<span class="sub">완료 전에는 위의 1차·2차·3차를 눌러 언제든 돌아가 고칠 수 있어요. 고른 사진은 자동 저장돼서, 폰에서 고르다가 PC에서 같은 링크로 이어서 골라도 돼요. ${origLine}</span>`;
     else if (g.status === 'selected') n.innerHTML = `<strong>선택이 완료됐어요.</strong> 보정본은 촬영일 기준 7일 후 이 페이지에 올라와요.<span class="sub">${fmtMD(g.selected_at)} 선택 · ${S.final.size}장. ${origLine}</span>`;
     else n.innerHTML = `<strong>보정본이 도착했어요.</strong> ${g.retouched_expire_at ? `<strong>${fmtMD(g.retouched_expire_at)}</strong>까지 저장할 수 있어요.` : ''}<span class="sub">${origLine}</span>`;
 
@@ -591,6 +614,7 @@
     $('confirmBtn').onclick = async (e) => {
       e.target.disabled = true; e.target.textContent = '보내는 중…';
       try {
+        await pushDraft();
         await call('select', { photoIds: order });
         closeModal(); toast('선택이 완료됐어요. 감사합니다.');
         await load(); window.scrollTo({ top: 0, behavior: 'smooth' });
