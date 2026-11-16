@@ -86,6 +86,22 @@
   .th .badge { position: absolute; top: 5px; left: 5px; background: var(--ink); color: var(--paper); font: 600 10px var(--mono); padding: 2px 6px; }
   .th .x { position: absolute; top: 3px; right: 3px; width: 24px; height: 24px; border: 0; background: rgba(0,0,0,.5); color: #fff; font-size: 14px; line-height: 1; opacity: 0; }
   .th:hover .x { opacity: 1; }
+  .th { cursor: zoom-in; }
+  /* 크게 보기 */
+  .lb { position: fixed; inset: 0; background: #0d0d0d; color: #eee; z-index: 80; display: grid; grid-template-rows: auto 1fr auto; }
+  .lb-top, .lb-bot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; }
+  .lb-info { font: 12px var(--mono); color: #aaa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-info b { color: #eee; font-weight: 600; margin-left: 8px; }
+  .lb-x { border: 0; background: none; color: #eee; font-size: 28px; width: 44px; height: 44px; line-height: 1; flex: none; }
+  .lb-stage { position: relative; display: grid; place-items: center; overflow: hidden; min-height: 0; touch-action: pan-y; }
+  .lb-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; transition: opacity .15s; }
+  .lb-nav { position: absolute; top: 0; bottom: 0; width: 18%; min-width: 60px; border: 0; background: none; color: #ddd; font-size: 30px; display: flex; align-items: center; padding: 0 18px; opacity: .55; }
+  .lb-nav:hover { opacity: 1; }
+  .lb-nav.p { left: 0; justify-content: flex-start; } .lb-nav.n { right: 0; justify-content: flex-end; }
+  .lb-nav:disabled { opacity: .1; cursor: default; }
+  .lb-load { position: absolute; font: 11px var(--mono); color: #777; }
+  .lb-bot .hint { font: 11px var(--mono); color: #777; }
+  .lb .btn { border-color: #eee; color: #eee; }
   .ph { position: absolute; inset: 0; display: grid; place-items: center; font: 10px var(--mono); color: var(--muted); padding: 6px; text-align: center; word-break: break-all; }
 
   .login { min-height: calc(100vh - 56px); display: grid; place-items: center; }
@@ -113,6 +129,16 @@
 </section>
 
 <main class="wrap" id="view" hidden></main>
+<div class="lb" id="lb" hidden>
+  <div class="lb-top"><div class="lb-info" id="lbInfo"></div><button class="lb-x" id="lbClose" aria-label="닫기">×</button></div>
+  <div class="lb-stage" id="lbStage">
+    <span class="lb-load" id="lbLoad">loading</span>
+    <img id="lbImg" alt="">
+    <button class="lb-nav p" id="lbPrev" aria-label="이전">‹</button>
+    <button class="lb-nav n" id="lbNext" aria-label="다음">›</button>
+  </div>
+  <div class="lb-bot"><span class="hint">← → 키 또는 좌우로 밀어서 넘기기 · Esc 닫기</span><a class="btn" id="lbDl" href="#" rel="noopener">원본 저장</a></div>
+</div>
 <div class="toast" id="toast" hidden></div>
 
 <script src="/gallery-zip.js"></script>
@@ -185,7 +211,8 @@
     try {
       const { galleries, packages } = await call('list');
       if (packages) PACKAGES = packages;
-      const body = $('listBody'); body.className = '';
+      const body = $('listBody'); if (!body) return;
+      body.className = '';
       if (!galleries.length) { body.innerHTML = '<div class="empty">아직 갤러리가 없어요. 촬영이 끝나면 새 갤러리를 만들어 원본을 올려주세요.</div>'; return; }
       body.innerHTML = `<table><thead><tr><th>촬영일</th><th>고객</th><th class="hide-m">패키지</th><th>상태</th><th class="hide-m">원본</th><th class="hide-m">보정본</th><th></th></tr></thead><tbody>${galleries.map((g) => `
         <tr class="click" data-id="${g.id}">
@@ -210,7 +237,7 @@
         try { await call('delete', { id: g.id }); toast('삭제했어요.'); renderList(); }
         catch (err) { b.disabled = false; b.textContent = '삭제'; toast(err.message, 4000); }
       }));
-    } catch (err) { if (err.message !== 'login') $('listBody').textContent = err.message; }
+    } catch (err) { if (err.message !== 'login' && $('listBody')) $('listBody').textContent = err.message; }
   }
 
   // ---------- 새 갤러리 ----------
@@ -368,7 +395,7 @@
       d.innerHTML = (p.thumb ? `<img loading="lazy" src="${esc(p.thumb)}" alt="">` : `<div class="ph">${esc(p.filename)}</div>`)
         + (D.tab === 'original' && selSet.has(p.id) ? `<span class="badge">${order.indexOf(p.id) + 1}</span>` : '')
         + `<div class="nm">${esc(p.filename)}</div><button class="x" title="삭제">×</button>`;
-      d.querySelector('img')?.addEventListener('click', () => window.open(p.preview || p.thumb, '_blank', 'noopener'));
+      d.addEventListener('click', (e) => { if (!e.target.closest('.x')) openLB(list, list.indexOf(p), selSet, order); });
       d.querySelector('.x').onclick = async () => {
         if (!confirm(`${p.filename} 을(를) 삭제할까요?`)) return;
         try { await call('delete-photos', { id: g.id, photoIds: [p.id] }); renderDetail(g.id, true); } catch (err) { toast(err.message); }
@@ -472,6 +499,44 @@
       return { preview, thumb, width: W, height: H };
     } finally { d.done(); }
   }
+
+  // ---------- 크게 보기 (좌우 넘기기) ----------
+  const LB = { list: [], i: 0, sel: new Set(), order: [] };
+  function openLB(list, i, sel, order) {
+    Object.assign(LB, { list, i: Math.max(0, i), sel, order });
+    $('toast').hidden = true; $('lb').hidden = false; document.body.style.overflow = 'hidden'; showLB();
+  }
+  function closeLB() { $('lb').hidden = true; document.body.style.overflow = ''; $('lbImg').removeAttribute('src'); }
+  function showLB() {
+    const p = LB.list[LB.i]; if (!p) return closeLB();
+    const img = $('lbImg'); img.style.opacity = 0; $('lbLoad').hidden = false;
+    img.onload = () => { img.style.opacity = 1; $('lbLoad').hidden = true; };
+    img.onerror = () => { $('lbLoad').textContent = '미리보기 없음'; };
+    $('lbLoad').textContent = 'loading';
+    img.src = p.preview || p.thumb || ''; img.alt = p.filename;
+    const n = LB.order.indexOf(p.id);
+    $('lbInfo').innerHTML = `${esc(p.filename)}   ${LB.i + 1} / ${LB.list.length}${LB.sel.has(p.id) ? `<b>✓ 고객 선택 ${n + 1}</b>` : ''}`;
+    $('lbDl').href = p.download; $('lbDl').hidden = !p.download;
+    $('lbPrev').disabled = LB.i === 0; $('lbNext').disabled = LB.i === LB.list.length - 1;
+    [LB.list[LB.i + 1], LB.list[LB.i - 1], LB.list[LB.i + 2]].forEach((q) => { if (q && q.preview) new Image().src = q.preview; });
+  }
+  const lbStep = (d) => { const n = LB.i + d; if (n >= 0 && n < LB.list.length) { LB.i = n; showLB(); } };
+  $('lbClose').onclick = closeLB;
+  $('lbPrev').onclick = () => lbStep(-1);
+  $('lbNext').onclick = () => lbStep(1);
+  document.addEventListener('keydown', (e) => {
+    if ($('lb').hidden) return;
+    if (e.key === 'Escape') closeLB();
+    else if (e.key === 'ArrowRight') { e.preventDefault(); lbStep(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); lbStep(-1); }
+  });
+  let lbX = null, lbY = null;
+  $('lbStage').addEventListener('touchstart', (e) => { lbX = e.touches[0].clientX; lbY = e.touches[0].clientY; }, { passive: true });
+  $('lbStage').addEventListener('touchend', (e) => {
+    if (lbX == null) return; const dx = e.changedTouches[0].clientX - lbX, dy = e.changedTouches[0].clientY - lbY; lbX = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) lbStep(dx < 0 ? 1 : -1);
+    else if (dy > 90) closeLB();
+  });
 
   // 사진 여러 장 저장: zip 하나로 묶어서 받기 (맥 사파리·크롬·윈도우 모두)
   async function saveFiles(list, out, zipName) {
