@@ -133,6 +133,10 @@
   .lb-x { border: 0; background: none; color: #eee; font-size: 26px; width: 44px; height: 44px; line-height: 1; }
   .lb-stage { position: relative; min-height: 0; display: grid; place-items: center; overflow: hidden; touch-action: pan-y; }
   .lb-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; }
+  .lb-stage { touch-action: none; cursor: zoom-in; }
+  .lb-stage.zoomed { cursor: grab; } .lb-stage.dragging { cursor: grabbing; }
+  .lb-stage.zoomed .lb-nav, .lb-stage.zoomed .lb-load { display: none; }
+  .lb-stage img { will-change: transform; }
   .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 72px; border: 0; background: rgba(255,255,255,.06); color: #ddd; font-size: 22px; }
   .lb-nav.p { left: 8px; } .lb-nav.n { right: 8px; }
   @media (hover: none) { .lb-nav { display: none; } }
@@ -553,11 +557,118 @@
   $('chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) { S.filter = b.dataset.f; renderGrid(); } });
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) { S.tab = b.dataset.tab; S.filter = 'all'; render(); } });
 
+  // ---------- 확대 (폰: 두 손가락 벌리기·두 번 탭 / PC: 클릭·휠·드래그) ----------
+  // 확대 안 했을 때는 좌우로 밀어 넘기기·아래로 밀어 닫기, 확대했을 때는 밀면 사진이 움직임
+  function makeZoom(stage, img, on) {
+    const MAX = 5, STEP_IN = 2.5;
+    let s = 1, tx = 0, ty = 0;
+    const pts = new Map();
+    let g = null;          // 진행 중인 제스처
+    let lastTap = null;    // 두 번 탭 판별용
+    const box = () => {
+      const r = stage.getBoundingClientRect();
+      const nw = img.naturalWidth || r.width, nh = img.naturalHeight || r.height;
+      const k = Math.min(r.width / nw, r.height / nh);
+      return { r, cw: nw * k, ch: nh * k };
+    };
+    const clamp = () => {
+      const { r, cw, ch } = box();
+      const mx = Math.max(0, (cw * s - r.width) / 2), my = Math.max(0, (ch * s - r.height) / 2);
+      tx = Math.min(mx, Math.max(-mx, tx)); ty = Math.min(my, Math.max(-my, ty));
+    };
+    const apply = (anim) => {
+      img.style.transition = anim ? 'opacity .15s, transform .22s ease' : 'opacity .15s';
+      img.style.transform = s === 1 && !tx && !ty ? '' : `translate(${tx}px, ${ty}px) scale(${s})`;
+      stage.classList.toggle('zoomed', s > 1);
+    };
+    const rel = (x, y) => { const r = stage.getBoundingClientRect(); return { x: x - r.left - r.width / 2, y: y - r.top - r.height / 2 }; };
+    // 화면의 한 점(p)을 고정한 채로 배율을 ns로
+    const zoomAt = (ns, p, anim) => {
+      ns = Math.max(1, Math.min(MAX, ns));
+      tx = p.x - (p.x - tx) * (ns / s); ty = p.y - (p.y - ty) * (ns / s); s = ns;
+      if (s <= 1.02) { s = 1; tx = ty = 0; }
+      clamp(); apply(anim);
+    };
+    const toggleAt = (p) => (s > 1 ? reset(true) : zoomAt(STEP_IN, p, true));
+    function reset(anim) { s = 1; tx = ty = 0; apply(anim); }
+
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      stage.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) {
+        const [a, b] = [...pts.values()];
+        g = { type: 'pinch', d: Math.hypot(a.x - b.x, a.y - b.y), s0: s, tx0: tx, ty0: ty, m0: rel((a.x + b.x) / 2, (a.y + b.y) / 2) };
+      } else if (pts.size === 1) {
+        g = { type: 'one', x0: e.clientX, y0: e.clientY, tx0: tx, ty0: ty, t0: Date.now(), moved: false, mouse: e.pointerType === 'mouse' };
+      }
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!pts.has(e.pointerId) || !g) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (g.type === 'pinch' && pts.size >= 2) {
+        const [a, b] = [...pts.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y), m = rel((a.x + b.x) / 2, (a.y + b.y) / 2);
+        const ns = Math.max(1, Math.min(MAX, g.s0 * (d / g.d)));
+        // 처음 손가락 가운데 점이 지금 손가락 가운데로 따라오도록
+        tx = m.x - (g.m0.x - g.tx0) * (ns / g.s0); ty = m.y - (g.m0.y - g.ty0) * (ns / g.s0); s = ns;
+        clamp(); apply(false);
+      } else if (g.type === 'one') {
+        const dx = e.clientX - g.x0, dy = e.clientY - g.y0;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
+        if (s > 1) { tx = g.tx0 + dx; ty = g.ty0 + dy; clamp(); apply(false); stage.classList.add('dragging'); }
+      }
+    });
+    const end = (e) => {
+      if (!pts.has(e.pointerId)) return;
+      const p0 = pts.get(e.pointerId);
+      pts.delete(e.pointerId);
+      stage.classList.remove('dragging');
+      if (g && g.type === 'pinch') {
+        if (pts.size === 1) { // 한 손가락 남으면 그대로 이어서 이동
+          const [o] = [...pts.values()];
+          g = { type: 'one', x0: o.x, y0: o.y, tx0: tx, ty0: ty, t0: Date.now(), moved: true, mouse: false };
+        } else { g = null; if (s < 1.05) reset(true); }
+        lastTap = null;
+        return;
+      }
+      if (!g || g.type !== 'one' || pts.size) { g = null; return; }
+      const dx = e.clientX - g.x0, dy = e.clientY - g.y0, quick = Date.now() - g.t0 < 300;
+      if (!g.moved && quick && e.type === 'pointerup') {
+        if (g.mouse) toggleAt(rel(e.clientX, e.clientY));          // PC: 클릭 한 번으로 확대/원래대로
+        else {
+          const now = Date.now();
+          if (lastTap && now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 40) {
+            toggleAt(rel(e.clientX, e.clientY)); lastTap = null;   // 폰: 두 번 탭
+          } else lastTap = { t: now, x: e.clientX, y: e.clientY };
+        }
+      } else if (s === 1 && !g.mouse && e.type === 'pointerup') {   // 확대 안 했을 때만 넘기기·닫기
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) on.swipe(dx < 0 ? 1 : -1);
+        else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) on.close();
+      }
+      g = null;
+    };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+    stage.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const f = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0025)); // ctrlKey = 트랙패드 두 손가락 벌리기
+      zoomAt(s * f, rel(e.clientX, e.clientY), false);
+    }, { passive: false });
+    // iOS 사파리·카카오톡 브라우저가 화면 전체를 확대하지 않도록
+    ['gesturestart', 'gesturechange'].forEach((t) => stage.addEventListener(t, (e) => e.preventDefault()));
+    img.addEventListener('dragstart', (e) => e.preventDefault());
+    window.addEventListener('resize', () => { if (s > 1) { clamp(); apply(false); } });
+    return { reset: () => { pts.clear(); g = null; lastTap = null; reset(false); }, get zoomed() { return s > 1; } };
+  }
+
   // ---------- 크게 보기 ----------
   function openLB(i) { S.lbList = currentList(); S.lbIdx = i; $('lb').hidden = false; document.body.style.overflow = 'hidden'; showLB(); }
-  function closeLB() { $('lb').hidden = true; document.body.style.overflow = ''; $('lbImg').removeAttribute('src'); }
+  function closeLB() { zoom.reset(); $('lb').hidden = true; document.body.style.overflow = ''; $('lbImg').removeAttribute('src'); }
   function showLB() {
     const p = S.lbList[S.lbIdx]; if (!p) return closeLB();
+    zoom.reset();
     const img = $('lbImg'); img.style.opacity = 0; $('lbLoad').hidden = false;
     img.onload = () => { img.style.opacity = 1; $('lbLoad').hidden = true; };
     img.src = p.preview || p.thumb || ''; img.alt = p.filename;
@@ -582,13 +693,7 @@
     if (e.key === 'Escape') closeLB(); else if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1);
     else if (e.key === ' ' && !$('lbPick').disabled) { e.preventDefault(); $('lbPick').click(); }
   });
-  let tx = null, ty = null;
-  $('lbStage').addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
-  $('lbStage').addEventListener('touchend', (e) => {
-    if (tx == null) return; const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
-    else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) closeLB();
-  });
+  const zoom = makeZoom($('lbStage'), $('lbImg'), { swipe: step, close: closeLB });
 
   // ---------- 선택 완료 ----------
   function openModal(html) { $('toast').hidden = true; $('sheet').innerHTML = html; $('modal').hidden = false; }
