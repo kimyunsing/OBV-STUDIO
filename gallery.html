@@ -557,6 +557,86 @@
   $('chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) { S.filter = b.dataset.f; renderGrid(); } });
   $('tabs').addEventListener('click', (e) => { const b = e.target.closest('.tab'); if (b) { S.tab = b.dataset.tab; S.filter = 'all'; render(); } });
 
+  // ---------- 아이폰: 원본을 사진 앱에 바로 저장 ----------
+  // 아이폰은 일반 다운로드가 '파일' 앱으로 가서, 원본을 화면에 띄우고 길게 눌러 '사진 앱에 저장'하게 함.
+  // 공유 메뉴(이미지 저장)를 지원하는 브라우저면 버튼도 같이 보여줌. 안드로이드·PC는 기존 다운로드 그대로.
+  const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function makeIosSave() {
+    const css = document.createElement('style');
+    css.textContent = `
+      .sv { position: fixed; inset: 0; z-index: 120; background: #000; color: #eee; display: grid; grid-template-rows: auto 1fr auto; }
+      .sv[hidden] { display: none; }
+      .sv-top { display: flex; justify-content: space-between; align-items: center; padding: calc(10px + env(safe-area-inset-top)) 16px 10px; font: 12px ui-monospace, Menlo, monospace; color: #aaa; }
+      .sv-top button { border: 0; background: none; color: #eee; font: 600 15px -apple-system, sans-serif; padding: 8px 4px; }
+      .sv-body { position: relative; min-height: 0; display: grid; place-items: center; }
+      .sv-body img { max-width: 100%; max-height: 100%; object-fit: contain; -webkit-touch-callout: default; -webkit-user-select: auto; user-select: auto; }
+      .sv-load { position: absolute; font: 12px ui-monospace, Menlo, monospace; color: #888; }
+      .sv-bot { padding: 14px 16px calc(16px + env(safe-area-inset-bottom)); text-align: center; }
+      .sv-hint { margin: 0; font: 15px/1.55 -apple-system, sans-serif; color: #ddd; word-break: keep-all; }
+      .sv-hint b { color: #fff; }
+      .sv-share { margin-top: 14px; width: 100%; height: 50px; border: 1px solid #eee; background: none; color: #eee; font: 600 15px -apple-system, sans-serif; }
+      .sv-share.ready { background: #eee; color: #111; }
+      .sv-share[hidden] { display: none; }`;
+    document.head.append(css);
+    const el = document.createElement('div');
+    el.className = 'sv'; el.hidden = true;
+    el.innerHTML = `<div class="sv-top"><span class="sv-name"></span><button type="button">닫기</button></div>
+      <div class="sv-body"><span class="sv-load">원본 불러오는 중…</span><img alt=""></div>
+      <div class="sv-bot"><p class="sv-hint">사진을 <b>길게 누른 뒤 '사진 앱에 저장'</b>을 누르세요.</p>
+      <button type="button" class="sv-share" hidden>공유 메뉴로 저장</button></div>`;
+    document.body.append(el);
+    const img = el.querySelector('img'), load = el.querySelector('.sv-load'), btn = el.querySelector('.sv-share');
+    const typeOf = (n) => (/\.png$/i.test(n) ? 'image/png' : /\.hei[cf]$/i.test(n) ? 'image/heic' : 'image/jpeg');
+    let canShare = false;
+    try { canShare = !!(navigator.canShare && navigator.canShare({ files: [new File(['x'], 'x.jpg', { type: 'image/jpeg' })] })); } catch { canShare = false; }
+    let job = null;
+    function close() { if (job && job.ctrl) job.ctrl.abort(); job = null; el.hidden = true; img.removeAttribute('src'); }
+    el.querySelector('.sv-top button').onclick = close;
+    btn.onclick = async () => {
+      const j = job; if (!j) return;
+      if (j.file) { // 두 번째 누름: 공유 메뉴 열기 (사용자가 누른 순간에 열어야 해서 두 번에 나눔)
+        try { await navigator.share({ files: [j.file] }); } catch (err) { if (err.name !== 'AbortError') btn.hidden = true; }
+        return;
+      }
+      if (j.ctrl) return;
+      j.ctrl = new AbortController(); btn.textContent = '준비 중…';
+      try {
+        const r = await fetch(j.url, { signal: j.ctrl.signal }); if (!r.ok) throw new Error(r.status);
+        const total = +r.headers.get('content-length') || 0, rd = r.body.getReader(), parts = []; let got = 0;
+        for (;;) {
+          const { done, value } = await rd.read(); if (done) break;
+          parts.push(value); got += value.length;
+          if (total && job === j) btn.textContent = `준비 중 ${Math.round((got / total) * 100)}%`;
+        }
+        j.file = new File(parts, j.name, { type: typeOf(j.name) }); j.ctrl = null;
+        if (job === j) { btn.textContent = '사진 앱에 저장하기'; btn.classList.add('ready'); }
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        j.ctrl = null; if (job === j) btn.hidden = true; // 안 되면 길게 눌러 저장만 안내
+      }
+    };
+    return {
+      open(url, name) {
+        if (job && job.ctrl) job.ctrl.abort();
+        job = { url, name, file: null, ctrl: null };
+        el.querySelector('.sv-name').textContent = name || '';
+        load.hidden = false; load.textContent = '원본 불러오는 중…';
+        img.onload = () => { load.hidden = true; };
+        img.onerror = () => { load.textContent = '사진을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.'; };
+        img.src = url;
+        btn.hidden = !canShare; btn.classList.remove('ready'); btn.textContent = '공유 메뉴로 저장';
+        el.hidden = false;
+      },
+      close,
+      get open_() { return !el.hidden; },
+    };
+  }
+  const iosSave = IOS ? makeIosSave() : null;
+  if (iosSave) $('lbDl').addEventListener('click', (e) => {
+    const a = e.currentTarget; if (!a.href || a.hidden) return;
+    e.preventDefault(); iosSave.open(a.href, a.dataset.name);
+  });
+
   // ---------- 확대 (폰: 두 손가락 벌리기·두 번 탭 / PC: 클릭·휠·드래그) ----------
   // 확대 안 했을 때는 좌우로 밀어 넘기기·아래로 밀어 닫기, 확대했을 때는 밀면 사진이 움직임
   function makeZoom(stage, img, on) {
@@ -673,7 +753,7 @@
     img.onload = () => { img.style.opacity = 1; $('lbLoad').hidden = true; };
     img.src = p.preview || p.thumb || ''; img.alt = p.filename;
     $('lbInfo').textContent = `${selecting() && S.tab === 'originals' ? ROUND_NAME[S.round] + ' · ' : ''}${p.filename}   ${S.lbIdx + 1} / ${S.lbList.length}`;
-    const dl = $('lbDl'); dl.hidden = !p.download; if (p.download) dl.href = p.download;
+    const dl = $('lbDl'); dl.hidden = !p.download; if (p.download) dl.href = p.download; dl.dataset.name = p.filename;
     dl.textContent = S.tab === 'retouched' ? '보정본 저장' : '원본 저장';
     const canPick = selecting() && S.tab === 'originals';
     const cs = cur();
