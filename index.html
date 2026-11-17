@@ -568,7 +568,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   function hm(m) { if (m > 1440) return '익일 ' + hm(m - 1440); var h = Math.floor(m / 60), mm = m % 60; return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm; }
   function won(n) { return '₩' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   function isNight(R, h) { var n = R.night; if (!n) return false; h = h % 24; return n.from > n.to ? (h >= n.from || h < n.to) : (h >= n.from && h < n.to); }
-  function nightHours(R, startMin, hours) { var c = 0; for (var i = 0; i < hours; i++) if (isNight(R, Math.floor(startMin / 60) + i)) c++; return c; }
+  // 이용 시간을 시작 시각부터 1시간씩 나눠, 그 1시간이 야간에 시작하면 야간 요금 (13:30 시작도 같은 규칙)
+  function nightHours(R, startMin, hours) { var c = 0; for (var i = 0; i < hours; i++) if (isNight(R, (startMin + i * 60) / 60)) c++; return c; }
   function pct(t) { return Math.round((1 - t.price / t.listPrice) * 100); }
   function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function lastOfMonth(ym) { var p = ym.split('-'); return ds(Date.UTC(+p[0], +p[1], 0)); }
@@ -604,10 +605,20 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     if (S.type === 'rental') {
       var R = S.cfg.rental, F = R.fullDay;
       for (var m = R.open * 60; m < R.close * 60 && m + R.minHours * 60 <= maxEnd(R, m); m += 60) starts.push({ min: m, end: m + R.minHours * 60, ok: late(d, m) && free(busy, m, m + R.minHours * 60) });
+      // 대관은 정시 시작이 기본. 그날 다른 예약(프로필 촬영 등)이 정시가 아닌 시간에 끝나면,
+      // 그 직후 30분 칸(예: 13:20 종료 → 13:30)을 하나 열어 빈 시간을 팔 수 있게 함
+      var buf = S.cfg.bufferMin || 0;
+      (S.busy[d] || []).forEach(function (iv) {
+        var x = Math.ceil((iv[1] + buf) / 30) * 30;
+        if (x % 60 === 0 || x < R.open * 60 || x >= R.close * 60 || x + R.minHours * 60 > maxEnd(R, x)) return;
+        if (starts.some(function (y) { return y.min === x; })) return;
+        if (late(d, x) && free(busy, x, x + R.minHours * 60)) starts.push({ min: x, end: x + R.minHours * 60, ok: true });
+      });
+      starts.sort(function (a, b) { return a.min - b.min; });
       if (F && F.enabled) full = { ok: late(d, F.start * 60) && free(busy, F.start * 60, F.end * 60) };
     } else {
       var P = S.cfg.profile, t = tierById(S.tier) || minTier();
-      for (var p = P.open * 60; p <= P.lastStart * 60 && p + t.minutes <= P.close * 60; p += 60) starts.push({ min: p, end: p + t.minutes, ok: late(d, p) && free(busy, p, p + t.minutes) });
+      for (var p = P.open * 60; p <= P.lastStart * 60 && p + t.minutes <= P.close * 60; p += 30)  /* 프로필은 30분 단위 시작 */ starts.push({ min: p, end: p + t.minutes, ok: late(d, p) && free(busy, p, p + t.minutes) });
     }
     return { starts: starts, full: full };
   }
