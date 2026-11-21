@@ -347,7 +347,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       <div class="bk-tabs" role="tablist">
         <button type="button" class="bk-tab on" data-bk-type="rental" role="tab">대관</button>
         <button type="button" class="bk-tab" data-bk-type="profile" role="tab">프로필 촬영</button>
-        <button type="button" class="bk-tab" data-bk-type="exhibit" role="tab" hidden>전시·팝업</button>
+        <button type="button" class="bk-tab" data-bk-type="exhibit" role="tab" hidden>전시·팝업·플리마켓</button>
       </div>
 
       <section class="bk-step" id="bk-step-tier" hidden>
@@ -851,7 +851,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-name').setAttribute('autocomplete', biz ? 'organization' : 'name');
     var isX = S.type === 'exhibit';
     $('bk-purpose-label').innerHTML = isX ? '전시 내용' : isR ? '촬영 내용' : '촬영 용도<span class="bk-opt">선택</span>';
-    $('bk-purpose').placeholder = isX ? '예: 브랜드 팝업, 작품 전시, 쇼룸' : isR ? '예: 의류 룩북, 유튜브 콘텐츠, 제품 촬영' : '예: 배우 프로필, 이력서, SNS';
+    $('bk-purpose').placeholder = isX ? '예: 브랜드 팝업, 작품 전시, 플리마켓' : isR ? '예: 의류 룩북, 유튜브 콘텐츠, 제품 촬영' : '예: 배우 프로필, 이력서, SNS';
     renderPay();
     renderSummary();
   }
@@ -861,7 +861,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     var isR = S.type === 'rental', R = S.cfg.rental, t = slotTimes(), pr = price(), biz = S.cust === 'business';
     var isX = S.type === 'exhibit', pl = isX ? planById(S.plan) : null;
     var rows = isX ? [
-      ['종류', '전시·팝업 · ' + pl.days + '일'],
+      ['종류', '전시·팝업·플리마켓 · ' + pl.days + '일'],
       ['기간', dateText(S.date) + ' ' + hm(t[0]) + ' – ' + dateText(exEnd(S.date, pl)) + ' ' + hm(t[1] % 1440)]
     ] : [
       ['종류', isR ? (S.full ? '대관 · 종일' : '대관') : '프로필 촬영 · ' + tierById(S.tier).name],
