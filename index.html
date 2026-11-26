@@ -82,8 +82,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);backgrou
 .hero{min-height:100svh;padding-top:var(--nav-h);position:relative;overflow:hidden;}
 .hero-slide{position:absolute;top:var(--nav-h);left:0;right:0;bottom:0;opacity:0;transition:opacity 1.5s ease;}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
-.hero-logo{position:absolute;left:50%;top:50%;width:clamp(120px,9vw,200px);height:auto;transform:translate(-50%,-50%);}
-.hero-logo.white{filter:invert(1);}
 .hero-slide.active{opacity:1;}
 
 @keyframes heroFade{from{opacity:0;transform:scale(1.01);}to{opacity:1;transform:scale(1);}}
@@ -312,7 +310,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 <!-- HOME -->
 <div id="page-home" class="page">
   <section class="hero">
-    <div class="hero-slide active"><img class="hero-img" src="hero1-bg.jpg" alt="obvio studio"><img class="hero-logo" src="logo.png" alt="obvio"></div><div class="hero-slide"><img class="hero-img" src="hero2-bg.jpg" alt=""><img class="hero-logo white" src="logo.png" alt=""></div>
+    <div class="hero-slide active"><picture><source media="(min-aspect-ratio: 1/1)" srcset="hero1-wide.jpg"><img class="hero-img" src="hero1.jpg" alt="obvio studio"></picture></div><div class="hero-slide"><picture><source media="(min-aspect-ratio: 1/1)" srcset="hero2-wide.jpg"><img class="hero-img" src="hero2.jpg" alt="obvio studio"></picture></div>
   </section>
   <section class="home-strip rv">
     <h2 class="home-strip-h">About Space</h2>
