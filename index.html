@@ -180,6 +180,14 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-tab:hover{color:var(--ink);}
 .bk-tab.on{color:var(--ink);}
 .bk-tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--ink);}
+.bk-intro{margin-top:28px;}
+.bk-intro[hidden]{display:none !important;}
+.bk-shots{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(var(--gutter) * -1);padding:0 var(--gutter);}
+.bk-shots::-webkit-scrollbar{display:none;}
+.bk-shots img{flex:0 0 78%;width:78%;max-width:340px;height:auto;aspect-ratio:3/2;object-fit:cover;scroll-snap-align:start;display:block;background:#F5F5F3;}
+.bk-facts{display:grid;grid-template-columns:auto 1fr;gap:9px 18px;margin-top:22px;font-size:12px;line-height:1.6;}
+.bk-facts dt{color:var(--ink-l);white-space:nowrap;}
+.bk-facts dd{color:var(--ink);margin:0;}
 .bk-step{padding-top:44px;scroll-margin-top:calc(var(--nav-h) + 16px);}
 .bk-step[hidden],.bk-hide{display:none !important;}
 .bk-label{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;}
@@ -348,6 +356,23 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         <button type="button" class="bk-tab on" data-bk-type="rental" role="tab">대관</button>
         <button type="button" class="bk-tab" data-bk-type="exhibit" role="tab">전시·팝업·플리마켓</button>
         <button type="button" class="bk-tab" data-bk-type="profile" role="tab">프로필 촬영</button>
+      </div>
+
+      <div class="bk-intro" id="bk-intro">
+        <div class="bk-shots" aria-label="스튜디오 사진">
+          <img src="bk/bk1.jpg" alt="스테인리스 벽면 메인 공간" loading="lazy" width="1000" height="667">
+          <img src="bk/bk2.jpg" alt="조명 세팅" loading="lazy" width="1000" height="667">
+          <img src="bk/bk3.jpg" alt="자연광 창" loading="lazy" width="1000" height="667">
+          <img src="bk/bk4.jpg" alt="테이블 공간" loading="lazy" width="1000" height="667">
+          <img src="bk/bk5.jpg" alt="이동식 가벽" loading="lazy" width="750" height="1000">
+        </div>
+        <dl class="bk-facts">
+          <dt>요금</dt><dd>시간당 42,000원 · 야간(20–06시) 30,000원<br>종일(06–24시) 400,000원 · 최소 2시간</dd>
+          <dt>공간</dt><dd>잠실 119㎡ 단독 대관 · 24시간 · 당일 예약 가능</dd>
+          <dt>장비</dt><dd>스트로브 2 · 지속광 2 (소프트박스 포함) · 3색 배경지 · C스탠드 · 이동식 가벽 — 모두 무료</dd>
+          <dt>인원</dt><dd>기본 4명 · 추가 1인 시간당 5,000원 (종일 대관은 인원 무제한)</dd>
+          <dt>시설</dt><dd>개별 화장실 · 탈의실 · 주차 1대</dd>
+        </dl>
       </div>
 
       <section class="bk-step" id="bk-step-tier" hidden>
@@ -754,6 +779,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     document.querySelectorAll('.bk-tab').forEach(function (t) { t.classList.toggle('on', t.dataset.bkType === S.type); if (t.dataset.bkType === 'exhibit') t.hidden = !!S.cfg && !hasExhibit(); });   // 처음부터 보이고, 서버에 전시 설정이 없을 때만 숨김
     var isP = S.type === 'profile', isX = S.type === 'exhibit';
     $('bk-step-tier').hidden = !(isP || isX);
+    if ($('bk-intro')) $('bk-intro').hidden = isP || isX;   // 대관 탭에서만 공간 요약 표시
     $('bk-step-time').hidden = !S.date || isX;
     $('bk-step-form').hidden = !slotReady();
     var n = 1;
