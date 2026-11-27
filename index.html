@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>obvio studio</title>
+<!-- Meta Pixel: 페이지 이동(PageView)은 픽셀이 주소 변경을 따라 자동으로 잡고, 예약 신청 완료는 'Schedule' 이벤트 -->
+<script>
+(function () {
+  var PIXEL_ID = '';   // ▼ Meta 픽셀 ID (숫자)
+  if (!PIXEL_ID) return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', PIXEL_ID);
+  fbq('track', 'PageView');
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
@@ -233,6 +243,27 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-day.range:disabled{opacity:1;color:var(--ink);text-decoration:none;}
 .bk-legend{display:flex;gap:18px;margin-top:14px;font-size:11px;color:var(--ink-l);}
 .bk-legend s{color:var(--ink-l);}
+/* 두 달 표시 + 확인 중 표시 */
+.bk-cal-mlabel{font-size:12px;font-weight:500;color:var(--ink);margin:28px 0 6px;}
+.bk-cal-mlabel:first-child{margin-top:0;}
+.bk-cal-status{display:none;align-items:center;gap:7px;margin:0 8px 0 auto;font-size:11px;color:var(--ink-m);white-space:nowrap;}
+.bk-day.wait{animation:bkPulse 1.1s ease-in-out infinite alternate;}
+.bk-cal.loading .bk-cal-status,.bk-cal.checking .bk-cal-status{display:flex;}
+.bk-spin{width:11px;height:11px;border:1.5px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:bkSpin .8s linear infinite;}
+@keyframes bkSpin{to{transform:rotate(360deg);}}
+/* 결제 방식 안내, 입금 안내 */
+.bk-pay-note{font-size:12px;color:var(--ink-m);line-height:1.8;margin-top:10px;padding:12px 14px;background:#F5F5F3;}
+.bk-pay-note:empty{display:none;}
+.bk-paybox{background:#F5F5F3;padding:20px 24px;margin:24px 0 16px;}
+.bk-paybox[hidden]{display:none;}
+.bk-paybox-t{font-size:11px;letter-spacing:.08em;color:var(--ink-l);margin-bottom:4px;}
+.bk-paybox .sp-price-val{text-align:right;}
+.bk-acct{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.bk-copy{font-size:11px;font-weight:400;border:1px solid var(--ink);padding:3px 8px;line-height:1.4;}
+.bk-copy.done{background:var(--ink);color:#fff;}
+.bk-due{color:#c44;}
+.bk-due small{display:block;font-size:11px;font-weight:400;color:var(--ink-m);}
+.bk-paybox-note{font-size:12px;color:var(--ink-m);line-height:1.8;margin-top:12px;}
 
 /* time chips */
 .bk-sublabel{font-size:11px;color:var(--ink-m);margin:0 0 12px;}
@@ -386,9 +417,10 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         <div class="bk-cal loading" id="bk-cal">
           <div class="bk-cal-head">
             <span class="bk-cal-title" id="bk-cal-title">&nbsp;</span>
+            <span class="bk-cal-status" id="bk-cal-status" role="status"><span class="bk-spin" aria-hidden="true"></span>확인 중</span>
             <div class="bk-cal-nav"><button type="button" id="bk-prev" aria-label="이전 달">&#8249;</button><button type="button" id="bk-next" aria-label="다음 달">&#8250;</button></div>
           </div>
-          <div class="bk-cal-grid" id="bk-cal-grid"></div>
+          <div class="bk-cal-months" id="bk-cal-grid"></div>
           <div class="bk-legend"><span id="bk-legend-days"></span><span><s>날짜</s> 마감</span></div>
         </div>
         <p class="bk-alert" id="bk-load-err"></p>
@@ -417,6 +449,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         <div class="auth-row"><label class="auth-label" for="bk-memo">요청사항<span class="bk-opt">선택</span></label><textarea class="auth-input" id="bk-memo" rows="3" maxlength="800"></textarea><p class="auth-err-msg"></p></div>
         <div class="auth-row"><label class="auth-label">결제 방식</label>
           <div class="bk-chips bk-chips-2" id="bk-pay"><button type="button" class="bk-chip" data-pay="card">카드 결제<small>결제 링크 발송</small></button><button type="button" class="bk-chip" data-pay="transfer">계좌이체<small>계좌번호 안내</small></button></div>
+          <p class="bk-pay-note" id="bk-pay-note" aria-live="polite"></p>
           <p class="auth-err-msg" id="bk-pay-err"></p></div>
         <div class="auth-row bk-hide" id="bk-tax-row"><label class="auth-label">세금계산서</label>
           <div class="bk-chips bk-chips-2" id="bk-tax"><button type="button" class="bk-chip" data-tax="1">발행</button><button type="button" class="bk-chip" data-tax="0">미발행</button></div>
@@ -448,7 +481,12 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     <div id="bk-done" class="bk-done" hidden>
       <div class="bk-done-icon">&#10003;</div>
       <h2>예약 신청이 접수됐어요</h2>
-      <p>확인 후 연락드리며, 카드 결제 또는 계좌 입금이 완료되면 예약이 확정됩니다.<br><span id="bk-done-contact"></span></p>
+      <p><span id="bk-done-msg">확인 후 연락드리며, 카드 결제 또는 계좌 입금이 완료되면 예약이 확정됩니다.</span><br><span id="bk-done-contact"></span></p>
+      <div class="bk-paybox" id="bk-paybox" hidden>
+        <p class="bk-paybox-t">입금 안내</p>
+        <div id="bk-paybox-rows"></div>
+        <p class="bk-paybox-note" id="bk-paybox-note"></p>
+      </div>
       <div class="sp-price-card bk-summary" id="bk-done-summary"></div>
       <button type="button" class="btn btn-dark" id="bk-again">처음으로</button>
     </div>
@@ -583,6 +621,10 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
 (function () {
   // ▼ 구글 앱스 스크립트 '웹 앱 URL'을 따옴표 안에 붙여넣으세요 (…/exec 로 끝나는 주소)
   var BOOKING_API = 'https://script.google.com/macros/s/AKfycbzqJDRaHi1NXC0SPKMV_y4L9RRlbXhR0IvRTz4PvipmwchNlrKTizrLGTgJHB7zymSv/exec';
+  // ▼ 계좌이체 입금 계좌 (신청 직후 화면에 표시). 비워두면 입금 안내 칸이 안 나옴
+  var BANK = { name: '토스뱅크', account: '1002-5108-1489', holder: '오비오(obvio)' };
+  var PAY_HOURS = 2;          // 입금 기한 (신청 후 몇 시간)
+  var DUAL_DAYS = 10;         // 이번 달 남은 예약 가능 기간이 이 일수 이하면 다음 달도 같이 표시
 
   var DAY = 86400000, DN = ['일', '월', '화', '수', '목', '금', '토'];
   var S = { type: 'rental', tier: null, plan: null, ym: null, date: null, start: null, hours: null, full: false, guests: 4, cust: null, pay: null, tax: null, rcpt: null, bizFile: null,
@@ -741,7 +783,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     S.inflight = load().then(function () {
       if (!S.ym || S.ym < S.first.slice(0, 7) || S.ym > S.last.slice(0, 7)) S.ym = S.first.slice(0, 7);
       if (!hasExhibit() && S.type === 'exhibit') { S.type = 'rental'; S.date = null; clearSlot(); }
-      S.loading = false; S.inflight = null; reconcile(); render();
+      S.loading = false; S.inflight = null; reconcile(); render(); ensureMonthLoaded();
     }).catch(function () {
       S.loading = false; S.inflight = null; render();
       if (S.cfg) return;   // 예전 정보로 계속 쓸 수 있으면 조용히 넘어감 (신청 때 서버가 다시 확인함)
@@ -751,25 +793,44 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     return S.inflight;
   }
 
+  /* ── 두 달 표시: 첫 달에 예약 가능한 날이 DUAL_DAYS일 이하로 남았으면 다음 달도 바로 아래에 ── */
+  function dualFrom(ym, first, last) {
+    if (ym !== first.slice(0, 7)) return false;
+    var left = Math.round((ms(lastOfMonth(ym)) - ms(first)) / DAY) + 1;
+    return left <= DUAL_DAYS && (!last || shiftYm(ym, 1) <= last.slice(0, 7));
+  }
+  function shownMonths() { return dualFrom(S.ym, S.first, S.last) ? [S.ym, shiftYm(S.ym, 1)] : [S.ym]; }
+  function calTitle(ms_) {
+    var a = ms_[0].split('-'); if (ms_.length === 1) return a[0] + '. ' + a[1];
+    var b = ms_[1].split('-'); return a[0] + '. ' + a[1] + ' – ' + (b[0] !== a[0] ? b[0] + '. ' : '') + b[1];
+  }
+  function monthHtml(ym, dual, dayHtml) {
+    var first = ym + '-01', html = dual ? '<p class="bk-cal-mlabel">' + +ym.slice(5) + '월</p>' : '';
+    html += '<div class="bk-cal-grid">' + DN.map(function (d) { return '<span class="bk-dow">' + d + '</span>'; }).join('');
+    for (var i = 0; i < dow(first); i++) html += '<span></span>';
+    for (var d = first; d.slice(0, 7) === ym; d = addDays(d, 1)) html += dayHtml(d);
+    return html + '</div>';
+  }
+
   // 정보 받기 전: 달력 틀을 먼저 그려둠
   function renderSkeleton() {
     $('bk-cal').classList.add('loading');
     var today = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
-    var ym = addDays(today, 1).slice(0, 7), p = ym.split('-'), first = ym + '-01';
-    $('bk-cal-title').textContent = p[0] + '. ' + p[1];
+    var ym = today.slice(0, 7), months = dualFrom(ym, today) ? [ym, shiftYm(ym, 1)] : [ym];
+    $('bk-cal-title').textContent = calTitle(months);
     $('bk-prev').disabled = $('bk-next').disabled = true;
     $('bk-legend-days').textContent = '예약 가능한 시간 확인 중…';
-    var html = DN.map(function (d) { return '<span class="bk-dow">' + d + '</span>'; }).join('');
-    for (var i = 0; i < dow(first); i++) html += '<span></span>';
-    for (var d = first; d.slice(0, 7) === ym; d = addDays(d, 1)) html += '<button type="button" class="bk-day" disabled>' + (+d.slice(8)) + '</button>';
-    $('bk-cal-grid').innerHTML = html;
+    $('bk-cal-grid').innerHTML = months.map(function (m) {
+      return monthHtml(m, months.length > 1, function (d) { return '<button type="button" class="bk-day" disabled>' + (+d.slice(8)) + '</button>'; });
+    }).join('');
   }
   function ensureMonthLoaded() {
-    var end = addDays(lastOfMonth(S.ym), 14); if (S.last && end > S.last) end = S.last;
-    if (S.loadedTo && end > S.loadedTo && S.loadedTo < S.last) {
-      S.loading = true; render();
-      load(addDays(S.loadedTo, 1), end).then(function () { S.loading = false; render(); }).catch(function () { S.loading = false; render(); });
-    }
+    var sm = shownMonths(), end = addDays(lastOfMonth(sm[sm.length - 1]), 14); if (S.last && end > S.last) end = S.last;
+    if (S.extending || !S.loadedTo || !(end > S.loadedTo && S.loadedTo < S.last)) return;
+    // 이미 받은 날은 그대로 고를 수 있고, 새로 받는 날만 '확인 중'
+    S.extending = true; render();
+    load(addDays(S.loadedTo, 1), end).then(function () { S.extending = false; reconcile(); render(); ensureMonthLoaded(); })
+      .catch(function () { S.extending = false; render(); $('bk-load-err').innerHTML = '다음 달 예약 현황을 불러오지 못했어요.<button type="button" id="bk-retry2">다시 시도</button>'; $('bk-retry2').onclick = function () { $('bk-load-err').innerHTML = ''; ensureMonthLoaded(); }; });
   }
 
   /* ── 화면 ── */
@@ -817,23 +878,24 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   }
 
   function renderCal() {
-    $('bk-cal').classList.toggle('loading', S.loading);
-    var p = S.ym.split('-');
-    $('bk-cal-title').textContent = p[0] + '. ' + p[1];
+    var months = shownMonths(), lastShown = months[months.length - 1];
+    // 보이는 달 중 아직 안 받아온 날이 있으면 '확인 중'
+    $('bk-cal').classList.toggle('loading', !!S.loading);
+    $('bk-cal').classList.toggle('checking', !S.loading && !!(S.extending || S.checking));
+    $('bk-cal-title').textContent = calTitle(months);
     $('bk-prev').disabled = S.ym <= S.first.slice(0, 7);
-    $('bk-next').disabled = S.ym >= S.last.slice(0, 7);
+    $('bk-next').disabled = lastShown >= S.last.slice(0, 7);
     var rule = S.type === 'rental' ? S.cfg.rental : S.type === 'exhibit' ? S.cfg.exhibit : S.cfg.profile;
     var rEnd = S.type === 'exhibit' && S.date && planById(S.plan) ? exEnd(S.date, planById(S.plan)) : null;
     $('bk-legend-days').textContent = rule.days.length === 7 ? '매일 운영' : rule.days.map(function (d) { return DN[d]; }).join('·') + '요일만 운영';
-    var first = S.ym + '-01', html = DN.map(function (d) { return '<span class="bk-dow">' + d + '</span>'; }).join('');
-    for (var i = 0; i < dow(first); i++) html += '<span></span>';
-    for (var d = first; d.slice(0, 7) === S.ym; d = addDays(d, 1)) {
-      var st = dayState(d), ok = st === 'open';
-      var inR = rEnd && d > S.date && d <= rEnd;   // 전시 기간(시작일 다음 날 ~ 종료일)
-      html += '<button type="button" class="bk-day' + (st === 'full' && !inR ? ' full' : '') + (S.date === d ? ' on' : '') + (inR ? ' range' : '') + '" data-date="' + d + '"' + (ok ? '' : ' disabled') +
-        ' aria-label="' + dateText(d) + (ok ? ' 예약 가능' : st === 'full' ? ' 마감' : ' 예약 불가') + '">' + (+d.slice(8)) + '</button>';
-    }
-    $('bk-cal-grid').innerHTML = html;
+    $('bk-cal-grid').innerHTML = months.map(function (m) {
+      return monthHtml(m, months.length > 1, function (d) {
+        var st = dayState(d), ok = st === 'open';
+        var inR = rEnd && d > S.date && d <= rEnd;   // 전시 기간(시작일 다음 날 ~ 종료일)
+        return '<button type="button" class="bk-day' + (st === 'full' && !inR ? ' full' : '') + (st === 'unloaded' ? ' wait' : '') + (S.date === d ? ' on' : '') + (inR ? ' range' : '') + '" data-date="' + d + '"' + (ok ? '' : ' disabled') +
+          ' aria-label="' + dateText(d) + (ok ? ' 예약 가능' : st === 'full' ? ' 마감' : st === 'unloaded' ? ' 확인 중' : ' 예약 불가') + '">' + (+d.slice(8)) + '</button>';
+      });
+    }).join('');
   }
 
   function chip(cls, attrs, main, sub, on, disabled) {
@@ -841,7 +903,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   }
 
   function renderTimes() {
-    $('bk-time-date').textContent = dateText(S.date);
+    $('bk-time-date').innerHTML = esc(dateText(S.date)) + (S.checking ? ' <span class="bk-cal-status" style="display:inline-flex;margin:0 0 0 8px;"><span class="bk-spin"></span>확인 중</span>' : '');
     var o = options(S.date), html = '';
     if (S.type === 'rental') {
       var R = S.cfg.rental;
@@ -921,6 +983,10 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-rcpt-row').classList.toggle('bk-hide', !perTransfer);
     var showNum = perTransfer && S.rcpt === true;
     $('bk-rcpt-num-row').classList.toggle('bk-hide', !showNum);
+    $('bk-pay-note').textContent = S.pay === 'card' ? '결제선생 결제 링크를 카카오톡으로 보내드려요 (보통 30분 내)'
+      : S.pay === 'transfer' ? (!hasBank() ? '확인 후 입금 계좌를 안내해드려요.'
+        : '신청하면 바로 계좌번호와 결제 금액이 나와요. ' + holdText() + ' 안에 입금해주세요.' + (holdOn() ? ' 그동안 이 시간은 입금 대기로 잡아두고, 기한이 지나면 자동으로 풀려요.' : ''))
+      : '';
     if (showNum && !$('bk-rcpt-num').value) $('bk-rcpt-num').value = $('bk-phone').value.trim();   // 기본값: 연락처
   }
 
@@ -1005,7 +1071,59 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       .catch(function () { $('bk-submit-err').textContent = '연결이 원활하지 않아요. 잠시 후 다시 시도해주세요.'; })
       .then(function () { S.sending = false; btn.disabled = false; btn.textContent = '예약 신청하기'; });
   }
+  /* ── 계좌이체 입금 안내 ── */
+  function hasBank() { return !!(BANK.name && BANK.account); }
+  function holdMin() { return (S.cfg && S.cfg.payHoldMin) || PAY_HOURS * 60; }
+  function holdOn() { return !!(S.cfg && S.cfg.payHoldMin); }   // 예약 서버가 입금 대기 잡기를 지원할 때만 true
+  function holdText() { var m = holdMin(); return m % 60 ? (m >= 60 ? Math.floor(m / 60) + '시간 ' : '') + m % 60 + '분' : m / 60 + '시간'; }
+  function kst(t) { var d = new Date(t + 9 * 3600000).toISOString(); return { d: d.slice(0, 10), m: +d.slice(11, 13) * 60 + +d.slice(14, 16) }; }
+  function dueText(t) {
+    var k = kst(t), today = kst(Date.now()).d, left = t - Date.now();
+    var when = (k.d === today ? '오늘 ' : k.d === addDays(today, 1) ? '내일 ' : dateText(k.d) + ' ') + hm(k.m) + '까지';
+    if (left <= 0) return when + '<small>기한이 지났어요. 다시 신청하거나 문의해주세요.</small>';
+    var mins = Math.ceil(left / 60000);
+    return when + '<small>' + (mins >= 60 ? Math.floor(mins / 60) + '시간 ' : '') + (mins % 60 ? mins % 60 + '분 ' : '') + '남음</small>';
+  }
+  function copyText(txt, btn) {
+    var ok = function () { btn.textContent = '복사됨'; btn.classList.add('done'); setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('done'); }, 1600); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).then(ok, fallback); return; }
+    fallback();
+    function fallback() { var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (e) {} document.body.removeChild(ta); }
+  }
+  function showPayBox(amount, due, held) {
+    var row = function (l, v) { return '<div class="sp-price-row"><span class="sp-price-label">' + l + '</span><span class="sp-price-val">' + v + '</span></div>'; };
+    var draw = function () {
+      $('bk-paybox-rows').innerHTML =
+        row('은행', esc(BANK.name)) +
+        row('계좌번호', '<span class="bk-acct"><span>' + esc(BANK.account) + '</span><button type="button" class="bk-copy" id="bk-copy">복사</button></span>') +
+        row('예금주', esc(BANK.holder)) +
+        row('결제 금액', won(amount)) +
+        row('입금 기한', '<span class="bk-due">' + dueText(due) + '</span>');
+      $('bk-copy').onclick = function () { copyText(BANK.account.replace(/[^\d]/g, ''), this); };
+    };
+    draw();
+    $('bk-paybox-note').textContent = (held ? '기한까지 입금이 확인되지 않으면 잡아둔 시간이 자동으로 풀려요. ' : '') + '입금자명은 신청하신 이름' + (S.cust === 'business' ? '(회사명)' : '') + '과 같게 해주세요.';
+    $('bk-paybox').hidden = false;
+    clearInterval(S.dueTimer);
+    S.dueTimer = setInterval(function () { if ($('bk-paybox').hidden) return clearInterval(S.dueTimer); var c = $('bk-copy') && $('bk-copy').classList.contains('done'); if (!c) draw(); }, 30000);
+  }
+
   function done(r) {
+    // 화면을 바꾸기 전에 지금 선택값으로 금액·시작 시각 계산
+    var pay = S.pay, amount = +r.amount || price().total, t0 = slotTimes()[0];
+    var startMs = ms(S.date) - 9 * 3600000 + t0 * 60000;
+    var due = +r.payDue || Math.min(Date.now() + holdMin() * 60000, startMs);   // 서버가 준 기한 우선
+    var held = !!r.payDue;   // 서버가 실제로 입금 대기로 잡았을 때만 '자동으로 풀려요' 안내
+    var label = S.type === 'exhibit' ? '전시·팝업·플리마켓' : S.type === 'rental' ? '대관' : '프로필 촬영';
+    if (typeof window.fbq === 'function') {
+      try { window.fbq('track', 'Schedule', { content_name: label, content_category: S.type, value: amount, currency: 'KRW' }, r.id ? { eventID: 'bk-' + r.id } : undefined); } catch (e) {}
+    }
+    $('bk-paybox').hidden = true;
+    if (pay === 'card') $('bk-done-msg').textContent = '결제선생 결제 링크를 카카오톡으로 보내드려요 (보통 30분 내). 결제가 완료되면 예약이 확정됩니다.';
+    else if (pay === 'transfer' && hasBank()) {
+      $('bk-done-msg').textContent = '아래 계좌로 입금 기한까지 입금해주세요. ' + (held ? '그동안 이 시간은 입금 대기로 잡아뒀고, ' : '') + '입금이 확인되면 예약이 확정됩니다.';
+      showPayBox(amount, due, held);
+    } else $('bk-done-msg').textContent = '확인 후 연락드리며, 카드 결제 또는 계좌 입금이 완료되면 예약이 확정됩니다.';
     $('bk-flow').hidden = true; $('bk-done').hidden = false;
     var rows = (r.summary || []).filter(function (x) { return ['이름', '회사명', '연락처', '이메일'].indexOf(x[0]) < 0; });
     $('bk-done-summary').innerHTML = rows.map(function (x) {
@@ -1018,7 +1136,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     S.date = null; clearSlot(); S.tier = null; S.plan = null; S.cust = null; S.pay = null; S.tax = null; S.rcpt = null; clearFile(); S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
     ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website', 'bk-rcpt-num'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
     $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-pay-err').textContent = ''; $('bk-cust-err').textContent = ''; $('bk-tax-err').textContent = ''; $('bk-rcpt-err').textContent = ''; $('bk-submit-err').textContent = '';
-    $('bk-flow').hidden = false; $('bk-done').hidden = true;
+    $('bk-flow').hidden = false; $('bk-done').hidden = true; $('bk-paybox').hidden = true; clearInterval(S.dueTimer);
   }
 
   /* ── 이벤트 ── */
@@ -1035,14 +1153,20 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
       var b = e.target.closest('[data-tier]'); if (!b) return;
       S.tier = b.dataset.tier; S.start = null; reconcile(); render();
     });
-    $('bk-prev').addEventListener('click', function () { S.ym = shiftYm(S.ym, -1); render(); });
-    $('bk-next').addEventListener('click', function () { S.ym = shiftYm(S.ym, 1); render(); ensureMonthLoaded(); });
+    // 두 달을 같이 보고 있으면 다음은 그 뒤 달로, 이전으로 돌아오다 두 달 보기 구간에 닿으면 첫 달로
+    $('bk-prev').addEventListener('click', function () {
+      var t = shiftYm(S.ym, -1), f = S.first.slice(0, 7);
+      if (shiftYm(t, -1) === f && dualFrom(f, S.first, S.last)) t = f;
+      S.ym = t < f ? f : t; render(); ensureMonthLoaded();
+    });
+    $('bk-next').addEventListener('click', function () { var sm = shownMonths(); S.ym = shiftYm(sm[sm.length - 1], 1); render(); ensureMonthLoaded(); });
     $('bk-cal-grid').addEventListener('click', function (e) {
       var b = e.target.closest('[data-date]'); if (!b || b.disabled) return;
       if (S.date !== b.dataset.date) { S.date = b.dataset.date; clearSlot(); }
       render(); scrollTo(S.type === 'exhibit' ? (S.plan ? 'bk-step-form' : 'bk-step-tier') : 'bk-step-time');
-      if (Date.now() - S.fetchedAt > 60000) { // 1분 넘었으면 최신 상태로 다시 확인
-        load().then(function () { reconcile(); render(); }).catch(function () {});
+      if (Date.now() - S.fetchedAt > 60000 && !S.checking) { // 1분 넘었으면 최신 상태로 다시 확인 (그동안 '확인 중')
+        S.checking = true; render();
+        load().then(function () { S.checking = false; reconcile(); render(); ensureMonthLoaded(); }).catch(function () { S.checking = false; render(); });
       }
     });
     $('bk-times').addEventListener('click', function (e) {
