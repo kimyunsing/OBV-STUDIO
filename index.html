@@ -802,11 +802,13 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     var a = ms_[0].split('-'); if (ms_.length === 1) return a[0] + '. ' + a[1];
     var b = ms_[1].split('-'); return a[0] + '. ' + a[1] + ' – ' + (b[0] !== a[0] ? b[0] + '. ' : '') + b[1];
   }
-  function monthHtml(ym, dual, dayHtml) {
-    var first = ym + '-01', html = dual ? '<p class="bk-cal-mlabel">' + +ym.slice(5) + '월</p>' : '';
+  // from(오늘·첫 예약 가능일) 이전 날짜는 빈칸, 통째로 지난 주는 줄째 생략
+  function monthHtml(ym, dual, dayHtml, from) {
+    var first = ym + '-01', start = first, html = dual ? '<p class="bk-cal-mlabel">' + +ym.slice(5) + '월</p>' : '';
+    if (from && from.slice(0, 7) === ym) { start = addDays(from, -dow(from)); if (start < first) start = first; }
     html += '<div class="bk-cal-grid">' + DN.map(function (d) { return '<span class="bk-dow">' + d + '</span>'; }).join('');
-    for (var i = 0; i < dow(first); i++) html += '<span></span>';
-    for (var d = first; d.slice(0, 7) === ym; d = addDays(d, 1)) html += dayHtml(d);
+    for (var i = 0; i < dow(start); i++) html += '<span></span>';
+    for (var d = start; d.slice(0, 7) === ym; d = addDays(d, 1)) html += from && d < from ? '<span></span>' : dayHtml(d);
     return html + '</div>';
   }
 
@@ -819,7 +821,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-prev').disabled = $('bk-next').disabled = true;
     $('bk-legend-days').textContent = '예약 가능한 시간 확인 중…';
     $('bk-cal-grid').innerHTML = months.map(function (m) {
-      return monthHtml(m, months.length > 1, function (d) { return '<button type="button" class="bk-day" disabled>' + (+d.slice(8)) + '</button>'; });
+      return monthHtml(m, months.length > 1, function (d) { return '<button type="button" class="bk-day" disabled>' + (+d.slice(8)) + '</button>'; }, today);
     }).join('');
   }
   function ensureMonthLoaded() {
@@ -892,7 +894,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
         var inR = rEnd && d > S.date && d <= rEnd;   // 전시 기간(시작일 다음 날 ~ 종료일)
         return '<button type="button" class="bk-day' + (st === 'full' && !inR ? ' full' : '') + (st === 'unloaded' ? ' wait' : '') + (S.date === d ? ' on' : '') + (inR ? ' range' : '') + '" data-date="' + d + '"' + (ok ? '' : ' disabled') +
           ' aria-label="' + dateText(d) + (ok ? ' 예약 가능' : st === 'full' ? ' 마감' : st === 'unloaded' ? ' 확인 중' : ' 예약 불가') + '">' + (+d.slice(8)) + '</button>';
-      });
+      }, S.first);
     }).join('');
   }
 
