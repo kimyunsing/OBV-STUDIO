@@ -261,8 +261,6 @@ footer{background:var(--ink);color:#fff;padding:48px var(--gutter) 32px;}
 .bk-acct{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
 .bk-copy{font-size:11px;font-weight:400;border:1px solid var(--ink);padding:3px 8px;line-height:1.4;}
 .bk-copy.done{background:var(--ink);color:#fff;}
-.bk-due{color:#c44;}
-.bk-due small{display:block;font-size:11px;font-weight:400;color:var(--ink-m);}
 .bk-paybox-note{font-size:12px;color:var(--ink-m);line-height:1.8;margin-top:12px;}
 
 /* time chips */
@@ -623,7 +621,6 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   var BOOKING_API = 'https://script.google.com/macros/s/AKfycbzqJDRaHi1NXC0SPKMV_y4L9RRlbXhR0IvRTz4PvipmwchNlrKTizrLGTgJHB7zymSv/exec';
   // ▼ 계좌이체 입금 계좌 (신청 직후 화면에 표시). 비워두면 입금 안내 칸이 안 나옴
   var BANK = { name: '토스뱅크', account: '1002-5108-1489', holder: '오비오(obvio)' };
-  var PAY_HOURS = 2;          // 입금 기한 (신청 후 몇 시간)
   var DUAL_DAYS = 10;         // 이번 달 남은 예약 가능 기간이 이 일수 이하면 다음 달도 같이 표시
 
   var DAY = 86400000, DN = ['일', '월', '화', '수', '목', '금', '토'];
@@ -985,7 +982,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-rcpt-num-row').classList.toggle('bk-hide', !showNum);
     $('bk-pay-note').textContent = S.pay === 'card' ? '결제선생 결제 링크를 카카오톡으로 보내드려요 (보통 30분 내)'
       : S.pay === 'transfer' ? (!hasBank() ? '확인 후 입금 계좌를 안내해드려요.'
-        : '신청하면 바로 계좌번호와 결제 금액이 나와요. ' + holdText() + ' 안에 입금해주세요.' + (holdOn() ? ' 그동안 이 시간은 입금 대기로 잡아두고, 기한이 지나면 자동으로 풀려요.' : ''))
+        : '신청하면 바로 입금 계좌와 금액을 알려드려요.')
       : '';
     if (showNum && !$('bk-rcpt-num').value) $('bk-rcpt-num').value = $('bk-phone').value.trim();   // 기본값: 연락처
   }
@@ -1073,47 +1070,27 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
   }
   /* ── 계좌이체 입금 안내 ── */
   function hasBank() { return !!(BANK.name && BANK.account); }
-  function holdMin() { return (S.cfg && S.cfg.payHoldMin) || PAY_HOURS * 60; }
-  function holdOn() { return !!(S.cfg && S.cfg.payHoldMin); }   // 예약 서버가 입금 대기 잡기를 지원할 때만 true
-  function holdText() { var m = holdMin(); return m % 60 ? (m >= 60 ? Math.floor(m / 60) + '시간 ' : '') + m % 60 + '분' : m / 60 + '시간'; }
-  function kst(t) { var d = new Date(t + 9 * 3600000).toISOString(); return { d: d.slice(0, 10), m: +d.slice(11, 13) * 60 + +d.slice(14, 16) }; }
-  function dueText(t) {
-    var k = kst(t), today = kst(Date.now()).d, left = t - Date.now();
-    var when = (k.d === today ? '오늘 ' : k.d === addDays(today, 1) ? '내일 ' : dateText(k.d) + ' ') + hm(k.m) + '까지';
-    if (left <= 0) return when + '<small>기한이 지났어요. 다시 신청하거나 문의해주세요.</small>';
-    var mins = Math.ceil(left / 60000);
-    return when + '<small>' + (mins >= 60 ? Math.floor(mins / 60) + '시간 ' : '') + (mins % 60 ? mins % 60 + '분 ' : '') + '남음</small>';
-  }
   function copyText(txt, btn) {
     var ok = function () { btn.textContent = '복사됨'; btn.classList.add('done'); setTimeout(function () { btn.textContent = '복사'; btn.classList.remove('done'); }, 1600); };
     if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).then(ok, fallback); return; }
     fallback();
     function fallback() { var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch (e) {} document.body.removeChild(ta); }
   }
-  function showPayBox(amount, due, held) {
+  function showPayBox(amount) {
     var row = function (l, v) { return '<div class="sp-price-row"><span class="sp-price-label">' + l + '</span><span class="sp-price-val">' + v + '</span></div>'; };
-    var draw = function () {
-      $('bk-paybox-rows').innerHTML =
-        row('은행', esc(BANK.name)) +
-        row('계좌번호', '<span class="bk-acct"><span>' + esc(BANK.account) + '</span><button type="button" class="bk-copy" id="bk-copy">복사</button></span>') +
-        row('예금주', esc(BANK.holder)) +
-        row('결제 금액', won(amount)) +
-        row('입금 기한', '<span class="bk-due">' + dueText(due) + '</span>');
-      $('bk-copy').onclick = function () { copyText(BANK.account.replace(/[^\d]/g, ''), this); };
-    };
-    draw();
-    $('bk-paybox-note').textContent = (held ? '기한까지 입금이 확인되지 않으면 잡아둔 시간이 자동으로 풀려요. ' : '') + '입금자명은 신청하신 이름' + (S.cust === 'business' ? '(회사명)' : '') + '과 같게 해주세요.';
+    $('bk-paybox-rows').innerHTML =
+      row('은행', esc(BANK.name)) +
+      row('계좌번호', '<span class="bk-acct"><span>' + esc(BANK.account) + '</span><button type="button" class="bk-copy" id="bk-copy">복사</button></span>') +
+      row('예금주', esc(BANK.holder)) +
+      row('결제 금액', won(amount));
+    $('bk-copy').onclick = function () { copyText(BANK.account.replace(/[^\d]/g, ''), this); };
+    $('bk-paybox-note').textContent = '입금자명은 신청하신 이름' + (S.cust === 'business' ? '(회사명)' : '') + '과 같게 해주세요.';
     $('bk-paybox').hidden = false;
-    clearInterval(S.dueTimer);
-    S.dueTimer = setInterval(function () { if ($('bk-paybox').hidden) return clearInterval(S.dueTimer); var c = $('bk-copy') && $('bk-copy').classList.contains('done'); if (!c) draw(); }, 30000);
   }
 
   function done(r) {
     // 화면을 바꾸기 전에 지금 선택값으로 금액·시작 시각 계산
-    var pay = S.pay, amount = +r.amount || price().total, t0 = slotTimes()[0];
-    var startMs = ms(S.date) - 9 * 3600000 + t0 * 60000;
-    var due = +r.payDue || Math.min(Date.now() + holdMin() * 60000, startMs);   // 서버가 준 기한 우선
-    var held = !!r.payDue;   // 서버가 실제로 입금 대기로 잡았을 때만 '자동으로 풀려요' 안내
+    var pay = S.pay, amount = +r.amount || price().total;
     var label = S.type === 'exhibit' ? '전시·팝업·플리마켓' : S.type === 'rental' ? '대관' : '프로필 촬영';
     if (typeof window.fbq === 'function') {
       try { window.fbq('track', 'Schedule', { content_name: label, content_category: S.type, value: amount, currency: 'KRW' }, r.id ? { eventID: 'bk-' + r.id } : undefined); } catch (e) {}
@@ -1121,8 +1098,8 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     $('bk-paybox').hidden = true;
     if (pay === 'card') $('bk-done-msg').textContent = '결제선생 결제 링크를 카카오톡으로 보내드려요 (보통 30분 내). 결제가 완료되면 예약이 확정됩니다.';
     else if (pay === 'transfer' && hasBank()) {
-      $('bk-done-msg').textContent = '아래 계좌로 입금 기한까지 입금해주세요. ' + (held ? '그동안 이 시간은 입금 대기로 잡아뒀고, ' : '') + '입금이 확인되면 예약이 확정됩니다.';
-      showPayBox(amount, due, held);
+      $('bk-done-msg').textContent = '아래 계좌로 입금해주시면 예약이 확정돼요.';
+      showPayBox(amount);
     } else $('bk-done-msg').textContent = '확인 후 연락드리며, 카드 결제 또는 계좌 입금이 완료되면 예약이 확정됩니다.';
     $('bk-flow').hidden = true; $('bk-done').hidden = false;
     var rows = (r.summary || []).filter(function (x) { return ['이름', '회사명', '연락처', '이메일'].indexOf(x[0]) < 0; });
@@ -1136,7 +1113,7 @@ textarea.auth-input{resize:vertical;min-height:72px;line-height:1.7;}
     S.date = null; clearSlot(); S.tier = null; S.plan = null; S.cust = null; S.pay = null; S.tax = null; S.rcpt = null; clearFile(); S.guests = S.cfg ? S.cfg.rental.baseGuests : 4;
     ['bk-name', 'bk-phone', 'bk-email', 'bk-purpose', 'bk-car', 'bk-memo', 'bk-website', 'bk-rcpt-num'].forEach(function (id) { $(id).value = ''; fieldErr(id, ''); });
     $('bk-agree').checked = false; $('bk-agree-err').textContent = ''; $('bk-pay-err').textContent = ''; $('bk-cust-err').textContent = ''; $('bk-tax-err').textContent = ''; $('bk-rcpt-err').textContent = ''; $('bk-submit-err').textContent = '';
-    $('bk-flow').hidden = false; $('bk-done').hidden = true; $('bk-paybox').hidden = true; clearInterval(S.dueTimer);
+    $('bk-flow').hidden = false; $('bk-done').hidden = true; $('bk-paybox').hidden = true;
   }
 
   /* ── 이벤트 ── */
